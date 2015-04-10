@@ -1,13 +1,12 @@
 import java.awt.geom.Point2D;
 
-
-public class PolyLine implements iCurve {
-
+public class Polyline {
+	public Point2D[] points;
+	
 	public Point2D[] plot() {
-		// TODO Auto-generated method stub
-		return null;
+		return points;
 	}
-
+	
 	public double length() {
 		// TODO Auto-generated method stub
 		return 0;
