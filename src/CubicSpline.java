@@ -1,7 +1,7 @@
 import java.awt.geom.Point2D;
 
 
-public class CubicSpline extends Polyline {
+public class CubicSpline extends Curve {
 
 	public Point2D[] plot() {
 		// TODO Auto-generated method stub

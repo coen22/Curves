@@ -1,6 +1,6 @@
 import java.awt.geom.Point2D;
 
-public class BezierCurve extends Polyline {
+public class BezierCurve extends Curve {
 
 	public Point2D[] plot() {
 		// TODO Auto-generated method stub
