@@ -1,6 +1,5 @@
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public abstract class Curve {
@@ -12,10 +11,7 @@ public abstract class Curve {
 	public Curve(String name){
 		this.name = name;
 		closed = false;
-	}
-	
-	public List<Point2D> calcPlotingCoordinates(double tInterval) {
-		return null;
+		points = new ArrayList<Point2D>();
 	}
 	
 	public double length(int METHOD) {

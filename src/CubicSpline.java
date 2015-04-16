@@ -1,5 +1,6 @@
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class CubicSpline extends Curve {
@@ -20,5 +21,9 @@ public class CubicSpline extends Curve {
 	public double area() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public List<Point2D> calcPlotingCoordinates(double tInterval) {
+		return null;
 	}
 }
