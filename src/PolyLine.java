@@ -13,7 +13,9 @@ public class PolyLine extends Curve {
 		return (List<Point2D>)super.points;
 	}
 	
-	
+	public boolean isClosed() {
+		return super.points.get(0).equals(super.points.get(super.points.size()));
+	}
 	
 
 //	public double length() {
