@@ -3,6 +3,8 @@
  */
 package curves;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import javax.swing.JFrame;
 
 /**
@@ -15,6 +17,23 @@ public class MainFrame extends JFrame {
     private double offSetX = 0;
     private double offSetY = 0;
     private double gridSpacing = 100;
+    private final Canvas canvas;
+    private final SideBar sideBar;
+
+    public MainFrame() {
+        canvas = new Canvas(zoom, gridSpacing);
+        sideBar = new SideBar();
+        sideBar.setBackground(Color.red);
+        add(canvas);
+        add(sideBar, BorderLayout.EAST);
+        setSize(500,500);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new MainFrame();
+    }
 
     public void addPoint(double x, double y) {
     }
