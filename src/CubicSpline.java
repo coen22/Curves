@@ -1,7 +1,11 @@
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 
 public class CubicSpline extends Curve {
+	
+	private ArrayList<double[]> Xcoefficients;
+	private ArrayList<double[]> Ycoefficients; 
 
 	public Point2D[] plot() {
 		// TODO Auto-generated method stub

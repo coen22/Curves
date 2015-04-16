@@ -1,6 +1,10 @@
 import java.awt.geom.Point2D;
 
-public class Polyline extends Curve {
+public class PolyLine extends Curve {
+	
+	public PolyLine(Point2D point, String name){
+		
+	}
 	
 	public Point2D[] plot() {
 		return points;
