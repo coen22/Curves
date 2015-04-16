@@ -5,10 +5,10 @@ public class BezierCurve extends Curve {
 	
 	private ArrayList<Double> Xcoefficients; 
 	private ArrayList<Double> Ycoefficients; 
-
-	public Point2D[] plot() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public BezierCurve(Point2D point, String name){
+		super(name);
+		super.add(point.getX(), point.getY());
 	}
 
 	public double length() {

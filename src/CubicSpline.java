@@ -7,11 +7,11 @@ public class CubicSpline extends Curve {
 	private ArrayList<double[]> Xcoefficients;
 	private ArrayList<double[]> Ycoefficients; 
 
-	public Point2D[] plot() {
-		// TODO Auto-generated method stub
-		return null;
+	public CubicSpline(Point2D point, String name){
+		super(name);
+		super.add(point.getX(), point.getY());
 	}
-
+	
 	public double length() {
 		// TODO Auto-generated method stub
 		return 0;
