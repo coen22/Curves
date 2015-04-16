@@ -5,30 +5,32 @@ package curves;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Kareem
  */
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements ActionListener {
 
-    private double zoom = 1;
-    private double offSetX = 0;
-    private double offSetY = 0;
-    private double gridSpacing = 100;
     private final Canvas canvas;
     private final SideBar sideBar;
+    private Controller controller;
 
     public MainFrame() {
-        canvas = new Canvas(zoom, gridSpacing);
+        controller = new Controller();
+        canvas = new Canvas(1, 100);
         sideBar = new SideBar();
         sideBar.setBackground(Color.red);
         add(canvas);
         add(sideBar, BorderLayout.EAST);
-        setSize(500,500);
+        setSize(500, 500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+        JOptionPane.showMessageDialog(this, "Testing Message box");
     }
 
     public static void main(String[] args) {
@@ -45,41 +47,17 @@ public class MainFrame extends JFrame {
     }
 
     public void newCurve(int curveType, double x, double y, String Name) {
+        controller.createCurve(curveType, x, y, Name);
     }
 
     public void setName(String name, int curveId) {
     }
 
-    public double getZoom() {
-        return zoom;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String[] command = e.getActionCommand().split(",");
+        if (command[0].equals("create")) {
+            newCurve(Integer.valueOf(command[1]), Double.valueOf(command[2]), Double.valueOf(command[3]), command[4]);
+        }
     }
-
-    public void setZoom(double zoom) {
-        this.zoom = zoom;
-    }
-
-    public double getOffSetX() {
-        return offSetX;
-    }
-
-    public void setOffSetX(double offSetX) {
-        this.offSetX = offSetX;
-    }
-
-    public double getOffSetY() {
-        return offSetY;
-    }
-
-    public void setOffSetY(double offSetY) {
-        this.offSetY = offSetY;
-    }
-
-    public double getGridSpacing() {
-        return gridSpacing;
-    }
-
-    public void setGridSpacing(double gridSpacing) {
-        this.gridSpacing = gridSpacing;
-    }
-
 }

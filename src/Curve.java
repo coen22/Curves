@@ -1,10 +1,13 @@
+package curves;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class Curve {
 	
-	protected ArrayList<Point2D> points;
+	private ArrayList<Point2D> points;
 	protected boolean closed;
 	protected String name;
 	
@@ -53,5 +56,10 @@ public abstract class Curve {
 	public int numberOfPoints(){
 		return points.size();
 	}
+        
+        public List<Point2D> getPlot(){
+            //add spefic methods for your type of lines here
+            return points;
+        }
 	
 }

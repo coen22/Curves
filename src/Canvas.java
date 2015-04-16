@@ -3,6 +3,7 @@
  */
 package curves;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,69 +16,93 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author Kareem
+ * @author Kareem Horstink
  */
 public class Canvas extends JPanel {
-    
+
     private double offSetX = 0;
     private double offSetY = 0;
-    private double zoom = 0;
+    private double zoom = 1;
     private double gridSpacing = 0;
     private ArrayList<List<Point2D>> curves = new ArrayList<>();
     private boolean allPoints = false;
     private int currentLine = 0;
-    
+
+    private double x(double x) {
+        return zoom * (x) + offSetX + getVisibleRect().width / 2;
+    }
+
+    private double y(double y) {
+        return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
+    }
+
     @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        super.repaint();
+        super.paint(g);
+        drawLines(g2);
+    }
+
+    private void drawLines(Graphics2D g) {
         for (List<Point2D> curve : curves) {
             boolean first = true;
             Path2D.Double tmp = new Path2D.Double(Path2D.WIND_NON_ZERO, 1);
-            g2.setColor(colorPicker());
+            g.setStroke(new BasicStroke(3f));
+            g.setColor(colorPicker());
             for (Point2D point : curve) {
-                if (!first) {
+                if (first) {
                     first = false;
-                    tmp.moveTo(point.getX(), point.getY());
+                    tmp.moveTo(x(point.getX()), y(point.getY()));
+                    System.out.println(point);
                 } else {
-                    tmp.lineTo(point.getX(), point.getY());
+                    tmp.lineTo(x(point.getX()), y(point.getY()));
+                    System.out.println(point);
                 }
             }
+            g.draw(tmp);
         }
     }
-    
+
     public Color colorPicker() {
         Random r = new Random();
         return new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
     }
-    
+
     public Canvas(double zoom, double gridSpace) {
         setBackground(Color.gray);
         this.zoom = zoom;
         this.gridSpacing = gridSpace;
         this.setSize(400, 500);
+        List<Point2D> testList = new ArrayList<Point2D>();
+        testList.add(new Point2D.Double(100, 100));
+        testList.add(new Point2D.Double(100, -100));
+        testList.add(new Point2D.Double(-100, -100));
+        testList.add(new Point2D.Double(-100, 100));
+        testList.add(new Point2D.Double(100, 100));
+
+        curves.add(testList);
     }
-    
+
     public double getGridSpacing() {
         return gridSpacing;
     }
-    
+
     public void setGridSpacing(double gridSpacing) {
         this.gridSpacing = gridSpacing;
     }
-    
+
     public boolean isAllPoints() {
         return allPoints;
     }
-    
+
     public void setAllPoints(boolean allPoints) {
         this.allPoints = allPoints;
     }
-    
+
     public int getCurrentLine() {
         return currentLine;
     }
-    
+
     public void setCurrentLine(int currentLine) {
         this.currentLine = currentLine;
     }
@@ -87,7 +112,7 @@ public class Canvas extends JPanel {
      *
      * @return the value of curves
      */
-    public ArrayList<Curve> getCurves() {
+    public ArrayList<List<Point2D>> getCurves() {
         return curves;
     }
 
@@ -153,5 +178,5 @@ public class Canvas extends JPanel {
     public void setZoom(double zoom) {
         this.zoom = zoom;
     }
-    
+
 }

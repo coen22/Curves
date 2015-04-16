@@ -1,20 +1,21 @@
+package curves;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PolyLine extends Curve {
-		
-	public PolyLine(Point2D point, String name){
-		super(name);
-		super.add(point.getX(), point.getY());
-	}
 
-	public List<Point2D> calcPlotingCoordinates(double tInterval) {
-		return (List<Point2D>)super.points;
-	}
-	
-	
-	
+    public PolyLine(Point2D point, String name) {
+        super(name);
+        super.add(point.getX(), point.getY());
+    }
+
+    public List<Point2D> calcPlotingCoordinates(double tInterval) {
+
+        //TO DO
+        return null;
+    }
 
 //	public double length() {
 //		double length = 0;
@@ -29,7 +30,6 @@ public class PolyLine extends Curve {
 //		
 //		return length;
 //	}
-
 //	public double area() {
 //		if (!closed)
 //			return 0;
