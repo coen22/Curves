@@ -10,10 +10,26 @@ import javax.swing.JFrame;
  * @author Kareem
  */
 public class MainFrame extends JFrame {
+
     private double zoom = 1;
     private double offSetX = 0;
     private double offSetY = 0;
     private double gridSpacing = 100;
+
+    public void addPoint(double x, double y) {
+    }
+
+    public void removePoint(double x, double y) {
+    }
+
+    public void changePos(double deltaX, double deltaY, int curveId, int pointId) {
+    }
+
+    public void newCurve(int curveType, double x, double y, String Name) {
+    }
+
+    public void setName(String name, int curveId) {
+    }
 
     public double getZoom() {
         return zoom;
@@ -46,6 +62,5 @@ public class MainFrame extends JFrame {
     public void setGridSpacing(double gridSpacing) {
         this.gridSpacing = gridSpacing;
     }
-    
-    
+
 }
