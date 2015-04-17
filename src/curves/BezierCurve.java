@@ -4,6 +4,20 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * resource: http://pomax.github.io/bezierinfo/ 
+ * 
+ * B-Spline info:
+ * 
+ * intro: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/bspline-basis.html
+ * coefficients: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/bspline-curve-coef.html
+ * knot insertion: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/single-insertion.html
+ * multiple knot insertion: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/multiple-time.html
+ * DeBoors: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/de-Boor.html
+ * 
+ */
+
+
 public class BezierCurve extends Curve {
 		
 	private ArrayList<Double> Xcoefficients; 
