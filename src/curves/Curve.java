@@ -57,9 +57,17 @@ public abstract class Curve {
 		return points.size();
 	}
         
-        public List<Point2D> getPlot(){
-            //add spefic methods for your type of lines here
-            return points;
-        }
+    public List<Point2D> getPlot(){
+        //add spefic methods for your type of lines here
+    	return points;
+    }
+    
+    private double shoeLaceArea(){
+    	return 0;
+    }
+    
+    private double pythagoreanLength(){
+    	return 0;
+    }
 	
 }
