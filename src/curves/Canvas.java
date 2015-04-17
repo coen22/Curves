@@ -1,12 +1,11 @@
-/*
- * Place to draw the curves
- */
 package curves;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -15,6 +14,8 @@ import java.util.Random;
 import javax.swing.JPanel;
 
 /**
+ * The canvas in which to draw various elements of the UI, mostly focusing on
+ * the graphical side of things
  *
  * @author Kareem Horstink
  */
@@ -23,7 +24,7 @@ public class Canvas extends JPanel {
     private double offSetX = 0;
     private double offSetY = 0;
     private double zoom = 1;
-    private double gridSpacing = 0;
+    private double gridSpacing = 50;
     private ArrayList<List<Point2D>> curves = new ArrayList<>();
     private boolean allPoints = false;
     private int currentLine = 0;
@@ -32,7 +33,15 @@ public class Canvas extends JPanel {
         return zoom * (x) + offSetX + getVisibleRect().width / 2;
     }
 
+    private double x(int x) {
+        return zoom * (x) + offSetX + getVisibleRect().width / 2;
+    }
+    
     private double y(double y) {
+        return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
+    }
+    
+    private double y(int y) {
         return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
     }
 
@@ -40,7 +49,20 @@ public class Canvas extends JPanel {
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         super.paint(g);
+        drawGrid(g2);
         drawLines(g2);
+        
+    }
+
+    private void drawGrid(Graphics2D g) {
+        for (int i = -500; i < 500; i++) {
+            g.setColor(Color.lightGray);
+            g.setFont(new Font("TimesRoman", Font.PLAIN, 10));
+            g.draw(new Line2D.Double(x(-Double.MAX_VALUE), y(gridSpacing * i), x(Double.MAX_VALUE), y(gridSpacing * i)));
+            g.draw(new Line2D.Double(x(gridSpacing * i), y(-Double.MAX_VALUE), x(gridSpacing * i), y(Double.MAX_VALUE)));
+            g.drawString(Double.toString(i * gridSpacing), (int) x(i * gridSpacing + 5), (int) y(0));
+            g.drawString(Double.toString(i * gridSpacing), (int) x(5), (int) y(i * gridSpacing));
+        }
     }
 
     private void drawLines(Graphics2D g) {
@@ -53,10 +75,8 @@ public class Canvas extends JPanel {
                 if (first) {
                     first = false;
                     tmp.moveTo(x(point.getX()), y(point.getY()));
-                    System.out.println(point);
                 } else {
                     tmp.lineTo(x(point.getX()), y(point.getY()));
-                    System.out.println(point);
                 }
             }
             g.draw(tmp);
