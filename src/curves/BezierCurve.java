@@ -1,9 +1,11 @@
+package curves;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BezierCurve extends Curve {
-	
+		
 	private ArrayList<Double> Xcoefficients; 
 	private ArrayList<Double> Ycoefficients; 
 //	private ArrayList<Double> binomialCoefficients;
@@ -40,19 +42,25 @@ public class BezierCurve extends Curve {
 		return (List<Point2D>)plottingPoints;
 	}
 	
-	public static Point2D deCasteljauSAlgorithm(ArrayList<Point2D> originalPoints, double interval){
+	/**
+	 * Method which, without polynomial mathematics, calculates the point at a given t. Can be optimised to be seperate class (static), memory improvements possible. 
+	 * @param originalPoints original points of the Bezier Curve
+	 * @param ratio t at which the point shall be calculated
+	 * @return the point for given t
+	 */
+	public static Point2D deCasteljauSAlgorithm(ArrayList<Point2D> originalPoints, double ratio){
 		ArrayList<Point2D> working = new ArrayList<Point2D>();
 		
 		//calculates the first step and copies from the originalPoints to the working points set
 		for (int i = 0; i < originalPoints.size()-1; i++){
-			Double newX = originalPoints.get(i).getX() + ((originalPoints.get(i+1).getX() - originalPoints.get(i).getX()) * interval);
-			Double newY = originalPoints.get(i).getY() + ((originalPoints.get(i+1).getY() - originalPoints.get(i).getY()) * interval);
+			Double newX = originalPoints.get(i).getX() + ((originalPoints.get(i+1).getX() - originalPoints.get(i).getX()) * ratio);
+			Double newY = originalPoints.get(i).getY() + ((originalPoints.get(i+1).getY() - originalPoints.get(i).getY()) * ratio);
 			working.add(new Point2D.Double(newX, newY));
 		}
 		while (working.size() > 1){
 			for (int i = 0; i < working.size()-1; i++){
-				Double newX = working.get(i).getX() + ((working.get(i+1).getX() - working.get(i).getX()) * interval);
-				Double newY = working.get(i).getY() + ((working.get(i+1).getY() - working.get(i).getY()) * interval);
+				Double newX = working.get(i).getX() + ((working.get(i+1).getX() - working.get(i).getX()) * ratio);
+				Double newY = working.get(i).getY() + ((working.get(i+1).getY() - working.get(i).getY()) * ratio);
 				working.get(i).setLocation(newX, newY);;
 			}
 			working.remove(working.size()-1);
