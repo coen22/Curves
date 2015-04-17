@@ -23,7 +23,7 @@ public class Canvas extends JPanel {
 
     private double offSetX = 0;
     private double offSetY = 0;
-    private double zoom = 15;
+    private double zoom = 1;
     private double gridSpacing = 50;
     private ArrayList<List<Point2D>> curves = new ArrayList<>();
     private boolean allPoints = false;
@@ -93,12 +93,14 @@ public class Canvas extends JPanel {
         this.zoom = zoom;
         this.gridSpacing = gridSpace;
         this.setSize(400, 500);
-        BezierCurve test = new BezierCurve(new Point2D.Double(100, 100), "bob");
-        test.add(0,100);
-        test.add(50,50);
-        test.add(25, 40);
-        
-        curves.add(test.calcPlotingCoordinates(0.001));
+        List<Point2D> testList = new ArrayList<Point2D>();
+        testList.add(new Point2D.Double(100, 100));
+        testList.add(new Point2D.Double(100, -100));
+        testList.add(new Point2D.Double(-100, -100));
+        testList.add(new Point2D.Double(-100, 100));
+        testList.add(new Point2D.Double(100, 100));
+
+        curves.add(testList);
     }
 
     public double getGridSpacing() {
