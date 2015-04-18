@@ -12,8 +12,14 @@ public class Controller {
         curves = new ArrayList<Curve>();
     }
     
-    public List<Point2D> getCurvePlot(int index, int interval) {
-        return curves.get(index).getPlot(interval);
+    /**
+     * Method to retrieve the plotting coordinates of each curve. NOTE THE DEFINITION OF SUB-POINTS!
+     * @param curveIndex index of which curve to retrieve
+     * @param subPoints this number signifies the number of plotting points in-between each pair of control-points. The larger the number, the more fine-grained the curve plot will be.
+     * @return
+     */
+    public List<Point2D> getCurvePlot(int curveIndex, int subPoints) {
+        return curves.get(curveIndex).getPlot(subPoints);
     }
 
     public void createCurve(int TYPE, double x, double y, String name) {
@@ -23,11 +29,11 @@ public class Controller {
         }
     }
 
-    public boolean closeCurve(int CURVE_ID) {
+    public boolean closeCurve(int curveIndex) {
         return false;
     }
 
-    public boolean openCurve(int CURVE_ID) {
+    public boolean openCurve(int curveIndex) {
         return false;
     }
 
@@ -35,11 +41,11 @@ public class Controller {
         return 0;
     }
 
-    public void addLastPoint(double x, double y, int CURVE_ID) {
+    public void addLastPoint(double x, double y, int curveIndex) {
 
     }
 
-    public void addPoint(double x, double y, int CURVE_ID, int index) {
+    public void addPoint(double x, double y, int curveIndex, int index) {
 
     }
 

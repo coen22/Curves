@@ -17,6 +17,16 @@ public abstract class Curve {
 		points = new ArrayList<Point2D>();
 	}
 	
+	/**
+	 * method which calculates or returns the plotting coordinates such that the UI can draw all curves. NOTE THE DEFINITION OF THE SUB-POINTS!
+	 * @param subPoints this number signifies the number of plotting points in-between each pair of control-points. The larger the number, the more fine-grained the curve plot will be.
+	 * @return
+	 */
+	public List<Point2D> getPlot(int subPoints) {
+        //add spefic methods for your type of lines here
+    	return points;
+    }
+	
 	public double length(int METHOD) {
 		return 0;
 	}
@@ -57,11 +67,6 @@ public abstract class Curve {
 		return points.size();
 	}
         
-	public List<Point2D> getPlot(double interval) {
-        //add spefic methods for your type of lines here
-    	return points;
-    }
-    
     private double shoeLaceArea(){
     	return 0;
     }
