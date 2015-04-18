@@ -39,8 +39,10 @@ public class CubicSpline extends Curve {
 	 * @param tInterval the 
 	 * @return
 	 */
-	public List<Point2D> calcPlottingCoordinates(double tInterval) {
+	public List<Point2D> getPlot(int subPoints) {
 		ArrayList<Point2D> plottingPoints = new ArrayList<Point2D>();
+		
+		double tInterval = (1 / (double)subPoints);
 		
 		for (int i = 0; i < Xcoefficients.length-1; i++){
 			for (double k = 0.0; k < 1; k+=tInterval){
