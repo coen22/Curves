@@ -41,7 +41,7 @@ public abstract class Curve {
 		return name;
 	}
 	
-	public void translate(int POINT_ID, double deltaX, double deltaY){
+	public void translate(int index, double deltaX, double deltaY){
 		
 	}
 
@@ -57,7 +57,7 @@ public abstract class Curve {
 		return points.size();
 	}
         
-    public List<Point2D> getPlot(){
+	public List<Point2D> getPlot(double interval) {
         //add spefic methods for your type of lines here
     	return points;
     }

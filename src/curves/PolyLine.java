@@ -1,7 +1,6 @@
 package curves;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PolyLine extends Curve {
@@ -10,14 +9,11 @@ public class PolyLine extends Curve {
 		super(name);
 		super.add(point.getX(), point.getY());
 	}
-
-	public List<Point2D> calcPlotingCoordinates(double tInterval) {
-		return (List<Point2D>)super.getPlot();
-	}
 	
+    public List<Point2D> getPlot(int interval) {
+    	return (List<Point2D>)super.getPlot(interval);
+    }
 	
-	
-
 //	public double length() {
 //		double length = 0;
 //		

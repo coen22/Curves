@@ -12,8 +12,8 @@ public class Controller {
         curves = new ArrayList<Curve>();
     }
     
-    public List<Point2D> getCurvePlot(int index){
-        return curves.get(index).getPlot();
+    public List<Point2D> getCurvePlot(int index, int interval) {
+        return curves.get(index).getPlot(interval);
     }
 
     public void createCurve(int TYPE, double x, double y, String name) {
