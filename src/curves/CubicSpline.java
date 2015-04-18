@@ -34,7 +34,12 @@ public class CubicSpline extends Curve {
 		return 0;
 	}
 
-	public List<Point2D> calcPlotingCoordinates(double tInterval) {
+	/**
+	 * returns a list of the points required for plotting. 
+	 * @param tInterval the 
+	 * @return
+	 */
+	public List<Point2D> calcPlottingCoordinates(double tInterval) {
 		ArrayList<Point2D> plottingPoints = new ArrayList<Point2D>();
 		
 		for (int i = 0; i < Xcoefficients.length-1; i++){
@@ -56,7 +61,7 @@ public class CubicSpline extends Curve {
 	}
 	
 	//currently works for natural spline
-	private void calcCoefficients(){
+	public void calcCoefficients(){
 		double[][] CMatrixX = new double[super.points.size()][super.points.size()];
 		double[][] CMatrixY = new double[super.points.size()][super.points.size()];
 		double[] XvectorK = new double[super.points.size()];
@@ -140,9 +145,6 @@ public class CubicSpline extends Curve {
 				
 				Ycoefficients[i][3] = ((Ycoefficients[i+1][2] - Ycoefficients[i][2])/3);
 			}
-			
-//			System.out.println(printMatrix(Xcoefficients, "coefs X"));
-//			System.out.println(printMatrix(Ycoefficients, "coefs Y"));
 		}
 		
 		
