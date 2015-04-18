@@ -13,8 +13,8 @@ public class CubicSpline extends Curve {
 	
 	private static final double EPSILON = 1e-10;
 	
-	private ArrayList<double[]> Xcoefficients;
-	private ArrayList<double[]> Ycoefficients; 
+	private double[][] Xcoefficients;
+	private double[][] Ycoefficients;
 	private int type;
 
 	public CubicSpline(Point2D point, String name, int type){
@@ -43,31 +43,92 @@ public class CubicSpline extends Curve {
 	
 	//currently works for natural spline
 	public void calcCoefficients(){
-		double[][] CMatrix = new double[super.points.size()-2][super.points.size()];
+		double[][] CMatrixX = new double[super.points.size()][super.points.size()];
+		double[][] CMatrixY = new double[super.points.size()][super.points.size()];
 		double[] XvectorK = new double[super.points.size()];
-		double[] XvectorC = new double[super.points.size()];
+		double[] YvectorK = new double[super.points.size()];
 		
-		for (int i = 0; i < CMatrix.length; i++){
-			for(int k = 0; k < CMatrix[0].length; k++){
-				CMatrix[i][k] = 0.0;
-			}
-			XvectorK[i] = 0.0;
-		}
+		double[] XvectorC = new double[super.points.size()];
+		double[] YvectorC = new double[super.points.size()];
 		
 		if (type == NATURAL_SPLINE){
+			
+			//creation vector solution
 			for (int i = 1; i < XvectorK.length-1; i++){
 				XvectorK[i] = 3 * (super.points.get(i-1).getX() - (2*super.points.get(i).getX()) + super.points.get(i+1).getX());
+				YvectorK[i] = 3 * (super.points.get(i-1).getY() - (2*super.points.get(i).getY()) + super.points.get(i+1).getY());
 			}
-			for (int i = 0; i < CMatrix.length; i++){
-				CMatrix[i][i] = (double) 1;
-				CMatrix[i][i+1] = (double) 4;
-				CMatrix[i][i+2] = (double) 1;
-			}
-			System.out.println(printVector(XvectorK, "vector"));
-			System.out.println(printMatrix(CMatrix, "test"));
 			
-			XvectorC = gaussianElimination(CMatrix, XvectorK);
-			System.out.println(printVector(XvectorC, "elimination"));
+			//creation of the C-coefficient matrix for solution
+			for (int i = 1; i < CMatrixX.length-1; i++){
+				if ( i == 0){
+					CMatrixX[i][i] = (double) 1;
+					
+					CMatrixY[i][i] = (double) 1;
+				}
+				else if (i == CMatrixX.length-1){
+					CMatrixX[i][i] = (double) 1;
+					
+					CMatrixY[i][i] = (double) 1;
+				}
+				else{
+					CMatrixX[i][i-1] = (double) 1;
+					CMatrixX[i][i] = (double) 4;
+					CMatrixX[i][i+1] = (double) 1;
+					
+					CMatrixY[i][i-1] = (double) 1;
+					CMatrixY[i][i] = (double) 4;
+					CMatrixY[i][i+1] = (double) 1;
+				}
+				CMatrixX[0][0] = (double) 1;
+				CMatrixX[1][0] = (double) 0;
+				CMatrixX[CMatrixX.length-1][CMatrixX[0].length-1] = (double) 1;
+				CMatrixX[CMatrixX.length-2][CMatrixX[0].length-1] = (double) 0;
+				
+				CMatrixY[0][0] = (double) 1;
+				CMatrixY[1][0] = (double) 0;
+				CMatrixY[CMatrixX.length-1][CMatrixY[0].length-1] = (double) 1;
+				CMatrixY[CMatrixX.length-2][CMatrixY[0].length-1] = (double) 0;
+			}
+			
+			//Gaussian elimination to find c coefficients. Only if necessary
+			if (XvectorK.length > 2){
+				XvectorC = gaussianElimination(CMatrixX, XvectorK);
+				YvectorC = gaussianElimination(CMatrixY, YvectorK);
+			}
+			else {
+				XvectorC = XvectorK;
+				YvectorC = YvectorK;
+			}
+			
+			Xcoefficients = new double[super.points.size()][4];
+			Ycoefficients = new double[super.points.size()][4];
+			
+			//copies c coefficients and a coefficients into matrix
+			for (int i = 0; i < Xcoefficients.length; i++){
+				Xcoefficients[i][2] = XvectorC[i];
+				Xcoefficients[i][0] = super.points.get(i).getX();
+				
+				Ycoefficients[i][2] = YvectorC[i];
+				Ycoefficients[i][0] = super.points.get(i).getY();
+			}
+			
+			//calculates b coefficients
+			for (int i = 0; i < Xcoefficients.length-1; i++){
+				Xcoefficients[i][1] = (Xcoefficients[i+1][0] - Xcoefficients[i][0]) - (((2*Xcoefficients[i][2]) + Xcoefficients[i+1][2])/3);
+				
+				Ycoefficients[i][1] = (Ycoefficients[i+1][0] - Ycoefficients[i][0]) - (((2*Ycoefficients[i][2]) + Ycoefficients[i+1][2])/3);
+			}
+			
+			//calculates d coefficients
+			for (int i = 0; i < Xcoefficients.length-1; i++){
+				Xcoefficients[i][3] = ((Xcoefficients[i+1][2] - Xcoefficients[i][2])/3);
+				
+				Ycoefficients[i][3] = ((Ycoefficients[i+1][2] - Ycoefficients[i][2])/3);
+			}
+			
+			System.out.println(printMatrix(Xcoefficients, "coefs X"));
+			System.out.println(printMatrix(Ycoefficients, "coefs Y"));
 		}
 		
 		
