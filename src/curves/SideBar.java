@@ -14,7 +14,6 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -24,15 +23,31 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
     private JTable table;
     private final List<GUI_Event_Listner> LISTENER = new ArrayList<GUI_Event_Listner>();
-    private TableModel mod;
+    private DefaultTableModel mod;
     private int curveID;
     private JCheckBox tobi;
     boolean vis;
-
     private ArrayList<List<Point2D>> curves;
 
     public void setCurves(ArrayList<List<Point2D>> curve) {
         this.curves = curve;
+        while (curve.get(curveID).size() >= mod.getRowCount()) {
+            mod.addRow(new Object[]{null,null,null});
+        }
+        update();
+    }
+
+    public void update() {
+        for (List<Point2D> curve : curves) {
+            int counter = 0;
+            for (Point2D point : curve) {
+                mod.setValueAt(point.getX(), counter, 1);
+                mod.setValueAt(point.getY(), counter, 2);
+                mod.setValueAt(counter, counter, 0);
+                counter++;
+            }
+
+        }
     }
 
     public SideBar() {
@@ -89,6 +104,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         double rowC = row;
         Object fir = mod.getValueAt(row, 1);
         Object sec = mod.getValueAt(row, 2);
+        
 
     }
 

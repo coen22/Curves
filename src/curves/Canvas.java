@@ -15,7 +15,6 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +52,7 @@ public class Canvas extends JPanel implements ActionListener {
         JMenuItem menuItem = new JMenuItem("New Line");
         menuItem.addActionListener(this);
         popup.add(menuItem);
-        menuItem = new JMenuItem("Another popup menu item");
+        menuItem = new JMenuItem("Close Curve");
         menuItem.addActionListener(this);
         popup.add(menuItem);
         addMouseListener(new MouseListener() {
@@ -121,9 +120,9 @@ public class Canvas extends JPanel implements ActionListener {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 if (Math.signum(e.getPreciseWheelRotation()) == -1) {
-                    setZoom(getZoom() / (e.getPreciseWheelRotation() * 1.05));
+                    setZoom(Math.abs(getZoom() / (e.getPreciseWheelRotation() * 1.05)));
                 } else {
-                    setZoom(e.getPreciseWheelRotation() * 1.05 * getZoom());
+                    setZoom(Math.abs(e.getPreciseWheelRotation() * 1.05 * getZoom()));
                 }
             }
         });
@@ -138,12 +137,12 @@ public class Canvas extends JPanel implements ActionListener {
 
     private double xm(double x) {
 
-        return x - getVisibleRect().width / 2;
+        return (x - getVisibleRect().width / 2 - offSetX) / zoom;
     }
 
     private double ym(double y) {
 
-        return getVisibleRect().height / 2 - y;
+        return (getVisibleRect().height / 2 - y - offSetY) / zoom;
     }
 
     private double x(double x) {
@@ -339,6 +338,8 @@ public class Canvas extends JPanel implements ActionListener {
                     }
                 }
             }
+        } else if (e.getActionCommand().equals("Close Curve")) {
+            fireEvent(4, null);
         }
         repaint();
     }

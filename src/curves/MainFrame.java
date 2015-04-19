@@ -100,6 +100,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
                 break;
             case 4://close line
                 System.out.println("I should close a line");
+                CONTROLLER.closeCurve(curveID);
                 break;
             case 5://open line
                 System.out.println("I should open a line");

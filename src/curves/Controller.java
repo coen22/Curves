@@ -51,12 +51,14 @@ public class Controller {
             curves.add(new PolyLine(new Point2D.Double(x, y), name));
         } else if (TYPE == 2) {
             curves.add(new CubicSpline(new Point2D.Double(x, y), name, cubicType));
-
+        }else if(TYPE == 3){
+            
         }
     }
 
     public boolean closeCurve(int curveIndex) {
-        return false;
+        curves.get(curveIndex).setClosed(true);
+        return curves.get(curveIndex).isClosed();
     }
 
     public boolean openCurve(int curveIndex) {
