@@ -1,4 +1,4 @@
-package curves;
+package ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
