@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JPanel;
+import javax.swing.event.MouseInputListener;
 
 /**
  * The canvas in which to draw various elements of the UI, mostly focusing on
@@ -29,6 +32,13 @@ public class Canvas extends JPanel {
     private boolean allPoints = false;
     private int currentLine = 0;
 
+    public Canvas(double zoom, double gridSpace) {
+        setBackground(Color.gray);
+        this.zoom = zoom;
+        this.gridSpacing = gridSpace;
+        this.setSize(400, 500);
+    }
+
     private double x(double x) {
         return zoom * (x) + offSetX + getVisibleRect().width / 2;
     }
@@ -36,11 +46,11 @@ public class Canvas extends JPanel {
     private double x(int x) {
         return zoom * (x) + offSetX + getVisibleRect().width / 2;
     }
-    
+
     private double y(double y) {
         return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
     }
-    
+
     private double y(int y) {
         return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
     }
@@ -51,7 +61,7 @@ public class Canvas extends JPanel {
         super.paint(g);
         drawGrid(g2);
         drawLines(g2);
-        
+
     }
 
     private void drawGrid(Graphics2D g) {
@@ -86,21 +96,6 @@ public class Canvas extends JPanel {
     public Color colorPicker() {
         Random r = new Random();
         return new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
-    }
-
-    public Canvas(double zoom, double gridSpace) {
-        setBackground(Color.gray);
-        this.zoom = zoom;
-        this.gridSpacing = gridSpace;
-        this.setSize(400, 500);
-        List<Point2D> testList = new ArrayList<Point2D>();
-        testList.add(new Point2D.Double(100, 100));
-        testList.add(new Point2D.Double(100, -100));
-        testList.add(new Point2D.Double(-100, -100));
-        testList.add(new Point2D.Double(-100, 100));
-        testList.add(new Point2D.Double(100, 100));
-
-        curves.add(testList);
     }
 
     public double getGridSpacing() {
