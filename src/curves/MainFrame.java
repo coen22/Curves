@@ -6,6 +6,7 @@ package curves;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
@@ -15,20 +16,20 @@ import javax.swing.UIManager;
  */
 public class MainFrame extends JFrame implements GUI_Event_Listner {
 
-    private final Canvas canvas;
-    private final SideBar sideBar;
-    private Controller controller;
+    private final Canvas CANVAS;
+    private final SideBar SIDE_BAR;
+    private final Controller CONTROLLER;
 
     public MainFrame() {
         setTitle("Dem Curves");
-        controller = new Controller();
-        canvas = new Canvas(1, 100);
-        canvas.addEventListener(this);
-        sideBar = new SideBar();
-        add(canvas);
-        add(sideBar, BorderLayout.EAST);
+        CONTROLLER = new Controller();
+        CANVAS = new Canvas(1, 100);
+        CANVAS.addEventListener(this);
+        SIDE_BAR = new SideBar();
+        add(CANVAS);
+        add(SIDE_BAR, BorderLayout.EAST);
         setSize(1500, 800);
-        sideBar.addEventListener(this);
+        SIDE_BAR.addEventListener(this);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(dim.width / 2 - this.getWidth() / 2, dim.height / 2 - this.getHeight() / 2);
@@ -41,7 +42,19 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         new MainFrame();
     }
 
-    public void addPoint(double x, double y) {
+    private void update() {
+        int amount = CONTROLLER.amountOfCurves();
+        ArrayList tmpList = new ArrayList();
+        for (int i = 0; i < amount; i++) {
+            tmpList.add(CONTROLLER.getCurvePlot(i, 10));
+        }
+        CANVAS.setCurves(tmpList);
+        SIDE_BAR.setCurves(tmpList);
+        System.out.println("Updating");
+    }
+
+    public void addPoint(double x, double y,int curveID) {
+        CONTROLLER.addLastPoint(x, y, curveID);
     }
 
     public void removePoint(double x, double y) {
@@ -51,7 +64,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
     }
 
     public void newCurve(int curveType, double x, double y, String Name) {
-        controller.createCurve(curveType, x, y, Name);
+        CONTROLLER.createCurve(curveType, x, y, Name);
     }
 
     public void setName(String name, int curveId) {
@@ -72,38 +85,51 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         int curveID = e.getCurveID();
         switch (type) {
             case 0://create new line
+                System.out.println("I should add a new line");
+                newCurve((int) tmp[2], (double) tmp[0], (double) tmp[1], (String) tmp[3]);
                 break;
             case 1://create new point
-                if (!(tmp.length == 2 || tmp.length == 3)) {
-                    System.out.println("Wrong Event given");
-                    break;
-                }
-                try {
-                    double x = Double.valueOf((String) tmp[0]);
-                    double y = Double.valueOf((String) tmp[1]);
-                    if (tmp.length == 3) {
-                        int index = Integer.valueOf((String) tmp[2]);
-                        //controller.addPoint(x, y, curveID, index);
-                        System.out.println("add at point");
-                        break;
-                    }
-                    System.out.println("Add last");
-                    //controller.addLastPoint(x, y, curveID);
-                } catch (NumberFormatException e1) {
-                    System.out.println("Wrong info given");
-                    System.out.println(e1);
-                }
+                System.out.println("I should add a new point");
+                addPoint(Double.valueOf((String)tmp[0]), Double.valueOf((String)tmp[1]), curveID);
                 break;
             case 2://modify point
+                System.out.println("I should move a point");
                 break;
             case 3://delete point
+                System.out.println("I should remove a point");
                 break;
             case 4://close line
+                System.out.println("I should close a line");
                 break;
             case 5://open line
+                System.out.println("I should open a line");
+                break;
+            case 6://Change state of visiblity
+                System.out.println("Set visiablity to " + e.getInfo()[0]);
                 break;
             default:
                 System.out.println("Unsupported action");
         }
+        update();
     }
 }
+
+//                if (!(tmp.length == 2 || tmp.length == 3)) {
+//                    System.out.println("Wrong Event given");
+//                    break;
+//                }
+//                try {
+//                    double x = Double.valueOf((String) tmp[0]);
+//                    double y = Double.valueOf((String) tmp[1]);
+//                    if (tmp.length == 3) {
+//                        int index = Integer.valueOf((String) tmp[2]);
+//                        //controller.addPoint(x, y, curveID, index);
+//                        System.out.println("add at point");
+//                        break;
+//                    }
+//                    System.out.println("Add last");
+//                    //controller.addLastPoint(x, y, curveID);
+//                } catch (NumberFormatException e1) {
+//                    System.out.println("Wrong info given");
+//                    System.out.println(e1);
+//                }

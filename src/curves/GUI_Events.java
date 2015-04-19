@@ -13,6 +13,7 @@ public class GUI_Events extends java.util.EventObject {
     //3 = delete point
     //4 = close line
     //5 = open line
+    //6 = visiablity
 
     private int curveID;
 

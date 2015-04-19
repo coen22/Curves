@@ -1,9 +1,12 @@
 package curves;
 
-import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -20,22 +23,41 @@ import javax.swing.table.TableModel;
 public class SideBar extends JTabbedPane implements TableModelListener {
 
     private JTable table;
-    private List<GUI_Event_Listner> listeners = new ArrayList<GUI_Event_Listner>();
+    private final List<GUI_Event_Listner> LISTENER = new ArrayList<GUI_Event_Listner>();
     private TableModel mod;
-    private int curveId;
+    private int curveID;
+    private JCheckBox tobi;
+    boolean vis;
+
+    private ArrayList<List<Point2D>> curves;
+
+    public void setCurves(ArrayList<List<Point2D>> curve) {
+        this.curves = curve;
+    }
 
     public SideBar() {
+        curves = new ArrayList<>();
         init();
     }
 
     public synchronized void addEventListener(GUI_Event_Listner list) {
-        listeners.add(list);
+        LISTENER.add(list);
     }
 
     private void init() {
+        tobi = new JCheckBox("Set Invisible");
+        tobi.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Tobi should do something");
+                fireEvent(6, new Object[]{vis});
+                vis = !vis;
+            }
+        });
         JPanel controls = new JPanel();
+        controls.add(tobi);
         controls.setName("Controls");
-        controls.setBackground(Color.red);
         this.addTab(controls.getName(), controls);
         JPanel dataViewer = new JPanel();
         createTable();
@@ -67,12 +89,12 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         double rowC = row;
         Object fir = mod.getValueAt(row, 1);
         Object sec = mod.getValueAt(row, 2);
-        
+
     }
 
     private void fireEvent(int command, Object[] info) {
-        GUI_Events event = new GUI_Events(this, curveId, command, info);
-        Iterator<GUI_Event_Listner> i = listeners.iterator();
+        GUI_Events event = new GUI_Events(this, curveID, command, info);
+        Iterator<GUI_Event_Listner> i = LISTENER.iterator();
         while (i.hasNext()) {
             i.next().handleGUI_Events(event);
         }

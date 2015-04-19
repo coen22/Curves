@@ -15,11 +15,13 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
@@ -32,22 +34,23 @@ import javax.swing.SwingUtilities;
  */
 public class Canvas extends JPanel implements ActionListener {
 
-    private final List<GUI_Event_Listner> listeners = new ArrayList<GUI_Event_Listner>();
+    private final List<GUI_Event_Listner> listeners = new ArrayList<>();
     private double offSetX = 0;
     private double offSetY = 0;
     private double zoom = 1;
     private double gridSpacing = 50;
     private ArrayList<List<Point2D>> curves = new ArrayList<>();
+    private final ArrayList<Color> COLORS = new ArrayList<>();
     private boolean allPoints = false;
-    private int curveID = 0;
+    private int curveID = -1;
     private boolean first = false;
-    JPopupMenu popup;
+    private JPopupMenu popup;
+    private Point2D.Double point = new Point2D.Double();
 
     public Canvas(double zoom, double gridSpace) {
         setBackground(Color.gray);
         popup = new JPopupMenu();
-
-        JMenuItem menuItem = new JMenuItem("A popup menu item");
+        JMenuItem menuItem = new JMenuItem("New Line");
         menuItem.addActionListener(this);
         popup.add(menuItem);
         menuItem = new JMenuItem("Another popup menu item");
@@ -62,11 +65,13 @@ public class Canvas extends JPanel implements ActionListener {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.getButton() == 1) {
-                    fireEvent(1, new Object[]{e.getX() + "", e.getY() + ""});
-                } else if (e.getButton() == 3) {
-                    System.out.println("Pop up should occur");
+                if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
+                    if (curveID != -1) {
+                        fireEvent(1, new Object[]{xm(e.getX()) + "", ym(e.getY()) + ""});
+                    }
+                } else if (SwingUtilities.isRightMouseButton(e)) {
                     popup.show(e.getComponent(), e.getX(), e.getY());
+                    point.setLocation(xm(e.getX()), ym(e.getY()));
                     repaint();
                 }
             }
@@ -163,7 +168,6 @@ public class Canvas extends JPanel implements ActionListener {
         super.paint(g);
         drawGrid(g2);
         drawLines(g2);
-
     }
 
     private void drawGrid(Graphics2D g) {
@@ -178,26 +182,32 @@ public class Canvas extends JPanel implements ActionListener {
     }
 
     private void drawLines(Graphics2D g) {
+        int counter = 0;
         for (List<Point2D> curve : curves) {
-            boolean first = true;
+            boolean fir = true;
             Path2D.Double tmp = new Path2D.Double(Path2D.WIND_NON_ZERO, 1);
             g.setStroke(new BasicStroke(3f));
-            g.setColor(colorPicker());
-            for (Point2D point : curve) {
-                if (first) {
-                    first = false;
-                    tmp.moveTo(x(point.getX()), y(point.getY()));
+            colorPicker();
+            g.setColor(COLORS.get(counter));
+            counter++;
+            for (Point2D poin : curve) {
+                if (fir) {
+                    fir = false;
+                    tmp.moveTo(x(poin.getX()), y(poin.getY()));
                 } else {
-                    tmp.lineTo(x(point.getX()), y(point.getY()));
+                    tmp.lineTo(x(poin.getX()), y(poin.getY()));
                 }
             }
+
             g.draw(tmp);
         }
     }
 
-    public Color colorPicker() {
+    public void colorPicker() {
         Random r = new Random();
-        return new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255));
+        while (COLORS.size() != curves.size()) {
+            COLORS.add(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
+        }
     }
 
     public double getGridSpacing() {
@@ -240,6 +250,7 @@ public class Canvas extends JPanel implements ActionListener {
      */
     public void setCurves(ArrayList<List<Point2D>> curves) {
         this.curves = curves;
+        repaint();
     }
 
     /**
@@ -307,7 +318,28 @@ public class Canvas extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("New Line")) {
+            String x = (String) JOptionPane.showInputDialog(this, "Please Select a Line Type", "Line Type", JOptionPane.QUESTION_MESSAGE, null, new String[]{"PolyLine", "Cubic Line", "B-Spline"}, null);
+            if (x != null) {
+                String name = (String) JOptionPane.showInputDialog(this, "Please Give the Line a name", "Line Name", JOptionPane.QUESTION_MESSAGE);
+                if (name != null) {
+                    curveID++;
+                    switch (x) {
+                        case "PolyLine":
+                            fireEvent(0, new Object[]{point.x, point.y, 1, name});
+                            break;
+                        case "Cubic Line":
+                            fireEvent(0, new Object[]{point.x, point.y, 2, name});
+                            break;
+                        case "B-Spline":
+                            fireEvent(0, new Object[]{point.x, point.y, 3, name});
+                            break;
+                        default:
+                            System.out.println("Option Panel is incorrect");
+                    }
+                }
+            }
+        }
         repaint();
-        System.out.println(e.getActionCommand());
     }
 }
