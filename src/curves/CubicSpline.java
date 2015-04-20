@@ -72,81 +72,80 @@ public class CubicSpline extends Curve {
 		double[] XvectorC = new double[super.points.size()];
 		double[] YvectorC = new double[super.points.size()];
 		
-		if (type == NATURAL_SPLINE){
-			
-			//creation vector solution
-			for (int i = 1; i < XvectorK.length-1; i++){
-				XvectorK[i] = 3 * (super.points.get(i-1).getX() - (2*super.points.get(i).getX()) + super.points.get(i+1).getX());
-				YvectorK[i] = 3 * (super.points.get(i-1).getY() - (2*super.points.get(i).getY()) + super.points.get(i+1).getY());
-			}
-			
-			//creation of the C-coefficient matrix for solution
-			for (int i = 1; i < CMatrixX.length-1; i++){
-				if ( i == 0){
-					CMatrixX[i][i] = (double) 1;
-					
-					CMatrixY[i][i] = (double) 1;
-				}
-				else if (i == CMatrixX.length-1){
-					CMatrixX[i][i] = (double) 1;
-					
-					CMatrixY[i][i] = (double) 1;
-				}
-				else{
-					CMatrixX[i][i-1] = (double) 1;
-					CMatrixX[i][i] = (double) 4;
-					CMatrixX[i][i+1] = (double) 1;
-					
-					CMatrixY[i][i-1] = (double) 1;
-					CMatrixY[i][i] = (double) 4;
-					CMatrixY[i][i+1] = (double) 1;
-				}
-				CMatrixX[0][0] = (double) 1;
-				CMatrixX[1][0] = (double) 0;
-				CMatrixX[CMatrixX.length-1][CMatrixX[0].length-1] = (double) 1;
-				CMatrixX[CMatrixX.length-2][CMatrixX[0].length-1] = (double) 0;
+		//Create Vector Solution for C Matrix
+		for (int i = 1; i < XvectorK.length-1; i++){
+			XvectorK[i] = 3 * (super.points.get(i-1).getX() - (2*super.points.get(i).getX()) + super.points.get(i+1).getX());
+			YvectorK[i] = 3 * (super.points.get(i-1).getY() - (2*super.points.get(i).getY()) + super.points.get(i+1).getY());
+		}
+		
+		//Create C coefficient matrix 
+		for (int i = 1; i < CMatrixX.length-1; i++){
+			if ( i == 0){
+				CMatrixX[i][i] = (double) 1;
 				
-				CMatrixY[0][0] = (double) 1;
-				CMatrixY[1][0] = (double) 0;
-				CMatrixY[CMatrixX.length-1][CMatrixY[0].length-1] = (double) 1;
-				CMatrixY[CMatrixX.length-2][CMatrixY[0].length-1] = (double) 0;
+				CMatrixY[i][i] = (double) 1;
 			}
-			
-			//Gaussian elimination to find c coefficients. Only if necessary
-			if (XvectorK.length > 2){
-				XvectorC = gaussianElimination(CMatrixX, XvectorK);
-				YvectorC = gaussianElimination(CMatrixY, YvectorK);
-			}
-			else {
-				XvectorC = XvectorK;
-				YvectorC = YvectorK;
-			}
-			
-			Xcoefficients = new double[super.points.size()][4];
-			Ycoefficients = new double[super.points.size()][4];
-			
-			//copies c coefficients and a coefficients into matrix
-			for (int i = 0; i < Xcoefficients.length; i++){
-				Xcoefficients[i][2] = XvectorC[i];
-				Xcoefficients[i][0] = super.points.get(i).getX();
+			else if (i == CMatrixX.length-1){
+				CMatrixX[i][i] = (double) 1;
 				
-				Ycoefficients[i][2] = YvectorC[i];
-				Ycoefficients[i][0] = super.points.get(i).getY();
+				CMatrixY[i][i] = (double) 1;
 			}
-			
-			//calculates b coefficients
-			for (int i = 0; i < Xcoefficients.length-1; i++){
-				Xcoefficients[i][1] = (Xcoefficients[i+1][0] - Xcoefficients[i][0]) - (((2*Xcoefficients[i][2]) + Xcoefficients[i+1][2])/3);
+			else{
+				CMatrixX[i][i-1] = (double) 1;
+				CMatrixX[i][i] = (double) 4;
+				CMatrixX[i][i+1] = (double) 1;
 				
-				Ycoefficients[i][1] = (Ycoefficients[i+1][0] - Ycoefficients[i][0]) - (((2*Ycoefficients[i][2]) + Ycoefficients[i+1][2])/3);
+				CMatrixY[i][i-1] = (double) 1;
+				CMatrixY[i][i] = (double) 4;
+				CMatrixY[i][i+1] = (double) 1;
 			}
+//			CMatrixX[0][0] = (double) 1;
+//			CMatrixX[1][0] = (double) 0;
+//			CMatrixX[CMatrixX.length-1][CMatrixX[0].length-1] = (double) 1;
+//			CMatrixX[CMatrixX.length-2][CMatrixX[0].length-1] = (double) 0;
+//			
+//			CMatrixY[0][0] = (double) 1;
+//			CMatrixY[1][0] = (double) 0;
+//			CMatrixY[CMatrixX.length-1][CMatrixY[0].length-1] = (double) 1;
+//			CMatrixY[CMatrixX.length-2][CMatrixY[0].length-1] = (double) 0;
+		}
+		
+		System.out.println(printMatrix(CMatrixX, "x"));
+		
+		//Gaussian elimination to find c coefficients
+		if (XvectorK.length > 2){
+			XvectorC = gaussianElimination(CMatrixX, XvectorK);
+			YvectorC = gaussianElimination(CMatrixY, YvectorK);
+		}
+		else {
+			XvectorC = XvectorK;
+			YvectorC = YvectorK;
+		}
+		
+		Xcoefficients = new double[super.points.size()][4];
+		Ycoefficients = new double[super.points.size()][4];
+		
+		//copies c coefficients and a coefficients into matrix
+		for (int i = 0; i < Xcoefficients.length; i++){
+			Xcoefficients[i][2] = XvectorC[i];
+			Xcoefficients[i][0] = super.points.get(i).getX();
 			
-			//calculates d coefficients
-			for (int i = 0; i < Xcoefficients.length-1; i++){
-				Xcoefficients[i][3] = ((Xcoefficients[i+1][2] - Xcoefficients[i][2])/3);
-				
-				Ycoefficients[i][3] = ((Ycoefficients[i+1][2] - Ycoefficients[i][2])/3);
-			}
+			Ycoefficients[i][2] = YvectorC[i];
+			Ycoefficients[i][0] = super.points.get(i).getY();
+		}
+		
+		//calculates b coefficients
+		for (int i = 0; i < Xcoefficients.length-1; i++){
+			Xcoefficients[i][1] = (Xcoefficients[i+1][0] - Xcoefficients[i][0]) - (((2*Xcoefficients[i][2]) + Xcoefficients[i+1][2])/3);
+			
+			Ycoefficients[i][1] = (Ycoefficients[i+1][0] - Ycoefficients[i][0]) - (((2*Ycoefficients[i][2]) + Ycoefficients[i+1][2])/3);
+		}
+		
+		//calculates d coefficients
+		for (int i = 0; i < Xcoefficients.length-1; i++){
+			Xcoefficients[i][3] = ((Xcoefficients[i+1][2] - Xcoefficients[i][2])/3);
+			
+			Ycoefficients[i][3] = ((Ycoefficients[i+1][2] - Ycoefficients[i][2])/3);
 		}
 		
 		
