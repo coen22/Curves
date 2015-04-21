@@ -5,14 +5,18 @@ import java.util.List;
 
 public class PolyLine extends Curve {
 		
-	public PolyLine(Point2D point, String name){
+	protected PolyLine(Point2D point, String name){
 		super(name);
 		super.add(point.getX(), point.getY());
 	}
 	
-    public List<Point2D> getPlot(int interval) {
+    protected List<Point2D> getPlot(int interval) {
     	return (List<Point2D>)super.getPlot(interval);
     }
+    
+    protected void add(double x, double y){
+		super.points.add(new Point2D.Double(x,y));
+	}
 	
 //	public double length() {
 //		double length = 0;

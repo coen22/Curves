@@ -11,7 +11,7 @@ public abstract class Curve {
 	protected boolean closed;
 	protected String name;
 	
-	public Curve(String name){
+	protected Curve(String name){
 		this.name = name;
 		closed = false;
 		points = new ArrayList<Point2D>();
@@ -22,48 +22,48 @@ public abstract class Curve {
 	 * @param subPoints this number signifies the number of plotting points in-between each pair of control-points. The larger the number, the more fine-grained the curve plot will be.
 	 * @return
 	 */
-	public List<Point2D> getPlot(int subPoints) {
+	protected List<Point2D> getPlot(int subPoints) {
         //add spefic methods for your type of lines here
     	return points;
     }
 	
-	public double length(int METHOD) {
+	protected double length(int METHOD) {
 		return 0;
 	}
 
-	public double area(int METHOD) {
+	protected double area(int METHOD) {
 		return 0;
 	}
 	
-	public boolean isClosed() {
+	protected boolean isClosed() {
 		return closed;
 	}
 	
-	public void setClosed(boolean closed) {
+	protected void setClosed(boolean closed) {
 		this.closed = closed;
 	}
 	
-	public void setName(String name){
+	protected void setName(String name){
 		this.name = name;
 	}
 	
-	public String getName(){
+	protected String getName(){
 		return name;
 	}
 	
-	public void translate(int index, double deltaX, double deltaY){
+	protected void translate(int pointIndex, double deltaX, double deltaY){
 		
 	}
 
-	public void add(double x, double y){
+	protected void add(double x, double y){
 		
 	}
 	
-	public void add(double x, double y, int index){
+	protected void add(double x, double y, int index){
 		
 	}
 	
-	public int numberOfPoints(){
+	protected int numberOfPoints(){
 		return points.size();
 	}
         
@@ -73,6 +73,14 @@ public abstract class Curve {
     
     private double pythagoreanLength(){
     	return 0;
+    }
+    
+    protected List<Point2D> getControlPoints(){
+    	return (List) points;
+    }
+    
+    protected void setPointLocation(double x, double y, int pointIndex) {
+
     }
 	
 }

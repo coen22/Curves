@@ -78,8 +78,16 @@ public class Controller {
 
     }
 
-    public void translate(double deltaX, double deltaY, int CURVE_ID, int POINT_ID) {
-
+    public void translate(double deltaX, double deltaY, int curveIndex, int pointIndex) {
+    	curves.get(curveIndex).translate(pointIndex, deltaX, deltaY);
+    }
+    
+    public void setPointLocation(double x, double y, int curveIndex, int pointIndex) {
+    	curves.get(curveIndex).setPointLocation(x, y, pointIndex);
+    }
+    
+    public List<Point2D> getControlsPoints(int curveIndex){
+    	return curves.get(curveIndex).getControlPoints();
     }
 
 }
