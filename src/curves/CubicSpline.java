@@ -24,14 +24,19 @@ public class CubicSpline extends Curve {
 		calcCoefficients();
 	}
 	
-	public double length() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public double area() {
-		// TODO Auto-generated method stub
-		return 0;
+	public void setClosed(boolean closed) {
+		if (closed == true && super.isClosed() == false){
+			type = CLOSED_SPLINE;
+			super.points.add(super.points.get(0));
+			calcCoefficients();
+			super.setClosed(closed);
+		}
+		else if (closed == false && super.isClosed() == true){
+			type = NATURAL_SPLINE;
+			super.points.remove(super.points.size()-1);
+			calcCoefficients();
+			super.setClosed(closed);
+		}
 	}
 
 	/**
@@ -52,7 +57,6 @@ public class CubicSpline extends Curve {
 		}
 		
 		plottingPoints.add(super.points.get(super.points.size()-1));
-		
 		
 		return (List<Point2D>)plottingPoints;
 	}
@@ -99,18 +103,42 @@ public class CubicSpline extends Curve {
 				CMatrixY[i][i] = (double) 4;
 				CMatrixY[i][i+1] = (double) 1;
 			}
-//			CMatrixX[0][0] = (double) 1;
-//			CMatrixX[1][0] = (double) 0;
-//			CMatrixX[CMatrixX.length-1][CMatrixX[0].length-1] = (double) 1;
-//			CMatrixX[CMatrixX.length-2][CMatrixX[0].length-1] = (double) 0;
-//			
-//			CMatrixY[0][0] = (double) 1;
-//			CMatrixY[1][0] = (double) 0;
-//			CMatrixY[CMatrixX.length-1][CMatrixY[0].length-1] = (double) 1;
-//			CMatrixY[CMatrixX.length-2][CMatrixY[0].length-1] = (double) 0;
 		}
 		
-		System.out.println(printMatrix(CMatrixX, "x"));
+		//adjust C coefficient matrix for each type of spline, currently only natural
+		CMatrixX[0][0] = (double) 1;
+		CMatrixY[0][0] = (double) 1;
+		CMatrixX[CMatrixX.length -1][CMatrixX.length -1] = (double) 1;
+		CMatrixY[CMatrixX.length -1][CMatrixX.length -1] = (double) 1;
+		
+		
+		//changing Matrix and Vector for closed splines
+		if (super.points.size() > 2 && type == CLOSED_SPLINE){
+			CMatrixX[0][0] = 4;
+			CMatrixX[0][1] = 1;
+			CMatrixX[0][CMatrixX[0].length-1] = 1;
+			
+			CMatrixX[CMatrixX.length-1][CMatrixX[0].length-1] = 4;
+			CMatrixX[CMatrixX.length-1][CMatrixX[0].length-2] = 1;
+			CMatrixX[CMatrixX.length-1][0] = 1;
+			
+			CMatrixY[0][0] = 4;
+			CMatrixY[0][1] = 1;
+			CMatrixY[0][CMatrixY[0].length-1] = 1;
+			
+			CMatrixY[CMatrixY.length-1][CMatrixY[0].length-1] = 4;
+			CMatrixY[CMatrixY.length-1][CMatrixY[0].length-2] = 1;
+			CMatrixY[CMatrixY.length-1][0] = 1;
+			
+			XvectorK[0] = 3 * (super.points.get(XvectorK.length-1).getX() - (2*super.points.get(0).getX()) + super.points.get(1).getX());
+			YvectorK[0] = 3 * (super.points.get(YvectorK.length-1).getY() - (2*super.points.get(0).getY()) + super.points.get(1).getY());
+			
+			XvectorK[XvectorK.length-1] = 3 * (super.points.get(XvectorK.length-2).getX() - (2*super.points.get(XvectorK.length-1).getX()) + super.points.get(0).getX());
+			YvectorK[YvectorK.length-1] = 3 * (super.points.get(YvectorK.length-2).getY() - (2*super.points.get(YvectorK.length-1).getY()) + super.points.get(0).getY());
+		}
+		
+		
+//		System.out.println(printMatrix(CMatrixX, "x"));
 		
 		//Gaussian elimination to find c coefficients
 		if (XvectorK.length > 2){
@@ -121,6 +149,8 @@ public class CubicSpline extends Curve {
 			XvectorC = XvectorK;
 			YvectorC = YvectorK;
 		}
+		
+//		System.out.println(printVector(XvectorC, "c result"));
 		
 		Xcoefficients = new double[super.points.size()][4];
 		Ycoefficients = new double[super.points.size()][4];
@@ -148,6 +178,7 @@ public class CubicSpline extends Curve {
 			Ycoefficients[i][3] = ((Ycoefficients[i+1][2] - Ycoefficients[i][2])/3);
 		}
 		
+		System.out.println(printMatrix(Xcoefficients, "finalX"));
 		
 	}
 	
