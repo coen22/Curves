@@ -27,13 +27,13 @@ public class CubicSpline extends Curve {
 	public void setClosed(boolean closed) {
 		if (closed == true && super.isClosed() == false){
 			type = CLOSED_SPLINE;
-			super.points.add(super.points.get(0));
+//			super.points.add(super.points.get(0));
 			calcCoefficients();
 			super.setClosed(closed);
 		}
 		else if (closed == false && super.isClosed() == true){
 			type = NATURAL_SPLINE;
-			super.points.remove(super.points.size()-1);
+//			super.points.remove(super.points.size()-1);
 			calcCoefficients();
 			super.setClosed(closed);
 		}
@@ -49,14 +49,21 @@ public class CubicSpline extends Curve {
 		
 		double tInterval = (1 / (double)subPoints);
 		
-		for (int i = 0; i < Xcoefficients.length-1; i++){
+		int cutoff = Xcoefficients.length-1;
+		if (type == CLOSED_SPLINE){
+			cutoff+= 1;
+		}
+		
+		for (int i = 0; i < cutoff; i++){
 			for (double k = 0.0; k < 1; k+=tInterval){
 				plottingPoints.add(new Point2D.Double((Xcoefficients[i][0] + k*(Xcoefficients[i][1] + k*(Xcoefficients[i][2] + Xcoefficients[i][3] * k))),
 						(Ycoefficients[i][0] + k*(Ycoefficients[i][1] + k*(Ycoefficients[i][2] + Ycoefficients[i][3] * k)))));
 			}
 		}
 		
-		plottingPoints.add(super.points.get(super.points.size()-1));
+		if (type != CLOSED_SPLINE){
+			plottingPoints.add(super.points.get(super.points.size()-1));
+		}
 		
 		return (List<Point2D>)plottingPoints;
 	}
@@ -138,7 +145,8 @@ public class CubicSpline extends Curve {
 		}
 		
 		
-//		System.out.println(printMatrix(CMatrixX, "x"));
+		System.out.println(printMatrix(CMatrixX, "x CMatrix"));
+		System.out.println(printVector(XvectorK, "k vector"));
 		
 		//Gaussian elimination to find c coefficients
 		if (XvectorK.length > 2){
@@ -176,6 +184,16 @@ public class CubicSpline extends Curve {
 			Xcoefficients[i][3] = ((Xcoefficients[i+1][2] - Xcoefficients[i][2])/3);
 			
 			Ycoefficients[i][3] = ((Ycoefficients[i+1][2] - Ycoefficients[i][2])/3);
+		}
+		
+		if (super.points.size() > 2 && type == CLOSED_SPLINE){
+			//b coefficients:
+			Xcoefficients[Xcoefficients.length-1][1] = (Xcoefficients[0][0] - Xcoefficients[Xcoefficients.length-1][0]) - (((2*Xcoefficients[Xcoefficients.length-1][2]) + Xcoefficients[0][2])/3);
+			Ycoefficients[Ycoefficients.length-1][1] = (Ycoefficients[0][0] - Ycoefficients[Ycoefficients.length-1][0]) - (((2*Ycoefficients[Ycoefficients.length-1][2]) + Ycoefficients[0][2])/3);
+			
+			//d coefficients
+			Xcoefficients[Xcoefficients.length-1][3] = ((Xcoefficients[0][2] - Xcoefficients[Xcoefficients.length-1][2])/3);
+			Ycoefficients[Ycoefficients.length-1][3] = ((Ycoefficients[0][2] - Ycoefficients[Ycoefficients.length-1][2])/3);
 		}
 		
 		System.out.println(printMatrix(Xcoefficients, "finalX"));
