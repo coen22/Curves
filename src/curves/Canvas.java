@@ -119,7 +119,7 @@ public class Canvas extends JPanel implements ActionListener {
 
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                if (Math.signum(e.getPreciseWheelRotation()) == -1) {
+                if (Math.signum(e.getPreciseWheelRotation()) == 1) {
                     setZoom(Math.abs(getZoom() / (e.getPreciseWheelRotation() * 1.05)));
                 } else {
                     setZoom(Math.abs(e.getPreciseWheelRotation() * 1.05 * getZoom()));
@@ -172,6 +172,7 @@ public class Canvas extends JPanel implements ActionListener {
     private void drawGrid(Graphics2D g) {
         for (int i = -500; i < 500; i++) {
             g.setColor(Color.lightGray);
+//            g.setStroke(new BasicStroke(50f));
             g.setFont(new Font("TimesRoman", Font.PLAIN, 10));
             g.draw(new Line2D.Double(x(-Double.MAX_VALUE), y(gridSpacing * i), x(Double.MAX_VALUE), y(gridSpacing * i)));
             g.draw(new Line2D.Double(x(gridSpacing * i), y(-Double.MAX_VALUE), x(gridSpacing * i), y(Double.MAX_VALUE)));
