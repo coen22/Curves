@@ -1,5 +1,11 @@
 package ui;
 
+import ui.Events.Gui_Events_Add;
+import ui.Events.GUI_Event_Listner;
+import ui.Events.Gui_Events_Close;
+import ui.Events.Gui_Events;
+import ui.Events.Gui_Events_Current;
+import ui.Events.Gui_Events_Create;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -40,7 +46,7 @@ public class Canvas extends JPanel implements ActionListener {
     private double gridSpacing = 50;
     private ArrayList<List<Point2D>> curves = new ArrayList<>();
     private final ArrayList<Color> COLORS = new ArrayList<>();
-    private boolean allPoints = false;
+    private boolean Visiblity = true;
     private int curveID = -1;
     private boolean first = false;
     private JPopupMenu popup;
@@ -66,7 +72,7 @@ public class Canvas extends JPanel implements ActionListener {
             public void mousePressed(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown()) {
                     if (curveID != -1) {
-                        fireEvent(1, new Object[]{xm(e.getX()) + "", ym(e.getY()) + ""});
+                        fireEvent(new Gui_Events_Add(this, new double[]{xm(e.getX()), ym(e.getY())}, curveID));
                     }
                 } else if (SwingUtilities.isRightMouseButton(e)) {
                     popup.show(e.getComponent(), e.getX(), e.getY());
@@ -131,6 +137,131 @@ public class Canvas extends JPanel implements ActionListener {
         this.setSize(400, 500);
     }
 
+    @Override
+    public void paint(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        super.paint(g);
+        drawGrid(g2);
+        drawLines(g2);
+    }
+
+    public void setVisiblity(boolean visiblity) {
+        this.Visiblity = visiblity;
+        repaint();
+    }
+
+    private void drawGrid(Graphics2D g) {
+        for (int i = -1000; i < 1000; i++) {
+            g.setColor(Color.lightGray);
+            g.setStroke(new BasicStroke(0.5f));
+            g.setFont(new Font("TimesRoman", Font.PLAIN, 10));
+            g.draw(new Line2D.Double(x(-Double.MAX_VALUE), y(gridSpacing * i), x(Double.MAX_VALUE), y(gridSpacing * i)));
+            g.draw(new Line2D.Double(x(gridSpacing * i), y(-Double.MAX_VALUE), x(gridSpacing * i), y(Double.MAX_VALUE)));
+            g.drawString(Double.toString(i * gridSpacing), (int) x(i * gridSpacing + 5), (int) y(0));
+            g.drawString(Double.toString(i * gridSpacing), (int) x(5), (int) y(i * gridSpacing));
+        }
+    }
+
+    private void drawLines(Graphics2D g) {
+        int counter = 0;
+        for (List<Point2D> curve : curves) {
+            if (Visiblity || counter == curveID) {
+                boolean fir = true;
+                Path2D.Double tmp = new Path2D.Double(Path2D.WIND_NON_ZERO, 1);
+                g.setStroke(new BasicStroke(3f));
+                colorPicker();
+                g.setColor(COLORS.get(counter));
+                for (Point2D poin : curve) {
+                    if (fir) {
+                        fir = false;
+                        tmp.moveTo(x(poin.getX()), y(poin.getY()));
+                    } else {
+                        tmp.lineTo(x(poin.getX()), y(poin.getY()));
+                    }
+                }
+                g.draw(tmp);
+            }
+            counter++;
+        }
+    }
+
+    public void colorPicker() {
+        Random r = new Random();
+        while (COLORS.size() != curves.size()) {
+            COLORS.add(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
+        }
+    }
+
+    public void setCurrentLine(int currentLine) {
+        this.curveID = currentLine;
+    }
+
+    /**
+     * Set the value of curves
+     *
+     * @param curves new value of curves
+     */
+    public void setCurves(ArrayList<List<Point2D>> curves) {
+        this.curves = curves;
+        repaint();
+    }
+
+    /**
+     * Get the value of zoom
+     *
+     * @return the value of zoom
+     */
+    public double getZoom() {
+        return zoom;
+    }
+
+    /**
+     * Set the value of zoom
+     *
+     * @param zoom new value of zoom
+     */
+    public void setZoom(double zoom) {
+        repaint();
+        this.zoom = zoom;
+    }
+
+    private void fireEvent(Gui_Events event) {
+        Iterator<GUI_Event_Listner> i = listeners.iterator();
+        while (i.hasNext()) {
+            i.next().actionPerformed(event);
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("New Line")) {
+            String optionSelected = (String) JOptionPane.showInputDialog(this, "Please Select a Line Type", "Line Type", JOptionPane.QUESTION_MESSAGE, null, new String[]{"PolyLine", "Cubic Line", "B-Spline"}, null);
+            if (optionSelected != null) {
+                String name = (String) JOptionPane.showInputDialog(this, "Please Give the Line a name", "Line Name", JOptionPane.QUESTION_MESSAGE);
+                if (name != null) {
+                    curveID++;
+                    fireEvent(new Gui_Events_Current(this, curveID));
+                    switch (optionSelected) {
+                        case "PolyLine":
+                            fireEvent(new Gui_Events_Create(this, new double[]{point.x, point.y, 1}, name));
+                            break;
+                        case "Cubic Line":
+                            fireEvent(new Gui_Events_Create(this, new double[]{point.x, point.y, 2}, name));
+                            break;
+                        case "B-Spline":
+                            fireEvent(new Gui_Events_Create(this, new double[]{point.x, point.y, 13}, name));
+                            break;
+                        default:
+                            System.out.println("Option Panel is incorrect");
+                    }
+                }
+            }
+        } else if (e.getActionCommand().equals("Close Curve")) {
+            fireEvent(new Gui_Events_Close(this, curveID));
+        }
+        repaint();
+    }
+
     public synchronized void addEventListener(GUI_Event_Listner list) {
         listeners.add(list);
     }
@@ -159,189 +290,5 @@ public class Canvas extends JPanel implements ActionListener {
 
     private double y(int y) {
         return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        super.paint(g);
-        drawGrid(g2);
-        drawLines(g2);
-    }
-
-    private void drawGrid(Graphics2D g) {
-        for (int i = -500; i < 500; i++) {
-            g.setColor(Color.lightGray);
-//            g.setStroke(new BasicStroke(50f));
-            g.setFont(new Font("TimesRoman", Font.PLAIN, 10));
-            g.draw(new Line2D.Double(x(-Double.MAX_VALUE), y(gridSpacing * i), x(Double.MAX_VALUE), y(gridSpacing * i)));
-            g.draw(new Line2D.Double(x(gridSpacing * i), y(-Double.MAX_VALUE), x(gridSpacing * i), y(Double.MAX_VALUE)));
-            g.drawString(Double.toString(i * gridSpacing), (int) x(i * gridSpacing + 5), (int) y(0));
-            g.drawString(Double.toString(i * gridSpacing), (int) x(5), (int) y(i * gridSpacing));
-        }
-    }
-
-    private void drawLines(Graphics2D g) {
-        int counter = 0;
-        for (List<Point2D> curve : curves) {
-            boolean fir = true;
-            Path2D.Double tmp = new Path2D.Double(Path2D.WIND_NON_ZERO, 1);
-            g.setStroke(new BasicStroke(3f));
-            colorPicker();
-            g.setColor(COLORS.get(counter));
-            counter++;
-            for (Point2D poin : curve) {
-                if (fir) {
-                    fir = false;
-                    tmp.moveTo(x(poin.getX()), y(poin.getY()));
-                } else {
-                    tmp.lineTo(x(poin.getX()), y(poin.getY()));
-                }
-            }
-
-            g.draw(tmp);
-        }
-    }
-
-    public void colorPicker() {
-        Random r = new Random();
-        while (COLORS.size() != curves.size()) {
-            COLORS.add(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
-        }
-    }
-
-    public double getGridSpacing() {
-        return gridSpacing;
-    }
-
-    public void setGridSpacing(double gridSpacing) {
-        this.gridSpacing = gridSpacing;
-    }
-
-    public boolean isAllPoints() {
-        return allPoints;
-    }
-
-    public void setAllPoints(boolean allPoints) {
-        this.allPoints = allPoints;
-    }
-
-    public int getCurrentLine() {
-        return curveID;
-    }
-
-    public void setCurrentLine(int currentLine) {
-        this.curveID = currentLine;
-    }
-
-    /**
-     * Get the value of curves
-     *
-     * @return the value of curves
-     */
-    public ArrayList<List<Point2D>> getCurves() {
-        return curves;
-    }
-
-    /**
-     * Set the value of curves
-     *
-     * @param curves new value of curves
-     */
-    public void setCurves(ArrayList<List<Point2D>> curves) {
-        this.curves = curves;
-        repaint();
-    }
-
-    /**
-     * Get the value of offSetX
-     *
-     * @return the value of offSetX
-     */
-    public double getOffSetX() {
-        return offSetX;
-    }
-
-    /**
-     * Set the value of offSetX
-     *
-     * @param offSetX new value of offSetX
-     */
-    public void setOffSetX(double offSetX) {
-        this.offSetX = offSetX;
-    }
-
-    /**
-     * Get the value of offSetY
-     *
-     * @return the value of offSetY
-     */
-    public double getOffSetY() {
-        return offSetY;
-    }
-
-    /**
-     * Set the value of offSetY
-     *
-     * @param offSetY new value of offSetY
-     */
-    public void setOffSetY(double offSetY) {
-        this.offSetY = offSetY;
-    }
-
-    /**
-     * Get the value of zoom
-     *
-     * @return the value of zoom
-     */
-    public double getZoom() {
-        return zoom;
-    }
-
-    /**
-     * Set the value of zoom
-     *
-     * @param zoom new value of zoom
-     */
-    public void setZoom(double zoom) {
-        repaint();
-        this.zoom = zoom;
-    }
-
-    private void fireEvent(int command, Object[] info) {
-        GUI_Events event = new GUI_Events(this, curveID, command, info);
-        Iterator<GUI_Event_Listner> i = listeners.iterator();
-        while (i.hasNext()) {
-            i.next().handleGUI_Events(event);
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("New Line")) {
-            String x = (String) JOptionPane.showInputDialog(this, "Please Select a Line Type", "Line Type", JOptionPane.QUESTION_MESSAGE, null, new String[]{"PolyLine", "Cubic Line", "B-Spline"}, null);
-            if (x != null) {
-                String name = (String) JOptionPane.showInputDialog(this, "Please Give the Line a name", "Line Name", JOptionPane.QUESTION_MESSAGE);
-                if (name != null) {
-                    curveID++;
-                    switch (x) {
-                        case "PolyLine":
-                            fireEvent(0, new Object[]{point.x, point.y, 1, name});
-                            break;
-                        case "Cubic Line":
-                            fireEvent(0, new Object[]{point.x, point.y, 2, name});
-                            break;
-                        case "B-Spline":
-                            fireEvent(0, new Object[]{point.x, point.y, 3, name});
-                            break;
-                        default:
-                            System.out.println("Option Panel is incorrect");
-                    }
-                }
-            }
-        } else if (e.getActionCommand().equals("Close Curve")) {
-            fireEvent(4, null);
-        }
-        repaint();
     }
 }

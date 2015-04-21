@@ -1,5 +1,8 @@
 package ui;
 
+import ui.Events.GUI_Event_Listner;
+import ui.Events.Gui_Events;
+import ui.Events.Gui_Events_Vis;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
@@ -16,29 +19,42 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * The sidebar which shows the data input grid and other controls
  *
  * @author Kareem Horstink
  */
 public class SideBar extends JTabbedPane implements TableModelListener {
 
     private JTable table;
-    private final List<GUI_Event_Listner> LISTENER = new ArrayList<GUI_Event_Listner>();
     private DefaultTableModel mod;
     private int curveID;
     private JCheckBox tobi;
-    boolean vis;
+    private boolean visiblity;
     private ArrayList<List<Point2D>> curves;
 
-    public void setCurves(ArrayList<List<Point2D>> curve) {
-        this.curves = curve;
-        while (curve.get(curveID).size() >= mod.getRowCount()) {
-            mod.addRow(new Object[]{null,null,null});
-        }
-        update();
+    public SideBar() {
+        curves = new ArrayList<>();
+        init();
     }
 
-    public void update() {
-        for (List<Point2D> curve : curves) {
+    public void setCurves(ArrayList<List<Point2D>> curve) {
+        curveID = curve.size() - 1;
+        System.out.println(curve.size());
+        this.curves = curve;
+        while (this.curves.get(curveID).size() >= mod.getRowCount()) {
+            mod.addRow(new Object[]{null, null, null});
+        }
+        updateTableFull();
+    }
+
+    public void setCurveID(int curveID) {
+        this.curveID = curveID;
+        updateTableFull();
+    }
+
+    public void updateTable() {
+        if (curveID < curves.size()) {
+            List<Point2D> curve = curves.get(curveID);
             int counter = 0;
             for (Point2D point : curve) {
                 mod.setValueAt(point.getX(), counter, 1);
@@ -46,17 +62,28 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 mod.setValueAt(counter, counter, 0);
                 counter++;
             }
-
         }
     }
 
-    public SideBar() {
-        curves = new ArrayList<>();
-        init();
-    }
-
-    public synchronized void addEventListener(GUI_Event_Listner list) {
-        LISTENER.add(list);
+    public void updateTableFull() {
+        if (curveID < curves.size()) {
+            List<Point2D> curve = curves.get(curveID);
+            int counter = 0;
+            int rows = mod.getRowCount();
+            for (int i = 0; i < rows; i++) {
+                if (i < curve.size()) {
+                    Point2D point = curve.get(i);
+                    mod.setValueAt(point.getX(), counter, 1);
+                    mod.setValueAt(point.getY(), counter, 2);
+                    mod.setValueAt(counter, counter, 0);
+                } else {
+                    mod.setValueAt(null, counter, 1);
+                    mod.setValueAt(null, counter, 2);
+                    mod.setValueAt(null, counter, 0);
+                }
+                counter++;
+            }
+        }
     }
 
     private void init() {
@@ -65,9 +92,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Tobi should do something");
-                fireEvent(6, new Object[]{vis});
-                vis = !vis;
+                fireEvent(new Gui_Events_Vis(this, visiblity));
+                visiblity = !visiblity;
             }
         });
         JPanel controls = new JPanel();
@@ -90,29 +116,26 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         mod.addTableModelListener(this);
     }
 
-    public void setData(int row, int x, int y) {
-        mod.setValueAt(x, row, 1);
-        mod.setValueAt(y, row, 2);
-        if (mod.getValueAt(row, 0) == null) {
-            mod.setValueAt(row, row, 0);
-        }
-    }
-
     @Override
     public void tableChanged(TableModelEvent e) {
         int row = e.getFirstRow();
         double rowC = row;
         Object fir = mod.getValueAt(row, 1);
         Object sec = mod.getValueAt(row, 2);
-        
 
     }
 
-    private void fireEvent(int command, Object[] info) {
-        GUI_Events event = new GUI_Events(this, curveID, command, info);
+    private void fireEvent(Gui_Events event) {
         Iterator<GUI_Event_Listner> i = LISTENER.iterator();
         while (i.hasNext()) {
-            i.next().handleGUI_Events(event);
+            i.next().actionPerformed(event);
         }
     }
+
+    public synchronized void addEventListener(GUI_Event_Listner list) {
+        LISTENER.add(list);
+    }
+
+    private final List<GUI_Event_Listner> LISTENER = new ArrayList<GUI_Event_Listner>();
+
 }
