@@ -7,7 +7,7 @@ public class PolyLine extends Curve {
 		
 	protected PolyLine(Point2D point, String name){
 		super(name);
-		super.add(point.getX(), point.getY());
+		super.points.add(point);
 	}
 	
     protected List<Point2D> getPlot(int interval) {
