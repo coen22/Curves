@@ -30,6 +30,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import ui.Events.Gui_Events_Open;
+import ui.Events.Gui_Events_Refresh;
 
 /**
  * The canvas in which to draw various elements of the UI, mostly focusing on
@@ -49,18 +51,32 @@ public class Canvas extends JPanel implements ActionListener {
     private boolean Visiblity = true;
     private int curveID = -1;
     private boolean first = false;
-    private JPopupMenu popup;
+    private JPopupMenu popup1;
+    private JPopupMenu popup2;
     private Point2D.Double point = new Point2D.Double();
 
     public Canvas(double zoom, double gridSpace) {
         setBackground(Color.gray);
-        popup = new JPopupMenu();
+        init();
+        this.zoom = zoom;
+        this.gridSpacing = gridSpace;
+        this.setSize(400, 500);
+    }
+
+    private void init() {
+        popup1 = new JPopupMenu();
+
         JMenuItem menuItem = new JMenuItem("New Line");
         menuItem.addActionListener(this);
-        popup.add(menuItem);
+        popup1.add(menuItem);
         menuItem = new JMenuItem("Close Curve");
         menuItem.addActionListener(this);
-        popup.add(menuItem);
+        popup1.add(menuItem);
+        menuItem = new JMenuItem("Open Curve");
+        menuItem.addActionListener(this);
+        popup1.add(menuItem);
+        popup2 = new JPopupMenu();
+
         addMouseListener(new MouseListener() {
 
             @Override
@@ -75,9 +91,11 @@ public class Canvas extends JPanel implements ActionListener {
                         fireEvent(new Gui_Events_Add(this, new double[]{xm(e.getX()), ym(e.getY())}, curveID));
                     }
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    popup.show(e.getComponent(), e.getX(), e.getY());
                     point.setLocation(xm(e.getX()), ym(e.getY()));
+                    popup1.show(e.getComponent(), e.getX(), e.getY());
                     repaint();
+                } else if (SwingUtilities.isLeftMouseButton(e) && e.isAltDown()) {
+                    fireEvent(new Gui_Events_Refresh(this));
                 }
             }
 
@@ -132,9 +150,7 @@ public class Canvas extends JPanel implements ActionListener {
                 }
             }
         });
-        this.zoom = zoom;
-        this.gridSpacing = gridSpace;
-        this.setSize(400, 500);
+
     }
 
     @Override
@@ -153,7 +169,7 @@ public class Canvas extends JPanel implements ActionListener {
     private void drawGrid(Graphics2D g) {
         for (int i = -1000; i < 1000; i++) {
             g.setColor(Color.lightGray);
-            g.setStroke(new BasicStroke(0.5f));
+            g.setStroke(new BasicStroke(0));
             g.setFont(new Font("TimesRoman", Font.PLAIN, 10));
             g.draw(new Line2D.Double(x(-Double.MAX_VALUE), y(gridSpacing * i), x(Double.MAX_VALUE), y(gridSpacing * i)));
             g.draw(new Line2D.Double(x(gridSpacing * i), y(-Double.MAX_VALUE), x(gridSpacing * i), y(Double.MAX_VALUE)));
@@ -258,6 +274,8 @@ public class Canvas extends JPanel implements ActionListener {
             }
         } else if (e.getActionCommand().equals("Close Curve")) {
             fireEvent(new Gui_Events_Close(this, curveID));
+        }else if(e.getActionCommand().equals("Open Curve")){
+            fireEvent(new Gui_Events_Open(this, curveID));
         }
         repaint();
     }

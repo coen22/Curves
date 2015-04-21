@@ -6,7 +6,7 @@ package ui.Events;
  * @author Kareem Horstink
  */
 public interface GUI_Event_Listner {
-    
+
     public void actionPerformed(Gui_Events e);
 
     public void handleCreate(Gui_Events_Create e);
@@ -26,5 +26,7 @@ public interface GUI_Event_Listner {
     public void handleVis(Gui_Events_Vis e);
 
     public void handleCurrent(Gui_Events_Current e);
+
+    public void handleRefresh(Gui_Events_Refresh e);
 
 }

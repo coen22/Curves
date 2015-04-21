@@ -79,6 +79,10 @@ public abstract class Curve {
     	return (List) points;
     }
     
+    protected Point2D removePoint(int pointIndex){
+        return null;
+    }
+    
     protected void setPointLocation(double x, double y, int pointIndex) {
 
     }

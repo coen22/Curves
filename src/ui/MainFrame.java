@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import ui.Events.Gui_Events_Refresh;
 
 /**
  * The main frame to put everything on
@@ -46,24 +49,44 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(dim.width / 2 - this.getWidth() / 2, dim.height / 2 - this.getHeight() / 2);
         this.setVisible(true);
-        JOptionPane.showMessageDialog(this, "Shift Click to Add New Points");
+        JOptionPane.showMessageDialog(this, "Shift Click to Add New Points" + "\n" + "Panning with middle mouse button");
     }
 
     public static void main(String[] args) {
-        UIManager.setInstalledLookAndFeels(UIManager.getInstalledLookAndFeels());
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (UnsupportedLookAndFeelException ex) {
+            System.out.println(ex);
+        }
         new MainFrame();
     }
 
     private void update() {
         int amount = CONTROLLER.amountOfCurves();
         ArrayList tmpList = new ArrayList();
+        System.out.println(10 * CANVAS.getZoom());
         for (int i = 0; i < amount; i++) {
-            tmpList.add(CONTROLLER.getCurvePlot(i, 10));
+            tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
         }
         if (amount >= 0) {
             CANVAS.setCurves(tmpList);
             SIDE_BAR.setCurves(tmpList);
             System.out.println("Updating");
+        } else {
+            System.out.println("Insufficient amount of curves");
+        }
+    }
+
+    private void updateG() {
+        int amount = CONTROLLER.amountOfCurves();
+        ArrayList tmpList = new ArrayList();
+        System.out.println(10 * CANVAS.getZoom());
+        for (int i = 0; i < amount; i++) {
+            tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
+        }
+        if (amount >= 0) {
+            CANVAS.setCurves(tmpList);
+            System.out.println("UpdatingG");
         } else {
             System.out.println("Insufficient amount of curves");
         }
@@ -95,17 +118,26 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
 
     @Override
     public void handleMove(Gui_Events_Move e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (DEBUG) {
+            System.out.println("Moving a point");
+        }
+        CONTROLLER.translate(e.getInfo()[0], e.getInfo()[1], e.getCurveID(), e.getPointID());
     }
 
     @Override
     public void handleDeleteP(Gui_Events_DeleteP e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (DEBUG) {
+            System.out.println("Deleting a point");
+        }
+        System.out.println("Not supported yet.");
     }
 
     @Override
     public void handleDeleteC(Gui_Events_DeleteC e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (DEBUG) {
+            System.out.println("Deleting a curve");
+        }
+        System.out.println("Not supported yet.");
     }
 
     @Override
@@ -128,6 +160,9 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
 
     @Override
     public void handleVis(Gui_Events_Vis e) {
+        if (DEBUG) {
+            System.out.println("Change Visiblity");
+        }
         CANVAS.setVisiblity(e.getVisiablity());
     }
 
@@ -141,6 +176,14 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         } else {
             SIDE_BAR.setCurveID(e.getCurveID());
         }
+    }
+
+    @Override
+    public void handleRefresh(Gui_Events_Refresh e) {
+        if (DEBUG) {
+            System.out.println("Refreshing");
+        }
+        updateG();
     }
 
     @Override
@@ -163,6 +206,8 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
             handleOpen((Gui_Events_Open) e);
         } else if (Gui_Events_Vis.class.equals(e.getClass())) {
             handleVis((Gui_Events_Vis) e);
+        } else if (Gui_Events_Refresh.class.equals(e.getClass())) {
+            handleRefresh((Gui_Events_Refresh) e);
         } else {
             System.out.println("Not handled");
         }

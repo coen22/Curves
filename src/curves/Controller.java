@@ -15,8 +15,8 @@ public class Controller {
     public Controller() {
         curves = new ArrayList<Curve>();
     }
-    
-    public int amountOfCurves(){
+
+    public int amountOfCurves() {
         return curves.size();
     }
 
@@ -45,14 +45,19 @@ public class Controller {
         }
     }
 
+    public Point2D removePoint(int CurveID, int PointID) {
+        //TO DO
+        return null;
+    }
+
     public void createCurve(int TYPE, double x, double y, String name, int cubicType) {
         //created the constructor for polyline
         if (TYPE == 1) {
             curves.add(new PolyLine(new Point2D.Double(x, y), name));
         } else if (TYPE == 2) {
             curves.add(new CubicSpline(new Point2D.Double(x, y), name, cubicType));
-        }else if(TYPE == 3){
-            
+        } else if (TYPE == 3) {
+
         }
     }
 
@@ -79,15 +84,15 @@ public class Controller {
     }
 
     public void translate(double deltaX, double deltaY, int curveIndex, int pointIndex) {
-    	curves.get(curveIndex).translate(pointIndex, deltaX, deltaY);
+        curves.get(curveIndex).translate(pointIndex, deltaX, deltaY);
     }
-    
+
     public void setPointLocation(double x, double y, int curveIndex, int pointIndex) {
-    	curves.get(curveIndex).setPointLocation(x, y, pointIndex);
+        curves.get(curveIndex).setPointLocation(x, y, pointIndex);
     }
-    
-    public List<Point2D> getControlsPoints(int curveIndex){
-    	return curves.get(curveIndex).getControlPoints();
+
+    public List<Point2D> getControlsPoints(int curveIndex) {
+        return curves.get(curveIndex).getControlPoints();
     }
 
 }

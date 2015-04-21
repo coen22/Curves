@@ -39,7 +39,6 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
     public void setCurves(ArrayList<List<Point2D>> curve) {
         curveID = curve.size() - 1;
-        System.out.println(curve.size());
         this.curves = curve;
         while (this.curves.get(curveID).size() >= mod.getRowCount()) {
             mod.addRow(new Object[]{null, null, null});
