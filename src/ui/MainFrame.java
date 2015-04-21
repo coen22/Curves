@@ -1,8 +1,6 @@
-/*
- * Main JFrame
- */
-package curves;
+package ui;
 
+import curves.Controller;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -53,7 +51,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         System.out.println("Updating");
     }
 
-    public void addPoint(double x, double y,int curveID) {
+    public void addPoint(double x, double y, int curveID) {
         CONTROLLER.addLastPoint(x, y, curveID);
     }
 
@@ -90,7 +88,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
                 break;
             case 1://create new point
                 System.out.println("I should add a new point");
-                addPoint(Double.valueOf((String)tmp[0]), Double.valueOf((String)tmp[1]), curveID);
+                addPoint(Double.valueOf((String) tmp[0]), Double.valueOf((String) tmp[1]), curveID);
                 break;
             case 2://modify point
                 System.out.println("I should move a point");

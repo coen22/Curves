@@ -1,4 +1,4 @@
-package curves;
+package ui;
 
 /**
  * Interface to handle the GUI Events
