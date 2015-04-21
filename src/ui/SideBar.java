@@ -26,22 +26,22 @@ import javax.swing.table.DefaultTableModel;
 public class SideBar extends JTabbedPane implements TableModelListener {
 
     private JTable table;
-    private DefaultTableModel mod;
+    private TableModel mod;
     private int curveID;
     private JCheckBox tobi;
     private boolean visiblity;
-    private ArrayList<List<Point2D>> curves;
+    private ArrayList<List<Point2D>> controlPoints;
 
     public SideBar() {
-        curves = new ArrayList<>();
+        controlPoints = new ArrayList<>();
         init();
     }
 
     public void setCurves(ArrayList<List<Point2D>> curve) {
         curveID = curve.size() - 1;
-        this.curves = curve;
-        while (this.curves.get(curveID).size() >= mod.getRowCount()) {
-            mod.addRow(new Object[]{null, null, null});
+        this.controlPoints = curve;
+        while (this.controlPoints.get(curveID).size() >= mod.getRowCount()) {
+            mod.addRow(new Object[]{0d, 0d, 0d});
         }
         updateTableFull();
     }
@@ -52,8 +52,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     public void updateTable() {
-        if (curveID < curves.size()) {
-            List<Point2D> curve = curves.get(curveID);
+        if (curveID < controlPoints.size()) {
+            List<Point2D> curve = controlPoints.get(curveID);
             int counter = 0;
             for (Point2D point : curve) {
                 mod.setValueAt(point.getX(), counter, 1);
@@ -65,8 +65,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     public void updateTableFull() {
-        if (curveID < curves.size()) {
-            List<Point2D> curve = curves.get(curveID);
+        if (curveID < controlPoints.size()) {
+            List<Point2D> curve = controlPoints.get(curveID);
             int counter = 0;
             int rows = mod.getRowCount();
             for (int i = 0; i < rows; i++) {
@@ -76,9 +76,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                     mod.setValueAt(point.getY(), counter, 2);
                     mod.setValueAt(counter, counter, 0);
                 } else {
-                    mod.setValueAt(null, counter, 1);
-                    mod.setValueAt(null, counter, 2);
-                    mod.setValueAt(null, counter, 0);
+                    mod.removeLast();
                 }
                 counter++;
             }
@@ -110,7 +108,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
     private void createTable() {
         String[] header = {"Point ID", "X-coordinates", "Y-coordinates"};
-        mod = new DefaultTableModel(header, 50);
+        mod = new TableModel(header);
         table = new JTable(mod);
         mod.addTableModelListener(this);
     }
@@ -121,7 +119,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         double rowC = row;
         Object fir = mod.getValueAt(row, 1);
         Object sec = mod.getValueAt(row, 2);
-
+        System.out.println("Table has been changed");
     }
 
     private void fireEvent(Gui_Events event) {

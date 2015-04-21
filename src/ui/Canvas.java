@@ -21,6 +21,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +48,7 @@ public class Canvas extends JPanel implements ActionListener {
     private double zoom = 1;
     private double gridSpacing = 50;
     private ArrayList<List<Point2D>> curves = new ArrayList<>();
+    private ArrayList<List<Point2D>> controls = new ArrayList<>();
     private final ArrayList<Color> COLORS = new ArrayList<>();
     private boolean Visiblity = true;
     private int curveID = -1;
@@ -54,6 +56,7 @@ public class Canvas extends JPanel implements ActionListener {
     private JPopupMenu popup1;
     private JPopupMenu popup2;
     private Point2D.Double point = new Point2D.Double();
+    private boolean DEBUG = true;
 
     public Canvas(double zoom, double gridSpace) {
         setBackground(Color.gray);
@@ -75,7 +78,14 @@ public class Canvas extends JPanel implements ActionListener {
         menuItem = new JMenuItem("Open Curve");
         menuItem.addActionListener(this);
         popup1.add(menuItem);
+
         popup2 = new JPopupMenu();
+        menuItem = new JMenuItem("Move point");
+        menuItem.addActionListener(this);
+        popup2.add(menuItem);
+        menuItem = new JMenuItem("Delete point");
+        menuItem.addActionListener(this);
+        popup2.add(menuItem);
 
         addMouseListener(new MouseListener() {
 
@@ -90,6 +100,10 @@ public class Canvas extends JPanel implements ActionListener {
                     if (curveID != -1) {
                         fireEvent(new Gui_Events_Add(this, new double[]{xm(e.getX()), ym(e.getY())}, curveID));
                     }
+                } else if (SwingUtilities.isRightMouseButton(e) && e.isShiftDown()) {
+                    point.setLocation(xm(e.getX()), ym(e.getY()));
+                    popup2.show(e.getComponent(), e.getX(), e.getY());
+                    repaint();
                 } else if (SwingUtilities.isRightMouseButton(e)) {
                     point.setLocation(xm(e.getX()), ym(e.getY()));
                     popup1.show(e.getComponent(), e.getX(), e.getY());
@@ -97,6 +111,7 @@ public class Canvas extends JPanel implements ActionListener {
                 } else if (SwingUtilities.isLeftMouseButton(e) && e.isAltDown()) {
                     fireEvent(new Gui_Events_Refresh(this));
                 }
+                repaint();
             }
 
             @Override
@@ -112,6 +127,7 @@ public class Canvas extends JPanel implements ActionListener {
             public void mouseExited(MouseEvent e) {
             }
         });
+
         addMouseMotionListener(new MouseMotionListener() {
             int preX = 0;
             int preY = 0;
@@ -135,7 +151,7 @@ public class Canvas extends JPanel implements ActionListener {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-
+                repaint();
             }
         });
 
@@ -159,11 +175,28 @@ public class Canvas extends JPanel implements ActionListener {
         super.paint(g);
         drawGrid(g2);
         drawLines(g2);
+        if (DEBUG) {
+            drawControls(g2);
+        }
     }
 
     public void setVisiblity(boolean visiblity) {
         this.Visiblity = visiblity;
         repaint();
+    }
+
+    private void drawControls(Graphics2D g) {
+        int s = 4;
+        int counter = 0;
+        for (List<Point2D> control : controls) {
+            g.setColor(COLORS.get(counter));
+            for (Point2D control1 : control) {
+                g.draw(new Rectangle2D.Double(x(control1.getX() + s / 2), y(control1.getY() + s / 2), s, s));
+            }
+
+            counter++;
+        }
+
     }
 
     private void drawGrid(Graphics2D g) {
@@ -274,7 +307,7 @@ public class Canvas extends JPanel implements ActionListener {
             }
         } else if (e.getActionCommand().equals("Close Curve")) {
             fireEvent(new Gui_Events_Close(this, curveID));
-        }else if(e.getActionCommand().equals("Open Curve")){
+        } else if (e.getActionCommand().equals("Open Curve")) {
             fireEvent(new Gui_Events_Open(this, curveID));
         }
         repaint();
@@ -308,5 +341,9 @@ public class Canvas extends JPanel implements ActionListener {
 
     private double y(int y) {
         return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
+    }
+
+    public void setControls(ArrayList<List<Point2D>> controls) {
+        this.controls = controls;
     }
 }

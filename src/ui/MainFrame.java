@@ -29,12 +29,12 @@ import ui.Events.Gui_Events_Refresh;
  * @author Kareem Horstink
  */
 public class MainFrame extends JFrame implements GUI_Event_Listner {
-
+    
     private final Canvas CANVAS;
     private final SideBar SIDE_BAR;
     private final Controller CONTROLLER;
     private final boolean DEBUG = false;
-
+    
     public MainFrame() {
         setTitle("Dem Curves");
         CONTROLLER = new Controller();
@@ -51,7 +51,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         this.setVisible(true);
         JOptionPane.showMessageDialog(this, "Shift Click to Add New Points" + "\n" + "Panning with middle mouse button");
     }
-
+    
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
@@ -60,7 +60,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         }
         new MainFrame();
     }
-
+    
     private void update() {
         int amount = CONTROLLER.amountOfCurves();
         ArrayList tmpList = new ArrayList();
@@ -68,15 +68,21 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         for (int i = 0; i < amount; i++) {
             tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
         }
+        
         if (amount >= 0) {
             CANVAS.setCurves(tmpList);
+            tmpList = new ArrayList();
+            for (int i = 0; i < amount; i++) {
+                tmpList.add(CONTROLLER.getControlsPoints(i));
+            }
             SIDE_BAR.setCurves(tmpList);
+            CANVAS.setControls(tmpList);
             System.out.println("Updating");
         } else {
             System.out.println("Insufficient amount of curves");
         }
     }
-
+    
     private void updateG() {
         int amount = CONTROLLER.amountOfCurves();
         ArrayList tmpList = new ArrayList();
@@ -91,7 +97,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
             System.out.println("Insufficient amount of curves");
         }
     }
-
+    
     @Override
     public void handleCreate(Gui_Events_Create e) {
         if (DEBUG) {
@@ -106,7 +112,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         }
         update();
     }
-
+    
     @Override
     public void handleAdd(Gui_Events_Add e) {
         if (DEBUG) {
@@ -115,49 +121,52 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         CONTROLLER.addLastPoint(e.getInfo()[0], e.getInfo()[1], e.getCurveID());
         update();
     }
-
+    
     @Override
     public void handleMove(Gui_Events_Move e) {
         if (DEBUG) {
             System.out.println("Moving a point");
         }
         CONTROLLER.translate(e.getInfo()[0], e.getInfo()[1], e.getCurveID(), e.getPointID());
+        update();
     }
-
+    
     @Override
     public void handleDeleteP(Gui_Events_DeleteP e) {
         if (DEBUG) {
             System.out.println("Deleting a point");
         }
         System.out.println("Not supported yet.");
+        update();
     }
-
+    
     @Override
     public void handleDeleteC(Gui_Events_DeleteC e) {
         if (DEBUG) {
             System.out.println("Deleting a curve");
         }
         System.out.println("Not supported yet.");
+        update();
     }
-
+    
     @Override
     public void handleClose(Gui_Events_Close e) {
         if (DEBUG) {
             System.out.println("Closing Curve");
         }
         CONTROLLER.closeCurve(e.getCurveID());
-        update();
+        updateG();
     }
-
+    
     @Override
     public void handleOpen(Gui_Events_Open e) {
         if (DEBUG) {
             System.out.println("Closing Curve");
         }
         CONTROLLER.openCurve(e.getCurveID());
-        update();
+        updateG();
     }
-
+    
     @Override
     public void handleVis(Gui_Events_Vis e) {
         if (DEBUG) {
@@ -165,7 +174,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         }
         CANVAS.setVisiblity(e.getVisiablity());
     }
-
+    
     @Override
     public void handleCurrent(Gui_Events_Current e) {
         if (DEBUG) {
@@ -177,7 +186,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
             SIDE_BAR.setCurveID(e.getCurveID());
         }
     }
-
+    
     @Override
     public void handleRefresh(Gui_Events_Refresh e) {
         if (DEBUG) {
@@ -185,7 +194,7 @@ public class MainFrame extends JFrame implements GUI_Event_Listner {
         }
         updateG();
     }
-
+    
     @Override
     public void actionPerformed(Gui_Events e) {
         if (Gui_Events_Add.class.equals(e.getClass())) {
