@@ -24,6 +24,12 @@ public class CubicSpline extends Curve {
 		calcCoefficients();
 	}
 	
+	@Override
+	protected void setPointLocation(double x, double y, int pointIndex) {
+		super.setPointLocation(x,y,pointIndex);
+		calcCoefficients();
+	};
+	
 	public void setClosed(boolean closed) {
 		if (closed == true && super.isClosed() == false){
 			type = CLOSED_SPLINE;

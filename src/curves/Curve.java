@@ -84,7 +84,7 @@ public abstract class Curve {
     }
     
     protected void setPointLocation(double x, double y, int pointIndex) {
-
+    	points.get(pointIndex).setLocation(x, y);
     }
 	
 }
