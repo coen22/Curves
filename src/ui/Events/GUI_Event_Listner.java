@@ -7,8 +7,17 @@ package ui.Events;
  */
 public interface GUI_Event_Listner {
 
+    /**
+     * Passes the event to correct event handler
+     * 
+     * @param e The General GUI event
+     */
     public void actionPerformed(Gui_Events e);
 
+    /**
+     * 
+     * @param e 
+     */
     public void handleCreate(Gui_Events_Create e);
 
     public void handleAdd(Gui_Events_Add e);
