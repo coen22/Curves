@@ -33,13 +33,11 @@ public class CubicSpline extends Curve {
 	public void setClosed(boolean closed) {
 		if (closed == true && super.isClosed() == false){
 			type = CLOSED_SPLINE;
-//			super.points.add(super.points.get(0));
 			calcCoefficients();
 			super.setClosed(closed);
 		}
 		else if (closed == false && super.isClosed() == true){
 			type = NATURAL_SPLINE;
-//			super.points.remove(super.points.size()-1);
 			calcCoefficients();
 			super.setClosed(closed);
 		}
