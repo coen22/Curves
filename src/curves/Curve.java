@@ -11,7 +11,7 @@ public abstract class Curve {
 	protected boolean closed;
 	protected String name;
 	
-	protected Curve(String name){
+	public Curve(String name) {
 		this.name = name;
 		closed = false;
 		points = new ArrayList<Point2D>();
