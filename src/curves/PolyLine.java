@@ -13,10 +13,6 @@ public class PolyLine extends Curve {
     protected List<Point2D> getPlot(int interval) {
     	return (List<Point2D>)super.getPlot(interval);
     }
-    
-    protected void add(double x, double y){
-		super.points.add(new Point2D.Double(x,y));
-	}
 	
 //	public double length() {
 //		double length = 0;

@@ -55,8 +55,8 @@ public abstract class Curve {
 		
 	}
 
-	protected void add(double x, double y){
-		
+	protected int add(double x, double y) {
+		return points.size() - 1;
 	}
 	
 	protected void add(double x, double y, int index){
@@ -79,12 +79,11 @@ public abstract class Curve {
     	return (List) points;
     }
     
-    protected Point2D removePoint(int pointIndex){
+    protected Point2D removePoint(int index) {
         return null;
     }
     
-    protected void setPointLocation(double x, double y, int pointIndex) {
-    	points.get(pointIndex).setLocation(x, y);
+    protected void setPointLocation(int index, double x, double y) {
+    	points.get(index).setLocation(x, y);
     }
-	
 }

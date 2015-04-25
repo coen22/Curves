@@ -24,9 +24,8 @@ public class CubicSpline extends Curve {
 		calcCoefficients();
 	}
 	
-	@Override
 	protected void setPointLocation(double x, double y, int pointIndex) {
-		super.setPointLocation(x,y,pointIndex);
+		super.setPointLocation(pointIndex, x, y);
 		calcCoefficients();
 	};
 	
@@ -72,9 +71,10 @@ public class CubicSpline extends Curve {
 		return (List<Point2D>)plottingPoints;
 	}
 	
-	public void add(double x, double y){
-		super.points.add(new Point2D.Double(x,y));
+	public int add(double x, double y){
+		int i = super.add(x, y);
 		calcCoefficients();
+		return i;
 	}
 	
 	//currently works for natural spline
