@@ -1,8 +1,5 @@
 package curves;
 
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +20,7 @@ public class BezierSpline extends Curve {
 
 		for (int i = 0; i < points.size() - 2; i += 3) {
 			for (int j = 1; j <= interval; j++) {
-				plot.add(p(i, j / (float) interval));
+				plot.add(calculatePoint(i, j / (float) interval));
 			}
 		}
 		
@@ -36,7 +33,7 @@ public class BezierSpline extends Curve {
 	 * @param interval
 	 * @return a point on the curve
 	 */
-	protected Point2D p(int i, float t) {
+	protected Point2D calculatePoint(int i, float t) {
 		double px = 0;
 		double py = 0;
 		

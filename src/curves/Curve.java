@@ -43,11 +43,11 @@ public abstract class Curve {
 		this.closed = closed;
 	}
 	
-	protected void setName(String name){
+	protected void setName(String name) {
 		this.name = name;
 	}
 	
-	protected String getName(){
+	protected String getName() {
 		return name;
 	}
 	
@@ -60,7 +60,7 @@ public abstract class Curve {
 		return points.size() - 1;
 	}
 	
-	protected void add(double x, double y, int index){
+	protected void add(double x, double y, int index) {
 		
 	}
 	
