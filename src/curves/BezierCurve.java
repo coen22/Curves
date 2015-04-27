@@ -30,10 +30,6 @@ public class BezierCurve extends Curve {
 //		binomialCoefficients.add((double) 1);
 		add(point.getX(), point.getY());
 	}
-	
-	public void add(double x, double y){
-		super.points.add(new Point2D.Double(x,y));
-	}
 
 	public double length() {
 		// TODO Auto-generated method stub

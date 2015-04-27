@@ -88,7 +88,7 @@ public class Controller {
     }
 
     public void setPointLocation(double x, double y, int curveIndex, int pointIndex) {
-        curves.get(curveIndex).setPointLocation(x, y, pointIndex);
+        curves.get(curveIndex).setPointLocation(pointIndex, x, y);
     }
 
     public List<Point2D> getControlsPoints(int curveIndex) {
