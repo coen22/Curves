@@ -56,6 +56,7 @@ public abstract class Curve {
 	}
 
 	protected int add(double x, double y) {
+		this.points.add(new Point2D.Double(x, y));
 		return points.size() - 1;
 	}
 	
