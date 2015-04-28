@@ -1,19 +1,21 @@
 package curves;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PolyLine extends Curve {
-		
-	protected PolyLine(Point2D point, String name){
-		super(name);
-		super.points.add(point);
-	}
-	
-    protected List<Point2D> getPlot(int interval) {
-    	return (List<Point2D>)super.getPlot(interval);
+
+    protected PolyLine(Point2D point, String name) {
+        super(name);
+        super.points.add(point);
     }
-	
+
+    @Override
+    protected ArrayList<Point2D> getPlot(int interval) {
+        return super.getPlot(interval);
+    }
+
 //	public double length() {
 //		double length = 0;
 //		
@@ -27,7 +29,6 @@ public class PolyLine extends Curve {
 //		
 //		return length;
 //	}
-
 //	public double area() {
 //		if (!closed)
 //			return 0;

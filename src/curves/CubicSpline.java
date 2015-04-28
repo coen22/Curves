@@ -27,8 +27,9 @@ public class CubicSpline extends Curve {
 		calcCoefficients();
 	}
 	
-	protected void setPointLocation(double x, double y, int pointIndex) {
-		super.setPoint(pointIndex, x, y);
+        @Override
+	protected void setPoint(int index, double x, double y) {
+		super.setPoint(index, x, y);
 		calcCoefficients();
 	}
 	

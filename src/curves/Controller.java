@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class Controller {
 
     public static final int POLYLINE = 1;
-    public static final int CUBIC = 2;
-    public static final int BSPLINE = 3;
+    public static final int CUBIC_N = 2;
+    public static final int BEZIERSPLINE = 3;
 
     private ArrayList<Curve> curves = new ArrayList<Curve>();
 
@@ -30,7 +30,7 @@ public class Controller {
      * fine-grained the curve plot will be.
      * @return
      */
-    public List<Point2D> getCurvePlot(int curveIndex, int subPoints) {
+    public ArrayList<Point2D> getCurvePlot(int curveIndex, int subPoints) {
         return curves.get(curveIndex).getPlot(subPoints);
     }
 
@@ -84,11 +84,11 @@ public class Controller {
     }
 
     public void translate(double deltaX, double deltaY, int curveIndex, int pointIndex) {
-        curves.get(curveIndex).translate(pointIndex, deltaX, deltaY);
+//        curves.get(curveIndex).translate(pointIndex, deltaX, deltaY);
     }
 
     public void setPointLocation(double x, double y, int curveIndex, int pointIndex) {
-        curves.get(curveIndex).setPointLocation(pointIndex, x, y);
+        curves.get(curveIndex).setPoint(pointIndex, x, y);
     }
 
     public List<Point2D> getControlsPoints(int curveIndex) {
