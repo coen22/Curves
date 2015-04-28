@@ -69,7 +69,17 @@ public abstract class Curve {
 	}
         
     private double shoeLaceArea(){
-    	return 0;
+    	double area = 0;
+    	List<Point2D> listOfPoints = getPlot(numberOfPoints());
+    	for (int i = 0; i < listOfPoints.size() - 1; i++) {
+          area += listOfPoints.get(i).getX() * listOfPoints.get(i+1).getY() 
+        		  - listOfPoints.get(i+1).getX() * listOfPoints.get(i).getY();
+		}
+	
+		area += listOfPoints.get(listOfPoints.size() - 1).getX() * listOfPoints.get(0).getY() -
+				listOfPoints.get(0).getX() * listOfPoints.get(listOfPoints.size() - 1).getY();
+    	
+    	return area/2;
     }
     
     private double pythagoreanLength(){
