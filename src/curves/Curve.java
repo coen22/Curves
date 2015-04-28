@@ -50,10 +50,6 @@ public abstract class Curve {
 	protected String getName(){
 		return name;
 	}
-	
-	protected void translatePoint(int pointIndex, double deltaX, double deltaY){
-		//David will do this
-	}
 
 	protected int add(double x, double y) {
 		this.points.add(new Point2D.Double(x, y));
@@ -98,10 +94,10 @@ public abstract class Curve {
     }
     
     protected Point2D removePoint(int index) {
-        return null;
+    	return points.remove(index);
     }
     
-    protected void setPointLocation(int index, double x, double y) {
+    protected void setPoint(int index, double x, double y) {
     	points.get(index).setLocation(x, y);
     }
 }
