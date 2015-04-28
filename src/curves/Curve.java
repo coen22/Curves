@@ -23,16 +23,16 @@ public abstract class Curve {
 	 * @return
 	 */
 	protected ArrayList<Point2D> getPlot(int subPoints) {
-        //add spefic methods for your type of lines here
+        //add specific methods for your type of lines here
     	return points;
     }
 	
 	protected double length(int METHOD) {
-		return 0;
+		return Double.NaN;
 	}
 
 	protected double area(int METHOD) {
-		return 0;
+		return Double.NaN;
 	}
 	
 	protected boolean isClosed() {
