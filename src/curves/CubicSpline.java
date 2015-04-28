@@ -222,7 +222,8 @@ public class CubicSpline extends Curve {
 		double finalArea = 0;
 		for (int i = 0; i < cutoff; i++){
 			dXdiscriminant = calcDiscriminantQuadratic(dXcoefficients[i]);
-			
+			finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
+			/*
 			if (dXdiscriminant > 0){ //there two real roots, both might have to be considered
 				double[] roots = calcTwoRoots(dXcoefficients[i], dXdiscriminant);
 				
@@ -237,14 +238,16 @@ public class CubicSpline extends Curve {
 				}
 				else if (roots[0] > 0 && roots[1] < 1){ //both roots are within the area and must be considered
 					if (evaluateAtT(dXcoefficients[i], (roots[0]/2)) > 0){
-						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[0]);
-						finalArea += calcArea(integratedCoefficients[i], roots[0], roots[1]);
-						finalArea += calcArea(integratedCoefficients[i], roots[1], 1.0);
+//						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[0]);
+//						finalArea += calcArea(integratedCoefficients[i], roots[0], roots[1]);
+//						finalArea += calcArea(integratedCoefficients[i], roots[1], 1.0);
+						finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
 					}
 					else {
-						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[0]);
-						finalArea += calcArea(integratedCoefficients[i], roots[0], roots[1]);
-						finalArea += calcArea(integratedCoefficients[i], roots[1], 1.0);
+//						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[0]);
+//						finalArea += calcArea(integratedCoefficients[i], roots[0], roots[1]);
+//						finalArea += calcArea(integratedCoefficients[i], roots[1], 1.0);
+						finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
 					}
 					
 				}
@@ -299,10 +302,11 @@ public class CubicSpline extends Curve {
 				else {
 					finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
 				}
-			}
+			}*/
 		}
 		
-		return Math.abs(finalArea);
+//		return Math.abs(finalArea);
+		return finalArea;
 	}
 	
 	private double evaluateAtT(double[] function, double t){
