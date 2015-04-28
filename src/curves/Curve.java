@@ -84,6 +84,10 @@ public abstract class Curve {
     private double pythagoreanLength(){
     	double length = 0;
     	List<Point2D> listOfPoints = getPlot(numberOfPoints());
+    	
+    	if (listOfPoints.isEmpty() || listOfPoints.size() == 1)
+    		return 0;
+    	
 		for (int i = 0; i < listOfPoints.size() - 1; i++)
 			length += Math.sqrt(Math.pow(listOfPoints.get(i).getX() - listOfPoints.get(i - 1).getX(), 2) +
 								Math.pow(listOfPoints.get(i).getY() - listOfPoints.get(i - 1).getY(), 2));
