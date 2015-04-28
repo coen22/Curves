@@ -70,12 +70,15 @@ public abstract class Curve {
         
     private double shoeLaceArea(){
     	double area = 0;
+    	
+    	if (!closed)
+    		return 0;
+    	
     	List<Point2D> listOfPoints = getPlot(numberOfPoints());
     	for (int i = 0; i < listOfPoints.size() - 1; i++) {
           area += listOfPoints.get(i).getX() * listOfPoints.get(i+1).getY() 
         		  - listOfPoints.get(i+1).getX() * listOfPoints.get(i).getY();
 		}
-	
 		area += listOfPoints.get(listOfPoints.size() - 1).getX() * listOfPoints.get(0).getY() -
 				listOfPoints.get(0).getX() * listOfPoints.get(listOfPoints.size() - 1).getY();
     	
@@ -83,7 +86,15 @@ public abstract class Curve {
     }
     
     private double pythagoreanLength(){
-    	return 0;
+    	double length = 0;
+    	List<Point2D> listOfPoints = getPlot(numberOfPoints());
+		for (int i = 0; i < listOfPoints.size() - 1; i++)
+			length += Math.sqrt(Math.pow(listOfPoints.get(i).getX() - listOfPoints.get(i - 1).getX(), 2) +
+								Math.pow(listOfPoints.get(i).getY() - listOfPoints.get(i - 1).getY(), 2));
+		if (closed)
+			length += Math.sqrt(Math.pow(listOfPoints.get(0).getX() - listOfPoints.get(listOfPoints.size() - 1).getX(), 2) +
+								Math.pow(listOfPoints.get(0).getY() - listOfPoints.get(listOfPoints.size() - 1).getY(), 2));
+    	return length;
     }
     
     protected List<Point2D> getControlPoints(){
