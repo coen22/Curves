@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class Controller {
 
     public static final int POLYLINE = 1;
-    public static final int CUBIC = 2;
-    public static final int BSPLINE = 3;
+    public static final int CUBIC_N = 2;
+    public static final int BEZIERSPLINE = 31;
 
     private ArrayList<Curve> curves = new ArrayList<Curve>();
 
@@ -30,7 +30,7 @@ public class Controller {
      * fine-grained the curve plot will be.
      * @return
      */
-    public List<Point2D> getCurvePlot(int curveIndex, int subPoints) {
+    public ArrayList<Point2D> getCurvePlot(int curveIndex, int subPoints) {
         return curves.get(curveIndex).getPlot(subPoints);
     }
 
@@ -52,11 +52,13 @@ public class Controller {
 
     public void createCurve(int TYPE, double x, double y, String name, int cubicType) {
         //created the constructor for polyline
-        if (TYPE == 1) {
+        if (TYPE == POLYLINE) {
             curves.add(new PolyLine(new Point2D.Double(x, y), name));
-        } else if (TYPE == 2) {
+        } else if (TYPE == CUBIC_N) {
             curves.add(new CubicSpline(new Point2D.Double(x, y), name, cubicType));
-        } else if (TYPE == 3) {
+        } else if (TYPE == BEZIERSPLINE) {
+            curves.add(new BezierSpline(name));
+            curves.get(curves.size()-1).add(x, y);
 
         }
     }
@@ -84,11 +86,11 @@ public class Controller {
     }
 
     public void translate(double deltaX, double deltaY, int curveIndex, int pointIndex) {
-        curves.get(curveIndex).translate(pointIndex, deltaX, deltaY);
+        //remove
     }
 
     public void setPointLocation(double x, double y, int curveIndex, int pointIndex) {
-        curves.get(curveIndex).setPointLocation(pointIndex, x, y);
+        curves.get(curveIndex).setPoint(pointIndex, x, y);
     }
 
     public List<Point2D> getControlsPoints(int curveIndex) {

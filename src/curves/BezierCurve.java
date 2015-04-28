@@ -41,7 +41,7 @@ public class BezierCurve extends Curve {
 		return 0;
 	}
 
-	public List<Point2D> getPlot(int subPoints) {
+	public ArrayList<Point2D> getPlot(int subPoints) {
 		ArrayList<Point2D> plottingPoints = new ArrayList<Point2D>();
 		
 		double tInterval = 1 / ((double) (super.points.size() * subPoints));
@@ -51,7 +51,7 @@ public class BezierCurve extends Curve {
 		}
 		plottingPoints.add(deCasteljauSAlgorithm(super.points, 1));
 		
-		return (List<Point2D>)plottingPoints;
+		return plottingPoints;
 	}
 	
 	/**
