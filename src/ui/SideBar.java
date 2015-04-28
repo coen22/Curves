@@ -1,27 +1,31 @@
 package ui;
 
-import ui.Events.GUI_Event_Listner;
-import ui.Events.Gui_Events;
-import ui.Events.Gui_Events_Vis;
+import ui.Events.GuiEventListner;
+import ui.Events.GuiEvents;
+import ui.Events.GuiEventsVisibility;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
+import ui.Events.GuiEventsMove;
+import ui.Events.GuiEventsRefresh;
 
 /**
  * The sidebar which shows the data input grid and other controls
  *
  * @author Kareem Horstink
+ * @version 0.5
  */
 public class SideBar extends JTabbedPane implements TableModelListener {
 
@@ -31,27 +35,39 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     private JCheckBox tobi;
     private boolean visiblity;
     private ArrayList<List<Point2D>> controlPoints;
+    private boolean updating;
 
+    /**
+     * The constructor of the side bar
+     */
     public SideBar() {
         controlPoints = new ArrayList<>();
+
         init();
     }
 
-    public void setCurves(ArrayList<List<Point2D>> curve) {
-        curveID = curve.size() - 1;
-        this.controlPoints = curve;
+    /**
+     * Sets the control poi nts
+     *
+     * @param controlPoints The control points to be passed
+     */
+    protected void setCurves(ArrayList<List<Point2D>> controlPoints) {
+        curveID = controlPoints.size() - 1;
+        this.controlPoints = controlPoints;
         while (this.controlPoints.get(curveID).size() >= mod.getRowCount()) {
             mod.addRow(new Object[]{0d, 0d, 0d});
         }
+        updating = true;
         updateTableFull();
+        updating = false;
     }
 
-    public void setCurveID(int curveID) {
+    protected void setCurveID(int curveID) {
         this.curveID = curveID;
         updateTableFull();
     }
 
-    public void updateTable() {
+    protected void updateTable() {
         if (curveID < controlPoints.size()) {
             List<Point2D> curve = controlPoints.get(curveID);
             int counter = 0;
@@ -64,7 +80,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         }
     }
 
-    public void updateTableFull() {
+    protected void updateTableFull() {
         if (curveID < controlPoints.size()) {
             List<Point2D> curve = controlPoints.get(curveID);
             int counter = 0;
@@ -89,7 +105,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                fireEvent(new Gui_Events_Vis(this, visiblity));
+                fireEvent(new GuiEventsVisibility(this, visiblity));
                 visiblity = !visiblity;
             }
         });
@@ -104,6 +120,24 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         dataViewer.add(scrollPane);
         dataViewer.setName("Data Inputter");
         this.addTab(dataViewer.getName(), dataViewer);
+        JButton t = new JButton("refresh");
+        t.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fireEvent(new GuiEventsRefresh(this));
+            }
+        });
+        controls.add(t);
+        t = new JButton("Help");
+        t.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(controls, "Crtl Click to Add New Points" + "\n" + "Panning with shift click");
+            }
+        });
+       controls.add(t);
     }
 
     private void createTable() {
@@ -115,24 +149,28 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
     @Override
     public void tableChanged(TableModelEvent e) {
-        int row = e.getFirstRow();
-        double rowC = row;
-        Object fir = mod.getValueAt(row, 1);
-        Object sec = mod.getValueAt(row, 2);
-        System.out.println("Table has been changed");
+        if (!updating) {
+            int row = e.getFirstRow();
+            System.out.println(row);
+            double rowC = row;
+            double fir = mod.getValueAt(row, 1);
+            double sec = mod.getValueAt(row, 2);
+            System.out.println("Table has been changed");
+            fireEvent(new GuiEventsMove(this, new double[]{fir, sec}, row, curveID));
+        }
     }
 
-    private void fireEvent(Gui_Events event) {
-        Iterator<GUI_Event_Listner> i = LISTENER.iterator();
+    private void fireEvent(GuiEvents event) {
+        Iterator<GuiEventListner> i = LISTENER.iterator();
         while (i.hasNext()) {
             i.next().actionPerformed(event);
         }
     }
 
-    public synchronized void addEventListener(GUI_Event_Listner list) {
+    protected synchronized void addEventListener(GuiEventListner list) {
         LISTENER.add(list);
     }
 
-    private final List<GUI_Event_Listner> LISTENER = new ArrayList<GUI_Event_Listner>();
+    private final List<GuiEventListner> LISTENER = new ArrayList<GuiEventListner>();
 
 }

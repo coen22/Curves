@@ -5,9 +5,9 @@ package ui.Events;
  *
  * @author Kareem Horstink
  */
-public class Gui_Events_Refresh extends Gui_Events {
+public class GuiEventsRefresh extends GuiEvents {
 
-    public Gui_Events_Refresh(Object source) {
+    public GuiEventsRefresh(Object source) {
         super(source);
     }
 

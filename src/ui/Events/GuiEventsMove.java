@@ -5,13 +5,13 @@ package ui.Events;
  *
  * @author Kareem Horstink
  */
-public class Gui_Events_Move extends Gui_Events {
+public class GuiEventsMove extends GuiEvents {
 
     private int pointID;
     private double[] info;
     private int curveID;
 
-    public Gui_Events_Move(Object source, double[] info, int pointID, int curveID) {
+    public GuiEventsMove(Object source, double[] info, int pointID, int curveID) {
         super(source);
         this.info = info;
         this.curveID = curveID;

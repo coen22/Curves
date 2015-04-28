@@ -5,11 +5,11 @@ package ui.Events;
  *
  * @author Kareem Horstink
  */
-public class Gui_Events_DeleteC extends Gui_Events {
+public class GuiEventsOpen extends GuiEvents {
 
     private int curveID;
 
-    public Gui_Events_DeleteC(Object source, int curveID) {
+    public GuiEventsOpen(Object source, int curveID) {
         super(source);
         this.curveID = curveID;
     }

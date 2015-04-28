@@ -5,11 +5,11 @@ package ui.Events;
  *
  * @author Kareem Horstink
  */
-public class Gui_Events_Current extends Gui_Events {
+public class GuiEventsCurrent extends GuiEvents {
 
     private int curveID;
 
-    public Gui_Events_Current(Object source, int curveID) {
+    public GuiEventsCurrent(Object source, int curveID) {
         super(source);
         this.curveID = curveID;
     }

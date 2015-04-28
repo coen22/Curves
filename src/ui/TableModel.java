@@ -2,15 +2,14 @@ package ui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * A two dimensional data structure used to store <code>Object</code> instances,
- * usually for display in a <code>JTable</code> component.
+ * A two dimensional data structure used to store double instances,
+ * usually for display in a JTable component.
  *
- * @author	Andrew Selkirk
+ * @author Kareem Horstink
+ * @version 1.0
  */
 public class TableModel extends AbstractTableModel implements Serializable {
 
@@ -18,12 +17,20 @@ public class TableModel extends AbstractTableModel implements Serializable {
     private ArrayList<ArrayList<Double>> data;
     private ArrayList<String> header;
 
-    public TableModel(ArrayList<String> header) {
+    /**
+     * 
+     * @param header 
+     */
+    protected TableModel(ArrayList<String> header) {
         data = new ArrayList<>();
         this.header = header;
     }
 
-    public TableModel(String[] header) {
+    /**
+     * 
+     * @param header 
+     */
+    protected TableModel(String[] header) {
         ArrayList<String> tmp = new ArrayList();
         for (String tmp1 : header) {
             tmp.add(tmp1);
@@ -41,7 +48,12 @@ public class TableModel extends AbstractTableModel implements Serializable {
 
     }
 
-    public TableModel(ArrayList<ArrayList<Double>> data, String[] header) {
+    /**
+     * 
+     * @param data
+     * @param header 
+     */
+    protected TableModel(ArrayList<ArrayList<Double>> data, String[] header) {
         this.data = data;
         ArrayList<String> tmp = new ArrayList();
         for (String tmp1 : tmp) {
@@ -50,7 +62,11 @@ public class TableModel extends AbstractTableModel implements Serializable {
         this.header = tmp;
     }
 
-    public void addRow(Object[] rowData) {
+    /**
+     * 
+     * @param rowData 
+     */
+    protected void addRow(Object[] rowData) {
         ArrayList tmp = new ArrayList();
         for (Object tmp1 : rowData) {
             tmp.add(tmp1);
@@ -58,31 +74,57 @@ public class TableModel extends AbstractTableModel implements Serializable {
         data.add(tmp);
     }
 
-    public TableModel(ArrayList<ArrayList<Double>> data, ArrayList<String> header) {
+    /**
+     * 
+     * @param data
+     * @param header 
+     */
+    protected TableModel(ArrayList<ArrayList<Double>> data, ArrayList<String> header) {
         this.data = data;
         this.header = header;
     }
 
-    public ArrayList getData() {
+    /**
+     * 
+     * @return 
+     */
+    protected ArrayList getData() {
         return data;
     }
 
-    public void removeLast() {
+    /**
+     * 
+     */
+    protected void removeLast() {
         data.remove(data.size() - 1);
         fireTableRowsDeleted(data.size()-1, data.size()-1);
 
     }
 
-    public void removeRow(int row) {
+    /**
+     * 
+     * @param row 
+     */
+    protected void removeRow(int row) {
         data.remove(row);
         fireTableRowsDeleted(row, row);
     }
 
+    /**
+     * 
+     * @return 
+     */
     @Override
     public int getRowCount() {
         return data.size() - 1;
     }
 
+    /**
+     * 
+     * @param row
+     * @param column
+     * @return 
+     */
     @Override
     public boolean isCellEditable(int row, int column) {
         if (column == 0) {
@@ -91,6 +133,10 @@ public class TableModel extends AbstractTableModel implements Serializable {
         return true;
     }
 
+    /**
+     * 
+     * @return 
+     */
     @Override
     public int getColumnCount() {
         if (data.isEmpty()) {
@@ -100,22 +146,45 @@ public class TableModel extends AbstractTableModel implements Serializable {
         }
     }
 
+    /**
+     * 
+     * @param column
+     * @return 
+     */
     @Override
     public String getColumnName(int column) {
         return header.get(column);
     }
 
+    /**
+     * 
+     * @param rowIndex
+     * @param columnIndex
+     * @return 
+     */
     @Override
     public Double getValueAt(int rowIndex, int columnIndex) {
         return data.get(rowIndex).get(columnIndex);
     }
 
-    public void setValueAt(double value, int rowIndex, int columnIndex) {
+    /**
+     * 
+     * @param value
+     * @param rowIndex
+     * @param columnIndex 
+     */
+    protected void setValueAt(double value, int rowIndex, int columnIndex) {
         data.get(rowIndex).set(columnIndex, value);
         fireTableCellUpdated(rowIndex, columnIndex);
 
     }
 
+    /**
+     * 
+     * @param value
+     * @param row
+     * @param column 
+     */
     @Override
     public void setValueAt(Object value, int row, int column) {
         if (value != null) {
@@ -128,7 +197,12 @@ public class TableModel extends AbstractTableModel implements Serializable {
         }
     }
 
-    public static boolean isNumeric(String str) {
+    /**
+     * 
+     * @param str
+     * @return 
+     */
+    protected static boolean isNumeric(String str) {
         try {
             double d = Double.parseDouble(str);
         } catch (NumberFormatException nfe) {

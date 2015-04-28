@@ -5,9 +5,9 @@ package ui.Events;
  *
  * @author Kareem Horstink
  */
-public class Gui_Events_Vis extends Gui_Events {
+public class GuiEventsVisibility extends GuiEvents {
 
-    public Gui_Events_Vis(Object source, boolean visiblity) {
+    public GuiEventsVisibility(Object source, boolean visiblity) {
         super(source);
         this.visiblity = visiblity;
     }
