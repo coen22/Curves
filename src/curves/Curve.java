@@ -22,7 +22,7 @@ public abstract class Curve {
 	 * @param subPoints this number signifies the number of plotting points in-between each pair of control-points. The larger the number, the more fine-grained the curve plot will be.
 	 * @return
 	 */
-	protected List<Point2D> getPlot(int subPoints) {
+	protected ArrayList<Point2D> getPlot(int subPoints) {
         //add spefic methods for your type of lines here
     	return points;
     }
@@ -43,25 +43,21 @@ public abstract class Curve {
 		this.closed = closed;
 	}
 	
-	protected void setName(String name) {
+	protected void setName(String name){
 		this.name = name;
 	}
 	
-	protected String getName() {
+	protected String getName(){
 		return name;
 	}
 	
-	protected void translate(int pointIndex, double deltaX, double deltaY){
-		
+	protected void translatePoint(int pointIndex, double deltaX, double deltaY){
+		//David will do this
 	}
 
 	protected int add(double x, double y) {
 		this.points.add(new Point2D.Double(x, y));
 		return points.size() - 1;
-	}
-	
-	protected void add(double x, double y, int index) {
-		
 	}
 	
 	protected int numberOfPoints(){
