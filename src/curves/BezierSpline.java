@@ -15,8 +15,8 @@ public class BezierSpline extends Curve {
 	 * @param the accuracy at which curve needs to be plotted
 	 * @return the list of points to plot
 	 */
-	public ArrayList<Point2D> getPlot(int interval) {
-		ArrayList<Point2D> plot = new ArrayList<Point2D>();
+	public List<Point2D> getPlot(int interval) {
+		List<Point2D> plot = new ArrayList<Point2D>();
 
 		for (int i = 0; i < points.size() - 2; i += 3) {
 			for (int j = 1; j <= interval; j++) {

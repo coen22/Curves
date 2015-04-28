@@ -27,9 +27,8 @@ public class CubicSpline extends Curve {
 		calcCoefficients();
 	}
 	
-        @Override
-	protected void setPoint(int index, double x, double y) {
-		super.setPoint(index, x, y);
+	protected void setPointLocation(double x, double y, int pointIndex) {
+		super.setPointLocation(pointIndex, x, y);
 		calcCoefficients();
 	}
 	
@@ -46,7 +45,7 @@ public class CubicSpline extends Curve {
 		}
 	}
 
-	public ArrayList<Point2D> getPlot(int subPoints) {
+	public List<Point2D> getPlot(int subPoints) {
 		ArrayList<Point2D> plottingPoints = new ArrayList<Point2D>();
 		
 		double tInterval = (1 / (double)subPoints);
@@ -67,7 +66,7 @@ public class CubicSpline extends Curve {
 			plottingPoints.add(super.points.get(super.points.size()-1));
 		}
 		
-		return plottingPoints;
+		return (List<Point2D>)plottingPoints;
 	}
 	
 	public int add(double x, double y){
