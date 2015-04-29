@@ -89,7 +89,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             SIDE_BAR.setCurves(tmpList);
             CANVAS.setControls(tmpList);
             System.out.println("Updating");
-            SIDE_BAR.updateInfo(new String[]{SIDE_BAR.getName(),SIDE_BAR});
+//            SIDE_BAR.updateInfo(new String[]{SIDE_BAR.getName(),SIDE_BAR});
         } else {
             System.out.println("Insufficient amount of curves");
         }
