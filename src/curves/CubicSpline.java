@@ -223,6 +223,9 @@ public class CubicSpline extends Curve {
 	
 	//currently uses exact coefficient method
 	protected double area(int METHOD) {
+		if (METHOD == 3){
+			super.
+		}
 		return this.area;
 	}
 	

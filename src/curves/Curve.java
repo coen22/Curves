@@ -60,7 +60,7 @@ public abstract class Curve {
 		return points.size();
 	}
         
-    private double shoeLaceArea(){
+    protected double shoeLaceArea(){
     	double area = 0;
     	
     	if (!closed)
@@ -77,7 +77,7 @@ public abstract class Curve {
     	return area/2;
     }
     
-    private double pythagoreanLength(){
+    protected double pythagoreanLength(){
     	double length = 0;
     	List<Point2D> listOfPoints = getPlot(numberOfPoints());
     	
