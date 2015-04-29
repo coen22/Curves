@@ -1,5 +1,10 @@
 package ui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import ui.Events.GuiEventListner;
 import ui.Events.GuiEvents;
 import ui.Events.GuiEventsVisibility;
@@ -11,11 +16,13 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import ui.Events.GuiEventsMove;
@@ -32,18 +39,20 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     private JTable table;
     private TableModel mod;
     private int curveID;
-    private JCheckBox tobi;
+    private JCheckBox checkBox;
     private boolean visiblity;
     private ArrayList<List<Point2D>> controlPoints;
     private boolean updating;
+    private final boolean DEBUG = true;
+    private final List<GuiEventListner> LISTENER = new ArrayList<GuiEventListner>();
+    JPanel info;
 
     /**
      * The constructor of the side bar
      */
     public SideBar() {
         controlPoints = new ArrayList<>();
-
-        init();
+        init1();
     }
 
     /**
@@ -99,9 +108,13 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         }
     }
 
-    private void init() {
-        tobi = new JCheckBox("Set Invisible");
-        tobi.addActionListener(new ActionListener() {
+    private void init1() {
+        JPanel controls = new JPanel(new GridLayout(10, 0));
+        controls.setName("Controls");
+        this.addTab(controls.getName(), controls);
+        checkBox = new JCheckBox("Set Invisible");
+        checkBox.setHorizontalAlignment(SwingConstants.CENTER);
+        checkBox.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -109,10 +122,44 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 visiblity = !visiblity;
             }
         });
-        JPanel controls = new JPanel();
-        controls.add(tobi);
-        controls.setName("Controls");
-        this.addTab(controls.getName(), controls);
+        checkBox.setToolTipText("Sets all other line to not be visible");
+        controls.add(checkBox);
+
+        JButton button = new JButton("Refresh");
+        button.setToolTipText("Refresh all the data");
+        button.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fireEvent(new GuiEventsRefresh(this));
+            }
+        });
+        controls.add(button);
+        button = new JButton("Help");
+        button.setToolTipText("Shows a help diaglog");
+        button.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(controls, "Crtl Click to Add New Points" + "\n" + "Panning with shift click");
+            }
+        });
+        controls.add(button);
+
+        info = new JPanel();
+        info.setToolTipText("Information about the line");
+        info.add(new JLabel("Name"));
+        info.add(new JLabel("Area"));
+        info.add(new JLabel("Length"));
+        info.add(new JLabel("Number Of control points"));
+        info.add(new JLabel("Zoom Level"));
+
+        controls.add(info);
+        init2();
+
+    }
+
+    private void init2() {
         JPanel dataViewer = new JPanel();
         createTable();
         JScrollPane scrollPane = new JScrollPane(table);
@@ -120,24 +167,18 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         dataViewer.add(scrollPane);
         dataViewer.setName("Data Inputter");
         this.addTab(dataViewer.getName(), dataViewer);
-        JButton t = new JButton("refresh");
-        t.addActionListener(new ActionListener() {
+    }
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireEvent(new GuiEventsRefresh(this));
+    protected void updateInfo(String[] info) {
+        Component[] com = this.info.getComponents();
+        int j = 0;
+        for (int i = 0; i < com.length; i++) {
+            if (com[i] instanceof JLabel) {
+                j++;
+                ((JLabel) (com[i])).setText(info[j]);
             }
-        });
-        controls.add(t);
-        t = new JButton("Help");
-        t.addActionListener(new ActionListener() {
+        }
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(controls, "Crtl Click to Add New Points" + "\n" + "Panning with shift click");
-            }
-        });
-       controls.add(t);
     }
 
     private void createTable() {
@@ -152,10 +193,11 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         if (!updating) {
             int row = e.getFirstRow();
             System.out.println(row);
-            double rowC = row;
             double fir = mod.getValueAt(row, 1);
             double sec = mod.getValueAt(row, 2);
-            System.out.println("Table has been changed");
+            if (DEBUG) {
+                System.out.println("Table has been changed");
+            }
             fireEvent(new GuiEventsMove(this, new double[]{fir, sec}, row, curveID));
         }
     }
@@ -170,7 +212,5 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     protected synchronized void addEventListener(GuiEventListner list) {
         LISTENER.add(list);
     }
-
-    private final List<GuiEventListner> LISTENER = new ArrayList<GuiEventListner>();
 
 }

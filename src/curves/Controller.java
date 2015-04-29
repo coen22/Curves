@@ -20,6 +20,14 @@ public class Controller {
         return curves.size();
     }
 
+    public String getCurveName(int index) {
+        return curves.get(index).getName();
+    }
+
+    public String curveName(int index) {
+        return curves.get(index).getName();
+    }
+
     /**
      * Method to retrieve the plotting coordinates of each curve. NOTE THE
      * DEFINITION OF SUB-POINTS!
@@ -38,9 +46,10 @@ public class Controller {
         //created the constructor for polyline
         if (TYPE == 1) {
             curves.add(new PolyLine(new Point2D.Double(x, y), name));
-            System.out.println("sdklgsjdsl");
+            System.out.println("Polyline Created");
         } else if (TYPE == 2) {
             curves.add(new CubicSpline(new Point2D.Double(x, y), name, CubicSpline.NATURAL_SPLINE));
+            System.out.println("CubicLine Created");
 
         }
     }

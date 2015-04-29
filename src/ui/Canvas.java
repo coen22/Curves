@@ -168,6 +168,7 @@ public class Canvas extends JPanel implements ActionListener {
                 } else if (e.isShiftDown()) {
                     offSetX -= preX - e.getX();
                     offSetY += preY - e.getY();
+                    updateControls();
                     repaint();
                     preX = e.getX();
                     preY = e.getY();
@@ -217,6 +218,10 @@ public class Canvas extends JPanel implements ActionListener {
             String split[] = tmp.split(",");
             double x = Double.valueOf(split[0]);
             double y = Double.valueOf(split[1]);
+            System.out.println("x " + x + ", y " + y);
+            System.out.println("point " + selectPoint);
+            System.out.println("curve " + curveID);
+
             fireEvent(new GuiEventsMove(this, new double[]{x, y}, selectPoint, curveID));
         } catch (Exception e) {
             System.out.println("Please enter a proper location " + e);
@@ -249,10 +254,10 @@ public class Canvas extends JPanel implements ActionListener {
     }
 
     private void drawGrid(Graphics2D g) {
-        for (int i = -1000; i < 1000; i++) {
+        for (int i = -500; i < 500; i++) {
             g.setColor(Color.lightGray);
-            g.fill(new Rectangle2D.Double(x(-Integer.MAX_VALUE / 2), y(gridSpacing * i), Integer.MAX_VALUE, 1));
-            g.fill(new Rectangle2D.Double(x(gridSpacing * i), y(Integer.MAX_VALUE / 2), 1, Integer.MAX_VALUE));
+            g.fill(new Rectangle2D.Double((int) x(-Integer.MAX_VALUE / 4), (int) y(gridSpacing * i), Integer.MAX_VALUE / 2, 1));
+            g.fill(new Rectangle2D.Double((int) x(gridSpacing * i), (int) y(Integer.MAX_VALUE / 4), 1, Integer.MAX_VALUE / 2));
 
 //            g.draw(new Line2D.Double(x(-Double.MAX_VALUE), y(gridSpacing * i), x(Double.MAX_VALUE), y(gridSpacing * i)));
 //            g.draw(new Line2D.Double(x(gridSpacing * i), y(-Double.MAX_VALUE), x(gridSpacing * i), y(Double.MAX_VALUE)));

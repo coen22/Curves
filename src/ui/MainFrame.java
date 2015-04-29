@@ -34,6 +34,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
     private final SideBar SIDE_BAR;
     private final Controller CONTROLLER;
     private final boolean DEBUG = true;
+    private int selected = -1;
 
     /**
      * Default constructor
@@ -88,6 +89,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             SIDE_BAR.setCurves(tmpList);
             CANVAS.setControls(tmpList);
             System.out.println("Updating");
+            SIDE_BAR.updateInfo(new String[]{SIDE_BAR.getName(),SIDE_BAR});
         } else {
             System.out.println("Insufficient amount of curves");
         }
@@ -146,7 +148,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             System.out.println("Moving a point");
         }
         if (e.getSource().equals(CANVAS)) {
-            CONTROLLER.translate(e.getInfo()[0], e.getInfo()[1], e.getCurveID(), e.getPointID());
+            CONTROLLER.setPointLocation(e.getInfo()[0], e.getInfo()[1], e.getCurveID(), e.getPointID());
         } else {
             CONTROLLER.setPointLocation(e.getInfo()[0], e.getInfo()[1], e.getCurveID(), e.getPointID());
         }
@@ -202,6 +204,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         if (DEBUG) {
             System.out.println("Changing Current Line");
         }
+        selected = e.getCurveID();
         if (!e.getSource().getClass().equals(CANVAS.getClass())) {
             CANVAS.setCurrentLine(e.getCurveID());
         } else {
