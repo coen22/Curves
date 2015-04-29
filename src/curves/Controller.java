@@ -76,7 +76,8 @@ public class Controller {
     }
 
     public boolean openCurve(int curveIndex) {
-        return false;
+        curves.get(curveIndex).setClosed(false);
+        return curves.get(curveIndex).isClosed();
     }
 
     public int getCurveID(Curve curve) {
