@@ -21,6 +21,7 @@ public class CubicSpline extends Curve {
 	private int type;
 	private ArrayList<Point2D> plot;
 	private int divisions;
+	private double area;
 
 	public CubicSpline(Point2D point, String name, int type){
 		super(name);
@@ -33,6 +34,8 @@ public class CubicSpline extends Curve {
 	private void update() {
 		calcCoefficients();
 		calcPlot(divisions);
+		calcDerivatives();
+		calcExactArea();
 	}
 	
         @Override
@@ -216,12 +219,64 @@ public class CubicSpline extends Curve {
 			Ycoefficients[Ycoefficients.length-1][3] = ((Ycoefficients[0][2] - Ycoefficients[Ycoefficients.length-1][2])/3);
 		}
 		
-		System.out.println("---------------------area: " + area(1));
 	}
 	
 	//currently uses exact coefficient method
 	protected double area(int METHOD) {
-		calcDerivatives();
+		return this.area;
+	}
+	
+	private void calcExactArea(){
+		double[][] areaCoefficients = calcAreaFunctionCoefficients();
+		
+		areaCoefficients = calcIntegralCoefficients(areaCoefficients);
+		
+		
+		int cutoff = areaCoefficients.length-1;
+		if (type == CLOSED_SPLINE){
+			cutoff+= 1;
+		}
+		
+		double finalArea = 0;
+		
+		for (int i = 0; i < cutoff; i++){
+			finalArea += calcSubArea(areaCoefficients[i], 0.0, 1.0);
+		}
+		
+		this.area = Math.abs(finalArea);
+	}
+	
+	/**
+	 * Method used to calculate the numerical value of the area under a piece of the cubic spline. This method uses integrated form of the function y(t)*x'(t)
+	 * @param integratedCoefficients the 6 coefficients of the integrated function with powers ranging from t^1 to t^6
+	 * @param a lower bound
+	 * @param b upper bound
+	 * @return area of defined sub-section of spline
+	 */
+	private double calcSubArea(double[] integratedCoefficients, double a, double b){
+		double upper = ((((((integratedCoefficients[5] * b + integratedCoefficients[4]) * b + integratedCoefficients[3])* b + integratedCoefficients[2]) * b + integratedCoefficients[1]) * b + integratedCoefficients[0]) * b);
+		double lower = ((((((integratedCoefficients[5] * a + integratedCoefficients[4]) * a + integratedCoefficients[3])* a + integratedCoefficients[2]) * a + integratedCoefficients[1]) * a + integratedCoefficients[0]) * a);
+		return upper-lower;
+	}
+	
+	/**
+	 * 
+	 * @param coefficients the un-integrated coefficients of the polynomial function to be integrated. index 0 has power x^0, index n has x^n
+	 * @return returns the integrated matrix. index 0 has x^1 and index n has x^(n+1)
+	 */
+	private double[][] calcIntegralCoefficients(double[][] coefficients){
+		double[][] integratedCoefficients = new double[coefficients.length][6];
+		
+		for (int i = 0; i < coefficients.length; i++){
+			for (int k = 0; k < coefficients[0].length; k++){
+				integratedCoefficients[i][k] = coefficients[i][k] / (k+1);
+			}
+		}
+		
+		return integratedCoefficients;
+	}
+	
+	private double[][] calcAreaFunctionCoefficients(){
 		double[][] unintegratedCoefficients = new double[dYcoefficients.length][6];
 		
 		//finding coefficients of y(t)*x'(t)
@@ -234,52 +289,7 @@ public class CubicSpline extends Curve {
 			unintegratedCoefficients[i][5] = Ycoefficients[i][3]*dXcoefficients[i][2];
 		}
 		
-		double[][] integratedCoefficients = calcAreaIntegral(unintegratedCoefficients);
-		
-		
-		int cutoff = integratedCoefficients.length-1;
-		if (type == CLOSED_SPLINE){
-			cutoff+= 1;
-		}
-		
-//		double dXdiscriminant;
-		double finalArea = 0;
-		
-		for (int i = 0; i < cutoff; i++){
-			finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-		}
-		
-		return Math.abs(finalArea);
-	}
-	
-	/**
-	 * Method used to calculate the numerical value of the area under a piece of the cubic spline. This method uses integrated form of the function y(t)*x'(t)
-	 * @param integratedCoefficients the 6 coefficients of the integrated function with powers ranging from t^1 to t^6
-	 * @param a lower bound
-	 * @param b upper bound
-	 * @return area of defined sub-section of spline
-	 */
-	private double calcArea(double[] integratedCoefficients, double a, double b){
-		double upper = ((((((integratedCoefficients[5] * b + integratedCoefficients[4]) * b + integratedCoefficients[3])* b + integratedCoefficients[2]) * b + integratedCoefficients[1]) * b + integratedCoefficients[0]) * b);
-		double lower = ((((((integratedCoefficients[5] * a + integratedCoefficients[4]) * a + integratedCoefficients[3])* a + integratedCoefficients[2]) * a + integratedCoefficients[1]) * a + integratedCoefficients[0]) * a);
-		return upper-lower;
-	}
-	
-	/**
-	 * 
-	 * @param coefficients the un-integrated coefficients of the polynomial function to be integrated. index 0 has power x^0, index n has x^n
-	 * @return returns the integrated matrix. index 0 has x^1 and index n has x^(n+1)
-	 */
-	private double[][] calcAreaIntegral(double[][] coefficients){
-		double[][] integratedCoefficients = new double[coefficients.length][6];
-		
-		for (int i = 0; i < coefficients.length; i++){
-			for (int k = 0; k < coefficients[0].length; k++){
-				integratedCoefficients[i][k] = coefficients[i][k] / (k+1);
-			}
-		}
-		
-		return integratedCoefficients;
+		return unintegratedCoefficients;
 	}
 	
 	/**
