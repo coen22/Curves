@@ -22,6 +22,7 @@ public class CubicSpline extends Curve {
 	private ArrayList<Point2D> plot;
 	private int divisions;
 	private double area;
+	private double length;
 
 	public CubicSpline(Point2D point, String name, int type){
 		super(name);
@@ -36,6 +37,7 @@ public class CubicSpline extends Curve {
 		calcPlot(divisions);
 		calcDerivatives();
 		calcExactArea();
+		calcArcLength();
 	}
 	
         @Override
@@ -310,6 +312,60 @@ public class CubicSpline extends Curve {
 			}
 		}
 		
+	}
+	
+	public void tester(){
+		System.out.println(printMatrix(dXcoefficients, "dx"));
+		System.out.println(printMatrix(dYcoefficients, "dy"));
+	}
+	
+	@Override
+	protected double length(int METHOD) {
+		return this.length;
+	}
+	
+	private void calcArcLength(){
+		double tmpLength = 0;
+		for (int i = 0; i < dXcoefficients.length-1; i++){
+			tmpLength += simpsonEvaluation(dXcoefficients[i], dYcoefficients[i], 0, 1, 12);
+		}
+		if (type == CLOSED_SPLINE){
+			tmpLength += simpsonEvaluation(dXcoefficients[dXcoefficients.length-1], dYcoefficients[dYcoefficients.length-1], 0, 1, 12);
+		}
+		this.length = tmpLength;
+	}
+	
+	private double simpsonEvaluation(double[] dxCoefs, double[] dyCoefs, double lower, double higher, int n){
+		double h = (higher-lower) / n;
+		double sum = 0;
+		
+		sum += evaluateArcLengthFunction(dxCoefs, dyCoefs, lower);
+		sum += evaluateArcLengthFunction(dxCoefs, dyCoefs, higher);
+		
+		for (int i = 1; i < n; i+=2){
+			sum += 4*evaluateArcLengthFunction(dxCoefs, dyCoefs, (lower + (i * h)));
+		}
+		
+		for (int i = 2; i < n; i+=2){
+			sum += 2*evaluateArcLengthFunction(dxCoefs, dyCoefs, (lower + (i * h)));
+		}
+		
+		return (sum * (h/3));
+	}
+	
+	/**
+	 * evaluates the functional value of the function which when integrated gives the arc-length of a parametric curve. 
+	 * @param dxCoefs the coefficients of the derivative of the x-spline
+	 * @param dyCoefs the coefficients of the derivative of the y-spline
+	 * @param x the x-value at which the function should be evaluated
+	 * @return the result
+	 */
+	private double evaluateArcLengthFunction(double[] dxCoefs, double[] dyCoefs, double x){
+		double dx2 = dxCoefs[0] + x*(dxCoefs[1] + x*dxCoefs[2]);
+		double dy2 = dyCoefs[0] + x*(dyCoefs[1] + x*dyCoefs[2]);
+		dx2 = dx2 * dx2;
+		dy2 = dy2 * dy2;
+		return Math.sqrt(dx2+dy2);
 	}
 	
 	//Gaussian elimination with partial pivoting
