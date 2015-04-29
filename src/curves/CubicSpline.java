@@ -19,34 +19,41 @@ public class CubicSpline extends Curve {
 	private double[][] dYcoefficients;
 	
 	private int type;
+	private ArrayList<Point2D> plot;
+	private int divisions;
 
 	public CubicSpline(Point2D point, String name, int type){
 		super(name);
 		add(point.getX(), point.getY());
 		this.type = type;
+		divisions = 1;
+		update();
+	}
+	
+	private void update() {
 		calcCoefficients();
+		calcPlot(divisions);
 	}
 	
         @Override
 	protected void setPoint(int index, double x, double y) {
 		super.setPoint(index, x, y);
-		calcCoefficients();
+		update();
 	}
 	
 	public void setClosed(boolean closed) {
 		if (closed == true && super.isClosed() == false){
 			type = CLOSED_SPLINE;
-			calcCoefficients();
 			super.setClosed(closed);
 		}
 		else if (closed == false && super.isClosed() == true){
 			type = NATURAL_SPLINE;
-			calcCoefficients();
 			super.setClosed(closed);
 		}
+		update();
 	}
-
-	public ArrayList<Point2D> getPlot(int subPoints) {
+	
+	private void calcPlot(int subPoints) {
 		ArrayList<Point2D> plottingPoints = new ArrayList<Point2D>();
 		
 		double tInterval = (1 / (double)subPoints);
@@ -66,17 +73,31 @@ public class CubicSpline extends Curve {
 		if (type != CLOSED_SPLINE){
 			plottingPoints.add(super.points.get(super.points.size()-1));
 		}
+		else {
+			plottingPoints.add(super.points.get(0));
+		}
 		
-		return plottingPoints;
+		this.plot = plottingPoints;
+	}
+
+	public ArrayList<Point2D> getPlot(int subPoints) {
+		if (subPoints == divisions){
+			return plot;
+		}
+		else {
+			System.out.println("plotting points: " + subPoints);
+			divisions = subPoints;
+			update();
+			return plot;
+		}
 	}
 	
 	public int add(double x, double y){
 		int i = super.add(x, y);
-		calcCoefficients();
+		update();
 		return i;
 	}
 	
-	//MUST BE MADE PRIVATE AT THE END, ONLY FOR DEBUGGING NOW
 	//currently works for natural spline & closed
 	private void calcCoefficients(){
 		double[][] CMatrixX = new double[super.points.size()][super.points.size()];
@@ -194,6 +215,8 @@ public class CubicSpline extends Curve {
 			Xcoefficients[Xcoefficients.length-1][3] = ((Xcoefficients[0][2] - Xcoefficients[Xcoefficients.length-1][2])/3);
 			Ycoefficients[Ycoefficients.length-1][3] = ((Ycoefficients[0][2] - Ycoefficients[Ycoefficients.length-1][2])/3);
 		}
+		
+		System.out.println("---------------------area: " + area(1));
 	}
 	
 	//currently uses exact coefficient method
@@ -219,135 +242,27 @@ public class CubicSpline extends Curve {
 			cutoff+= 1;
 		}
 		
-		double dXdiscriminant;
+//		double dXdiscriminant;
 		double finalArea = 0;
+		
 		for (int i = 0; i < cutoff; i++){
-			dXdiscriminant = calcDiscriminantQuadratic(dXcoefficients[i]);
 			finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-			/*
-			if (dXdiscriminant > 0){ //there two real roots, both might have to be considered
-				double[] roots = calcTwoRoots(dXcoefficients[i], dXdiscriminant);
-				
-				if (roots[0] >= 1 || roots[1] <= 0 || (roots[0] <= 0 && roots[1] >= 1)){ //both roots are irrelevant and the standard area can be taken
-					if (evaluateAtT(dXcoefficients[i], 0.5) > 0){
-						finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-					}
-					else {
-						finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-					}
-					
-				}
-				else if (roots[0] > 0 && roots[1] < 1){ //both roots are within the area and must be considered
-					if (evaluateAtT(dXcoefficients[i], (roots[0]/2)) > 0){
-//						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[0]);
-//						finalArea += calcArea(integratedCoefficients[i], roots[0], roots[1]);
-//						finalArea += calcArea(integratedCoefficients[i], roots[1], 1.0);
-						finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-					}
-					else {
-//						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[0]);
-//						finalArea += calcArea(integratedCoefficients[i], roots[0], roots[1]);
-//						finalArea += calcArea(integratedCoefficients[i], roots[1], 1.0);
-						finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-					}
-					
-				}
-				else if (roots[0] > 0){ //only the lower root is relevant
-					if (evaluateAtT(dXcoefficients[i], (roots[0]/2)) > 0){
-						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[0]);
-						finalArea += calcArea(integratedCoefficients[i], roots[0], 1.0);
-					}
-					else {
-						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[0]);
-						finalArea += calcArea(integratedCoefficients[i], roots[0], 1.0);
-					}
-					
-				}
-				else {//only the upper root is relevant
-					if (evaluateAtT(dXcoefficients[i], (roots[1]/2)) > 0){
-						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[1]);
-						finalArea += calcArea(integratedCoefficients[i], roots[1], 1.0);
-					}
-					else {
-						finalArea += calcArea(integratedCoefficients[i], 0.0, roots[1]);
-						finalArea += calcArea(integratedCoefficients[i], roots[1], 1.0);
-					}
-					
-				}
-			}
-			else if (dXdiscriminant == 0 && dXcoefficients[i][2] != 0){//there is one real root, both might have to be considered
-				double root = calcSingleRoot(dXcoefficients[i]);
-				if (root > 0 && root < 1){
-					if (evaluateAtT(dXcoefficients[i], (root/2)) > 0){
-						finalArea += calcArea(integratedCoefficients[i], 0.0, root);
-						finalArea -= calcArea(integratedCoefficients[i], root, 1.0);
-					}
-					else {
-						finalArea -= calcArea(integratedCoefficients[i], 0.0, root);
-						finalArea += calcArea(integratedCoefficients[i], root, 1.0);
-					}
-				}
-				else {
-					if (evaluateAtT(dXcoefficients[i], 0.5) > 0){
-						finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-					}
-					else {
-						finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-					}
-				}
-			}
-			else { //there are no real roots of dx, integrate
-				if (evaluateAtT(dXcoefficients[i], 0.5) > 0){
-					finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-				}
-				else {
-					finalArea += calcArea(integratedCoefficients[i], 0.0, 1.0);
-				}
-			}*/
 		}
 		
-//		return Math.abs(finalArea);
-		return finalArea;
+		return Math.abs(finalArea);
 	}
 	
-	private double evaluateAtT(double[] function, double t){
-		if (function.length > 1){
-			double value = (function[function.length-1] * t) + function[function.length-2];
-			for (int i = function.length-3; i >= 0; i--){
-				value = (value * t) + function[i];
-			}
-			return value;
-		}
-		else {
-			return t;
-		}
-	}
-	
+	/**
+	 * Method used to calculate the numerical value of the area under a piece of the cubic spline. This method uses integrated form of the function y(t)*x'(t)
+	 * @param integratedCoefficients the 6 coefficients of the integrated function with powers ranging from t^1 to t^6
+	 * @param a lower bound
+	 * @param b upper bound
+	 * @return area of defined sub-section of spline
+	 */
 	private double calcArea(double[] integratedCoefficients, double a, double b){
 		double upper = ((((((integratedCoefficients[5] * b + integratedCoefficients[4]) * b + integratedCoefficients[3])* b + integratedCoefficients[2]) * b + integratedCoefficients[1]) * b + integratedCoefficients[0]) * b);
 		double lower = ((((((integratedCoefficients[5] * a + integratedCoefficients[4]) * a + integratedCoefficients[3])* a + integratedCoefficients[2]) * a + integratedCoefficients[1]) * a + integratedCoefficients[0]) * a);
 		return upper-lower;
-	}
-	
-	private double calcDiscriminantQuadratic(double[] quadratic){
-		return ((quadratic[1] * quadratic[1]) - (4 * quadratic[0] * quadratic[2]));
-	}
-	
-	private double[] calcTwoRoots(double[] quadratic, double discriminant){
-		double x1 = ((-1 * quadratic[1]) - (Math.sqrt(discriminant)))/(2.0*quadratic[2]);
-		double x2 = ((-1 * quadratic[1]) + (Math.sqrt(discriminant)))/(2.0*quadratic[2]);
-		if (x1 < x2){
-			double[] roots = {x1, x2};
-			return roots;
-		}
-		else {
-			double[] roots = {x2, x1};
-			return roots;
-		}
-	}
-	
-	private double calcSingleRoot(double[] quadratic){
-		return ((-1 * quadratic[1])/(2*quadratic[2]));
 	}
 	
 	/**
@@ -367,6 +282,9 @@ public class CubicSpline extends Curve {
 		return integratedCoefficients;
 	}
 	
+	/**
+	 * this method calculates the derivative coefficients using calculus methods, as it is a trivial polynomial
+	 */
 	private void calcDerivatives(){
 		dXcoefficients = new double[Xcoefficients.length][3];
 		dYcoefficients = new double[Ycoefficients.length][3];
