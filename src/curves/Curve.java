@@ -74,7 +74,7 @@ public abstract class Curve {
 		area += listOfPoints.get(listOfPoints.size() - 1).getX() * listOfPoints.get(0).getY() -
 				listOfPoints.get(0).getX() * listOfPoints.get(listOfPoints.size() - 1).getY();
     	
-    	return area/2;
+    	return Math.abs(area/2);
     }
     
     protected double pythagoreanLength(){

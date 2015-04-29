@@ -224,7 +224,8 @@ public class CubicSpline extends Curve {
 	//currently uses exact coefficient method
 	protected double area(int METHOD) {
 		if (METHOD == 3){
-			super.
+			double a = super.shoeLaceArea();
+			System.out.println("Shoelace area: " + a);
 		}
 		return this.area;
 	}
