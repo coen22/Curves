@@ -317,6 +317,17 @@ public class CubicSpline extends Curve {
 	public void tester(){
 		System.out.println(printMatrix(dXcoefficients, "dx"));
 		System.out.println(printMatrix(dYcoefficients, "dy"));
+		
+		long start = System.nanoTime();
+		System.out.println("simpson: " + simpsonEvaluation(0, 0, 1, 10));
+		long end = System.nanoTime();
+		System.out.println("time: " + (end-start));
+		start = System.nanoTime();
+		System.out.println("trapezoid: " + rombergEvaluation(0, 0, 1, 5));
+		end = System.nanoTime();
+		System.out.println("time: " + (end-start));
+		
+		rombergEvaluation(0, 0, 1, 10);
 	}
 	
 	@Override
@@ -325,29 +336,60 @@ public class CubicSpline extends Curve {
 	}
 	
 	private void calcArcLength(){
+		calcArcLengthSimpson();
+	}
+	
+	private void calcArcLengthSimpson(){
 		double tmpLength = 0;
 		for (int i = 0; i < dXcoefficients.length-1; i++){
-			tmpLength += simpsonEvaluation(dXcoefficients[i], dYcoefficients[i], 0, 1, 12);
+			tmpLength += simpsonEvaluation(i, 0, 1, 12);
 		}
 		if (type == CLOSED_SPLINE){
-			tmpLength += simpsonEvaluation(dXcoefficients[dXcoefficients.length-1], dYcoefficients[dYcoefficients.length-1], 0, 1, 12);
+			tmpLength += simpsonEvaluation(dYcoefficients.length-1, 0, 1, 12);
 		}
 		this.length = tmpLength;
 	}
 	
-	private double simpsonEvaluation(double[] dxCoefs, double[] dyCoefs, double lower, double higher, int n){
+	private double rombergEvaluation(int piece, double lower, double higher, int n){
+		double[][] rombergMatrix = new double[n][n];
+		for (int i = 0; i < n; i++){
+			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, i+1);
+		}
+		double pow;
+		for (int i = 1; i < n; i++){
+			for (int k = i; k < n; k++){
+				pow = Math.pow(4, i);
+				rombergMatrix[k][i] = (pow/(pow-1))*rombergMatrix[k][i-1] - (1/(pow-1))*rombergMatrix[k-1][i-1];
+			}
+		}
+		return rombergMatrix[n-1][n-1];
+	}
+	
+	private double trapezoidEvaluation(int piece, double lower, double higher, int n){
 		double h = (higher-lower) / n;
 		double sum = 0;
 		
-		sum += evaluateArcLengthFunction(dxCoefs, dyCoefs, lower);
-		sum += evaluateArcLengthFunction(dxCoefs, dyCoefs, higher);
+		sum += 0.5 * evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], lower);
+		sum += 0.5 * evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], higher);
+		for (int i = 1; i <= (n-1); i++){
+			sum += evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], lower + (h*(i-1)));
+		}
+		return sum*h;
+	}
+	
+	private double simpsonEvaluation(int piece, double lower, double higher, int n){
+		double h = (higher-lower) / n;
+		double sum = 0;
+		
+		sum += evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], lower);
+		sum += evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], higher);
 		
 		for (int i = 1; i < n; i+=2){
-			sum += 4*evaluateArcLengthFunction(dxCoefs, dyCoefs, (lower + (i * h)));
+			sum += 4*evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], (lower + (i * h)));
 		}
 		
 		for (int i = 2; i < n; i+=2){
-			sum += 2*evaluateArcLengthFunction(dxCoefs, dyCoefs, (lower + (i * h)));
+			sum += 2*evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], (lower + (i * h)));
 		}
 		
 		return (sum * (h/3));
