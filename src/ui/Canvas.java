@@ -256,13 +256,10 @@ public class Canvas extends JPanel implements ActionListener {
     private void drawGrid(Graphics2D g) {
         for (int i = -500; i < 500; i++) {
             g.setColor(Color.lightGray);
-            g.fill(new Rectangle2D.Double((int) x(-Integer.MAX_VALUE / 4), (int) y(gridSpacing * i), Integer.MAX_VALUE / 2, 1));
-            g.fill(new Rectangle2D.Double((int) x(gridSpacing * i), (int) y(Integer.MAX_VALUE / 4), 1, Integer.MAX_VALUE / 2));
-
-//            g.draw(new Line2D.Double(x(-Double.MAX_VALUE), y(gridSpacing * i), x(Double.MAX_VALUE), y(gridSpacing * i)));
-//            g.draw(new Line2D.Double(x(gridSpacing * i), y(-Double.MAX_VALUE), x(gridSpacing * i), y(Double.MAX_VALUE)));
-            g.drawString(Double.toString(i * gridSpacing), (int) x(i * gridSpacing + 5), (int) y(0));
-            g.drawString(Double.toString(i * gridSpacing), (int) x(5), (int) y(i * gridSpacing));
+            g.drawLine(Integer.MAX_VALUE*-1, (int)y(gridSpacing*i), Integer.MAX_VALUE,(int)y(gridSpacing*i));
+            g.drawLine((int)x(gridSpacing*i),Integer.MAX_VALUE*-1, (int)x(gridSpacing*i), Integer.MAX_VALUE);
+            g.drawString(Double.toString(i * gridSpacing), (int) x(i * gridSpacing + 5), (int) y(0)-2);
+            g.drawString(Double.toString(i * gridSpacing), (int) x(5), (int) y(i * gridSpacing)-2);
         }
     }
 

@@ -317,17 +317,19 @@ public class CubicSpline extends Curve {
 	public void tester(){
 		System.out.println(printMatrix(dXcoefficients, "dx"));
 		System.out.println(printMatrix(dYcoefficients, "dy"));
-		
+		int testvalue = 12;
 		long start = System.nanoTime();
-		System.out.println("simpson: " + simpsonEvaluation(0, 0, 1, 10));
+		double simpson = simpsonEvaluation(1, 0, 1, testvalue*18);
 		long end = System.nanoTime();
-		System.out.println("time: " + (end-start));
-		start = System.nanoTime();
-		System.out.println("trapezoid: " + rombergEvaluation(0, 0, 1, 5));
-		end = System.nanoTime();
-		System.out.println("time: " + (end-start));
+		System.out.println("simpson: " + simpson + ". time: " + (end-start));
 		
-		rombergEvaluation(0, 0, 1, 10);
+		start = System.nanoTime();
+		double romberg = rombergEvaluation(1, 0, 1, testvalue);
+		end = System.nanoTime();
+		System.out.println("romberg: " + romberg + ". time: " + (end-start));
+		
+		System.out.println("exact simpson: " + simpsonEvaluation(1, 0, 1, 100000));
+		System.out.println("exact romberg: " + rombergEvaluation(1, 0, 1, 250));
 	}
 	
 	@Override
@@ -372,7 +374,7 @@ public class CubicSpline extends Curve {
 		sum += 0.5 * evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], lower);
 		sum += 0.5 * evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], higher);
 		for (int i = 1; i <= (n-1); i++){
-			sum += evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], lower + (h*(i-1)));
+			sum += evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], lower + (h*i));
 		}
 		return sum*h;
 	}
