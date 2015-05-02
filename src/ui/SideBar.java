@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,7 +18,12 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+<<<<<<< HEAD
 import ui.events.*;
+=======
+import ui.Events.GuiEventsMove;
+import ui.Events.GuiEventsRefresh;
+>>>>>>> parent of 107da63... Can select Points
 
 /**
  * The sidebar which shows the data input grid and other controls
@@ -35,15 +39,12 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     private JCheckBox checkBox;
     private boolean visiblity;
     private ArrayList<List<Point2D>> controlPoints;
-    private boolean updating1 = false;
-    private boolean updating2 = true;
+    private boolean updating;
     private final boolean DEBUG = true;
     private final List<GuiEventListner> LISTENER = new ArrayList<GuiEventListner>();
     private JPanel info;
     private String[] curveInfo;
     private JLabel[] infoText;
-    private int numberOfCurve;
-    JComboBox<String> cb;
 
     /**
      * The constructor of the side bar
@@ -53,37 +54,43 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         init1();
     }
 
-    public void setNumberOfCurve(int numberOfCurve) {
-        this.numberOfCurve = numberOfCurve;
-    }
-
     /**
      * Sets the control poi nts
      *
      * @param controlPoints The control points to be passed
      */
     protected void setCurves(ArrayList<List<Point2D>> controlPoints) {
-        if (curveID == -1) {
-        } else {
-//            curveID = controlPoints.size() - 1;
-            this.controlPoints = controlPoints;
-            while (this.controlPoints.get(curveID).size() >= mod.getRowCount()) {
-                mod.addRow(new Object[]{0d, 0d, 0d});
-            }
-            updating1 = true;
-            updateTableFull();
-            updating1 = false;
+        curveID = controlPoints.size() - 1;
+        this.controlPoints = controlPoints;
+        while (this.controlPoints.get(curveID).size() >= mod.getRowCount()) {
+            mod.addRow(new Object[]{0d, 0d, 0d});
         }
+        updating = true;
+        updateTableFull();
+        updating = false;
     }
 
     protected void setCurveID(int curveID) {
         this.curveID = curveID;
-        updating1 = true;
         updateTableFull();
-        updating1 = false;
+    }
+
+    protected void updateTable() {
+
+        if (curveID < controlPoints.size()) {
+            List<Point2D> curve = controlPoints.get(curveID);
+            int counter = 0;
+            for (Point2D point : curve) {
+                mod.setValueAt(point.getX(), counter, 1);
+                mod.setValueAt(point.getY(), counter, 2);
+                mod.setValueAt(counter, counter, 0);
+                counter++;
+            }
+        }
     }
 
     protected void updateTableFull() {
+
         if (curveID < controlPoints.size()) {
             List<Point2D> curve = controlPoints.get(curveID);
             int counter = 0;
@@ -109,6 +116,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         checkBox = new JCheckBox("Set Invisible");
         checkBox.setHorizontalAlignment(SwingConstants.CENTER);
         checkBox.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 fireEvent(new GuiEventsVisibility(this, visiblity));
@@ -117,21 +125,6 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         });
         checkBox.setToolTipText("Sets all other line to not be visible");
         controls.add(checkBox);
-        cb = new JComboBox<>(new String[]{""});
-        cb.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println(e.getActionCommand());
-                if (e.getSource() == cb && cb.getItemCount() != 0 && !updating2) {
-                    System.out.println("hello?");
-                    fireEvent(new GuiEventsCurrent(this, cb.getSelectedIndex()));
-                    curveID = cb.getSelectedIndex();
-                }
-            }
-        });
-        controls.add(cb);
-
         curveInfo = new String[5];
 
         JButton button = new JButton("Refresh");
@@ -155,7 +148,6 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         info = new JPanel(new GridLayout(6, 0));
         info.setToolTipText("Information about the line");
         for (JLabel infoText1 : infoText) {
-            infoText1.setHorizontalAlignment(SwingConstants.CENTER);
             info.add(infoText1);
         }
         controls.add(info);
@@ -174,18 +166,10 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     protected void updateInfo(String[] info) {
-        updating2 = true;
         if (info.length == 5) {
             curveInfo = info;
         }
         updateInfoPanel();
-        cb.removeAllItems();
-        for (int i = 0; i < numberOfCurve; i++) {
-            cb.addItem(Integer.toString(i + 1));
-        }
-        System.out.println(curveID);
-        cb.setSelectedIndex(curveID);
-        updating2 = false;
     }
 
     private void updateInfoPanel() {
@@ -206,7 +190,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
     @Override
     public void tableChanged(TableModelEvent e) {
-        if (!updating1) {
+        if (!updating) {
             int row = e.getFirstRow();
             System.out.println(row);
             double fir = mod.getValueAt(row, 1);

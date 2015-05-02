@@ -9,14 +9,14 @@ public interface GuiEventListner {
 
     /**
      * Passes the event to correct event handler
-     *
+     * 
      * @param e The General GUI event
      */
     public void actionPerformed(GuiEvents e);
 
     /**
      * Handle the creation of new Curve
-      * 
+     * 
      * @param e The create event
      */
     public void handleCreate(GuiEventsCreate e);

@@ -106,6 +106,7 @@ public class Controller {
     }
 
     public void addLastPoint(double x, double y, int curveIndex) {
+        System.out.println("Adding last point");
         curves.get(curveIndex).add(x, y);
     }
 
