@@ -20,7 +20,7 @@ public class BezierSpline extends Curve {
     public ArrayList<Point2D> getPlot(int interval) {
         ArrayList<Point2D> plot = new ArrayList<Point2D>();
 
-        for (int i = 0; i < points.size() - 2; i += 3) {
+        for (int i = 0; i < points.size() - ((closed) ? 2 : 3); i += 3) {
             for (int j = 1; j <= interval; j++) {
                 plot.add(calculatePoint(i, j / (float) interval));
             }

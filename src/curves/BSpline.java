@@ -13,7 +13,7 @@ public class BSpline extends Curve {
 	public ArrayList<Point2D> getPlot(int interval) {
 		ArrayList<Point2D> plot = new ArrayList<Point2D>();
 
-		for (int i = 2; i < points.size() + 2; i++) {
+		for (int i = 2; i < points.size() + ((closed) ? 2 : 1); i++) {
 			for (int j = 1; j <= interval; j++) {
 				plot.add(calcPoint(i, j / (float) interval));
 			}
