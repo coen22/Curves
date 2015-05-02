@@ -7,9 +7,10 @@ import java.util.ArrayList;
 public class Controller {
 
     public static final int POLYLINE = 1;
-    public static final int CUBIC_N = 2;
-    public static final int BEZIERSPLINE = 3;
-
+    public static final int CUBIC_N = 21;
+    public static final int BEZIERCURVE = 31;
+    public static final int BEZIERSPLINE = 32;
+    public static final int BEZIERSPLINECOLINEAR = 33;
     private ArrayList<Curve> curves = new ArrayList<Curve>();
 
     public Controller() {
@@ -44,29 +45,49 @@ public class Controller {
 
     public void createCurve(int TYPE, double x, double y, String name) {
         //created the constructor for polyline
-        if (TYPE == 1) {
+        if (TYPE == POLYLINE) {
             curves.add(new PolyLine(new Point2D.Double(x, y), name));
             System.out.println("Polyline Created");
-        } else if (TYPE == 2) {
+        } else if (TYPE == CUBIC_N) {
             curves.add(new CubicSpline(new Point2D.Double(x, y), name, CubicSpline.NATURAL_SPLINE));
             System.out.println("CubicLine Created");
-
+        } else if (TYPE == BEZIERCURVE) {
+            curves.add(new BezierCurve(new Point2D.Double(x, y), name));
+            System.out.println("Bezier Curve Created");
+        } else if (TYPE == BEZIERSPLINE) {
+            curves.add(new BezierSpline(name));
+            curves.get(curves.size() - 1).add(x, y);
+            System.out.println("Bezier Spline Created");
+        } else if (TYPE == BEZIERSPLINECOLINEAR) {
+            curves.add(new BezierSplineColinear(name));
+            curves.get(curves.size() - 1).add(x, y);
+            System.out.println("Bezier Spline Colinear Created");
         }
     }
 
     public Point2D removePoint(int CurveID, int PointID) {
-        //TO DO
-        return null;
+        return curves.get(CurveID).removePoint(PointID);
     }
 
     public void createCurve(int TYPE, double x, double y, String name, int cubicType) {
         //created the constructor for polyline
-        if (TYPE == 1) {
+        if (TYPE == POLYLINE) {
             curves.add(new PolyLine(new Point2D.Double(x, y), name));
-        } else if (TYPE == 2) {
+            System.out.println("Polyline Created");
+        } else if (TYPE == CUBIC_N) {
             curves.add(new CubicSpline(new Point2D.Double(x, y), name, cubicType));
-        } else if (TYPE == 3) {
-
+            System.out.println("CubicLine Created");
+        } else if (TYPE == BEZIERCURVE) {
+            curves.add(new BezierCurve(new Point2D.Double(x, y), name));
+            System.out.println("Bezier Curve Created");
+        } else if (TYPE == BEZIERSPLINE) {
+            curves.add(new BezierSpline(name));
+            curves.get(curves.size() - 1).add(x, y);
+            System.out.println("Bezier Spline Created");
+        } else if (TYPE == BEZIERSPLINECOLINEAR) {
+            curves.add(new BezierSplineColinear(name));
+            curves.get(curves.size() - 1).add(x, y);
+            System.out.println("Bezier Spline Colinear Created");
         }
     }
 

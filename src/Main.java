@@ -1,14 +1,18 @@
-import javax.swing.JFrame;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import ui.*;
 
 public class Main {
-	public static void main(String[] args) {
-		JFrame f = new JFrame();
-		Canvas c = new Canvas(1, 100);
-		
-		f.setContentPane(c);
-		f.setSize(800, 600);
-		f.setVisible(true);
-	}
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (UnsupportedLookAndFeelException ex) {
+            System.out.println(ex);
+        }
+        new MainFrame();
+    }
 }

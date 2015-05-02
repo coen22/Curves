@@ -1,9 +1,6 @@
 package ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import ui.Events.GuiEventListner;
 import ui.Events.GuiEvents;
@@ -137,12 +134,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         controls.add(button);
         button = new JButton("Help");
         button.setToolTipText("Shows a help diaglog");
-        button.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(controls, "Crtl Click to Add New Points" + "\n" + "Panning with shift click");
-            }
+        button.addActionListener((ActionEvent e) -> {
+            JOptionPane.showMessageDialog(controls, "Crtl Click to Add New Points" + "\n" + "Panning with shift click");
         });
         controls.add(button);
 
