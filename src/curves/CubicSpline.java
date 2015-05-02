@@ -32,6 +32,12 @@ public class CubicSpline extends Curve {
 		update();
 	}
 	
+	protected Point2D removePoint(int index) {
+    	Point2D returnPoint = super.removePoint(index);
+    	update();
+    	return returnPoint;
+    }
+	
 	private void update() {
 		calcCoefficients();
 		calcPlot(divisions);
