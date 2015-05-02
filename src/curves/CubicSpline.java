@@ -2,8 +2,6 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.List;
-
 
 public class CubicSpline extends Curve {
 	public static final int NATURAL_SPLINE = 1;

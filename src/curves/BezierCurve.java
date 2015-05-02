@@ -2,7 +2,6 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.List;
 
 /*
  * resource: http://pomax.github.io/bezierinfo/ 
