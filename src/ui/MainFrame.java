@@ -17,7 +17,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -89,7 +88,6 @@ public class MainFrame extends JFrame implements GuiEventListner {
             SIDE_BAR.setCurves(tmpList);
             CANVAS.setControls(tmpList);
             System.out.println("Updating");
-//            SIDE_BAR.updateInfo(new String[]{SIDE_BAR.getName(),SIDE_BAR});
         } else {
             System.out.println("Insufficient amount of curves");
         }
@@ -160,7 +158,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         if (DEBUG) {
             System.out.println("Deleting a point");
         }
-        System.out.println("Not supported yet.");
+        CONTROLLER.removePoint(e.getCurveID(), e.getPointID());
         update();
     }
 

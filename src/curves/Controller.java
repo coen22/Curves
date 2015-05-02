@@ -66,8 +66,7 @@ public class Controller {
     }
 
     public Point2D removePoint(int CurveID, int PointID) {
-        //TO DO
-        return null;
+        return curves.get(CurveID).removePoint(PointID);
     }
 
     public void createCurve(int TYPE, double x, double y, String name, int cubicType) {
@@ -75,11 +74,9 @@ public class Controller {
         if (TYPE == POLYLINE) {
             curves.add(new PolyLine(new Point2D.Double(x, y), name));
             System.out.println("Polyline Created");
-
         } else if (TYPE == CUBIC_N) {
             curves.add(new CubicSpline(new Point2D.Double(x, y), name, cubicType));
             System.out.println("CubicLine Created");
-
         } else if (TYPE == BEZIERCURVE) {
             curves.add(new BezierCurve(new Point2D.Double(x, y), name));
             System.out.println("Bezier Curve Created");
