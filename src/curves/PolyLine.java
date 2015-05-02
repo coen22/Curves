@@ -26,5 +26,18 @@ public class PolyLine extends Curve {
 			super.setClosed(closed);
 		}
 	}
-
+    
+    @Override
+    protected int add(double x, double y) {
+    	if (this.isClosed()){
+    		this.setClosed(false);
+    		this.points.add(new Point2D.Double(x, y));
+    		this.setClosed(true);
+    	}
+    	else {
+    		this.points.add(new Point2D.Double(x, y));
+    	}
+		return points.size() - 1;
+	}
+    
 }

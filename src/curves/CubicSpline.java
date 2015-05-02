@@ -32,6 +32,7 @@ public class CubicSpline extends Curve {
 		update();
 	}
 	
+	@Override
 	protected Point2D removePoint(int index) {
     	Point2D returnPoint = super.removePoint(index);
     	update();
