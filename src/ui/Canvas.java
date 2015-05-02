@@ -256,10 +256,10 @@ public class Canvas extends JPanel implements ActionListener {
     private void drawGrid(Graphics2D g) {
         for (int i = -500; i < 500; i++) {
             g.setColor(Color.lightGray);
-            g.drawLine(Integer.MAX_VALUE*-1, (int)y(gridSpacing*i), Integer.MAX_VALUE,(int)y(gridSpacing*i));
-            g.drawLine((int)x(gridSpacing*i),Integer.MAX_VALUE*-1, (int)x(gridSpacing*i), Integer.MAX_VALUE);
-            g.drawString(Double.toString(i * gridSpacing), (int) x(i * gridSpacing + 5), (int) y(0)-2);
-            g.drawString(Double.toString(i * gridSpacing), (int) x(5), (int) y(i * gridSpacing)-2);
+            g.drawLine(Integer.MAX_VALUE * -1, (int) y(gridSpacing * i), Integer.MAX_VALUE, (int) y(gridSpacing * i));
+            g.drawLine((int) x(gridSpacing * i), Integer.MAX_VALUE * -1, (int) x(gridSpacing * i), Integer.MAX_VALUE);
+            g.drawString(Double.toString(i * gridSpacing), (int) x(i * gridSpacing + 5), (int) y(0) - 2);
+            g.drawString(Double.toString(i * gridSpacing), (int) x(5), (int) y(i * gridSpacing) - 2);
         }
     }
 
@@ -341,7 +341,13 @@ public class Canvas extends JPanel implements ActionListener {
 
             if (tmp.getParent().equals(popup1)) {
                 if (e.getActionCommand().equals("New Line")) {
-                    String optionSelected = (String) JOptionPane.showInputDialog(this, "Please Select a Line Type", "Line Type", JOptionPane.QUESTION_MESSAGE, null, new String[]{"PolyLine", "Cubic Line", "Bezier Spline"}, null);
+                    String optionSelected = (String) JOptionPane.showInputDialog(this, "Please Select a Line Type", "Line Type", JOptionPane.QUESTION_MESSAGE, null, new String[]{
+                        "PolyLine",
+                        "Cubic Line Natural",
+                        "Bezier Curve",
+                        "Bezier Spline",
+                        "Bezier Spline Colinear"
+                    }, null);
                     if (optionSelected != null) {
                         String name = (String) JOptionPane.showInputDialog(this, "Please Give the Line a name", "Line Name", JOptionPane.QUESTION_MESSAGE);
                         if (name != null) {
@@ -351,11 +357,17 @@ public class Canvas extends JPanel implements ActionListener {
                                 case "PolyLine":
                                     fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.POLYLINE}, name));
                                     break;
-                                case "Cubic Line":
+                                case "Cubic Line Natural":
                                     fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.CUBIC_N}, name));
+                                    break;
+                                case "Bezier Curve":
+                                    fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BEZIERCURVE}, name));
                                     break;
                                 case "Bezier Spline":
                                     fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BEZIERSPLINE}, name));
+                                    break;
+                                case "Bezier Spline Colinear":
+                                    fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BEZIERSPLINECOLINEAR}, name));
                                     break;
                                 default:
                                     System.out.println("Option Panel is incorrect");
@@ -433,10 +445,9 @@ public class Canvas extends JPanel implements ActionListener {
 
     private void updateControls() {
         controlPoints = new ArrayList<>();
-        double size = 20;
-        size = size + size * (zoom / 1.1);
+        double size = 15;
         for (Point2D control : controls) {
-            controlPoints.add(new Ellipse2D.Double(x(control.getX()) - size / 2, y(control.getY() + size / 2), size, size));
+            controlPoints.add(new Ellipse2D.Double(x(control.getX()) - size / 2, y(control.getY()) - size / 2, size, size));
         }
     }
 }
