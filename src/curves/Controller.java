@@ -90,11 +90,7 @@ public class Controller {
     }
 
     public void addPoint(double x, double y, int curveIndex, int index) {
-
-    }
-
-    public void translate(double deltaX, double deltaY, int curveIndex, int pointIndex) {
-//        curves.get(curveIndex).translate(pointIndex, deltaX, deltaY);
+    	
     }
 
     public void setPointLocation(double x, double y, int curveIndex, int pointIndex) {

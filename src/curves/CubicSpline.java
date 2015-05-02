@@ -317,9 +317,9 @@ public class CubicSpline extends Curve {
 	public void tester(){
 		System.out.println(printMatrix(dXcoefficients, "dx"));
 		System.out.println(printMatrix(dYcoefficients, "dy"));
-		int testvalue = 12;
+		int testvalue = 9;
 		long start = System.nanoTime();
-		double simpson = simpsonEvaluation(1, 0, 1, testvalue*18);
+		double simpson = simpsonEvaluation(1, 0, 1, testvalue*80);
 		long end = System.nanoTime();
 		System.out.println("simpson: " + simpson + ". time: " + (end-start));
 		
@@ -329,7 +329,7 @@ public class CubicSpline extends Curve {
 		System.out.println("romberg: " + romberg + ". time: " + (end-start));
 		
 		System.out.println("exact simpson: " + simpsonEvaluation(1, 0, 1, 100000));
-		System.out.println("exact romberg: " + rombergEvaluation(1, 0, 1, 250));
+		System.out.println("exact romberg: " + rombergEvaluation(1, 0, 1, 20));
 	}
 	
 	@Override
@@ -355,8 +355,9 @@ public class CubicSpline extends Curve {
 	private double rombergEvaluation(int piece, double lower, double higher, int n){
 		double[][] rombergMatrix = new double[n][n];
 		for (int i = 0; i < n; i++){
-			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, i+1);
+			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, (int)Math.pow(2, i));
 		}
+//		System.out.println(printMatrix(rombergMatrix, "romberg"));
 		double pow;
 		for (int i = 1; i < n; i++){
 			for (int k = i; k < n; k++){
