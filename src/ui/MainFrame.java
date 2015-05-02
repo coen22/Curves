@@ -1,16 +1,5 @@
 package ui;
 
-import ui.Events.GuiEventsAdd;
-import ui.Events.GuiEventsOpen;
-import ui.Events.GuiEventListner;
-import ui.Events.GuiEvents;
-import ui.Events.GuiEventsClose;
-import ui.Events.GuiEventsDeleteC;
-import ui.Events.GuiEventsDeleteP;
-import ui.Events.GuiEventsMove;
-import ui.Events.GuiEventsVisibility;
-import ui.Events.GuiEventsCurrent;
-import ui.Events.GuiEventsCreate;
 import curves.Controller;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -20,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import ui.Events.GuiEventsRefresh;
+import ui.events.*;
 
 /**
  * The main frame to put everything on

@@ -1,12 +1,6 @@
 package ui;
 
 import curves.Controller;
-import ui.Events.GuiEventsAdd;
-import ui.Events.GuiEventListner;
-import ui.Events.GuiEventsClose;
-import ui.Events.GuiEvents;
-import ui.Events.GuiEventsCurrent;
-import ui.Events.GuiEventsCreate;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -30,10 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import ui.Events.GuiEventsDeleteP;
-import ui.Events.GuiEventsMove;
-import ui.Events.GuiEventsOpen;
-import ui.Events.GuiEventsRefresh;
+import ui.events.*;
 
 /**
  * The canvas in which to draw various elements of the UI, mostly focusing on

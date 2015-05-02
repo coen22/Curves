@@ -1,4 +1,4 @@
-package ui.Events;
+package ui.events;
 
 /**
  *

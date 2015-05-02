@@ -2,9 +2,6 @@ package ui;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
 import java.awt.GridLayout;
-import ui.Events.GuiEventListner;
-import ui.Events.GuiEvents;
-import ui.Events.GuiEventsVisibility;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
@@ -23,9 +20,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import ui.Events.GuiEventsCurrent;
-import ui.Events.GuiEventsMove;
-import ui.Events.GuiEventsRefresh;
+import ui.events.*;
 
 /**
  * The sidebar which shows the data input grid and other controls

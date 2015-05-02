@@ -1,4 +1,4 @@
-package ui.Events;
+package ui.events;
 
 /**
  * Event to handle the change in if the line is visible

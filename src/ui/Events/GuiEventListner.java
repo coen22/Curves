@@ -1,4 +1,4 @@
-package ui.Events;
+package ui.events;
 
 /**
  * Interface to handle the GUI Events

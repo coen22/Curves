@@ -13,7 +13,7 @@ public class PolyLine extends Curve {
 
     @Override
     protected ArrayList<Point2D> getPlot(int interval) {
-        return super.getPlot(interval);
+        return points;
     }
     
     public void setClosed(boolean closed) {
