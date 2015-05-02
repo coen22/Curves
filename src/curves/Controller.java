@@ -111,7 +111,7 @@ public class Controller {
     }
 
     public void addPoint(double x, double y, int curveIndex, int index) {
-    	
+
     }
 
     public void setPointLocation(double x, double y, int curveIndex, int pointIndex) {
@@ -121,5 +121,12 @@ public class Controller {
     public List<Point2D> getControlsPoints(int curveIndex) {
         return curves.get(curveIndex).getControlPoints();
     }
-
+    
+    public double curveArea(int curveID){
+        return curves.get(curveID).area(0);
+    }
+    
+    public double curveLength(int curveID){
+        return curves.get(curveID).length(0);
+    }
 }

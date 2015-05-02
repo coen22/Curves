@@ -16,6 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -86,6 +87,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
                 tmpList.add(CONTROLLER.getControlsPoints(i));
             }
             SIDE_BAR.setCurves(tmpList);
+            SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
             CANVAS.setControls(tmpList);
             System.out.println("Updating");
         } else {
@@ -104,6 +106,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
         }
         if (amount >= 0) {
+            SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
             CANVAS.setCurves(tmpList);
             System.out.println("UpdatingG");
         } else {

@@ -28,13 +28,19 @@ public abstract class Curve {
     }
 	
 	protected double length(int METHOD) {
+            if(METHOD == 0){
+                return pythagoreanLength();
+            }
 		return Double.NaN;
 	}
 
 	protected double area(int METHOD) {
-		return Double.NaN;
-	}
-	
+            if (METHOD == 0) {
+                return shoeLaceArea();
+            }
+            return Double.NaN;
+        }
+
 	protected boolean isClosed() {
 		return closed;
 	}
@@ -81,10 +87,10 @@ public abstract class Curve {
     	double length = 0;
     	List<Point2D> listOfPoints = getPlot(numberOfPoints());
     	
-    	if (listOfPoints.isEmpty() || listOfPoints.size() == 1)
+    	if (listOfPoints.isEmpty() || listOfPoints.size() == 1){
     		return 0;
-    	
-		for (int i = 0; i < listOfPoints.size() - 1; i++)
+        }
+		for (int i = 1; i < listOfPoints.size() - 1; i++)
 			length += Math.sqrt(Math.pow(listOfPoints.get(i).getX() - listOfPoints.get(i - 1).getX(), 2) +
 								Math.pow(listOfPoints.get(i).getY() - listOfPoints.get(i - 1).getY(), 2));
 		if (closed)

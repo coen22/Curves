@@ -1,6 +1,5 @@
 package ui;
 
-import java.awt.Component;
 import java.awt.GridLayout;
 import ui.Events.GuiEventListner;
 import ui.Events.GuiEvents;
@@ -42,7 +41,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     private boolean updating;
     private final boolean DEBUG = true;
     private final List<GuiEventListner> LISTENER = new ArrayList<GuiEventListner>();
-    JPanel info;
+    private JPanel info;
+    private String[] curveInfo;
+    private JLabel[] infoText;
 
     /**
      * The constructor of the side bar
@@ -74,6 +75,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     protected void updateTable() {
+
         if (curveID < controlPoints.size()) {
             List<Point2D> curve = controlPoints.get(curveID);
             int counter = 0;
@@ -87,6 +89,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     protected void updateTableFull() {
+
         if (curveID < controlPoints.size()) {
             List<Point2D> curve = controlPoints.get(curveID);
             int counter = 0;
@@ -121,6 +124,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         });
         checkBox.setToolTipText("Sets all other line to not be visible");
         controls.add(checkBox);
+        curveInfo = new String[5];
 
         JButton button = new JButton("Refresh");
         button.setToolTipText("Refresh all the data");
@@ -139,14 +143,12 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         });
         controls.add(button);
 
-        info = new JPanel();
+        infoText = new JLabel[]{new JLabel("Name"), new JLabel("Area"), new JLabel("Length"), new JLabel("Number Of control points"), new JLabel("Zoom Level")};
+        info = new JPanel(new GridLayout(6, 0));
         info.setToolTipText("Information about the line");
-        info.add(new JLabel("Name"));
-        info.add(new JLabel("Area"));
-        info.add(new JLabel("Length"));
-        info.add(new JLabel("Number Of control points"));
-        info.add(new JLabel("Zoom Level"));
-
+        for (JLabel infoText1 : infoText) {
+            info.add(infoText1);
+        }
         controls.add(info);
         init2();
 
@@ -163,14 +165,18 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     protected void updateInfo(String[] info) {
-        Component[] com = this.info.getComponents();
-        int j = 0;
-        for (int i = 0; i < com.length; i++) {
-            if (com[i] instanceof JLabel) {
-                j++;
-                ((JLabel) (com[i])).setText(info[j]);
-            }
+        if (info.length == 5) {
+            curveInfo = info;
         }
+        updateInfoPanel();
+    }
+
+    private void updateInfoPanel() {
+        infoText[0].setText("Name " + curveInfo[0]);
+        infoText[1].setText("Area " + curveInfo[1]);
+        infoText[2].setText("Length " + curveInfo[2]);
+        infoText[3].setText("Number Of control points " + curveInfo[3]);
+        infoText[4].setText("Zoom Level " + curveInfo[4]);
 
     }
 
