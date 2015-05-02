@@ -104,7 +104,6 @@ public class Canvas extends JPanel implements ActionListener {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-
             }
 
             @Override
@@ -182,15 +181,11 @@ public class Canvas extends JPanel implements ActionListener {
             }
         });
 
-        addMouseWheelListener(new MouseWheelListener() {
-
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (Math.signum(e.getPreciseWheelRotation()) == 1) {
-                    setZoom(Math.abs(getZoom() / (e.getPreciseWheelRotation() * 1.05)));
-                } else {
-                    setZoom(Math.abs(e.getPreciseWheelRotation() * 1.05 * getZoom()));
-                }
+        addMouseWheelListener((MouseWheelEvent e) -> {
+            if (Math.signum(e.getPreciseWheelRotation()) == 1) {
+                setZoom(Math.abs(getZoom() / (e.getPreciseWheelRotation() * 1.05)));
+            } else {
+                setZoom(Math.abs(e.getPreciseWheelRotation() * 1.05 * getZoom()));
             }
         });
 
@@ -350,7 +345,6 @@ public class Canvas extends JPanel implements ActionListener {
                         String name = (String) JOptionPane.showInputDialog(this, "Please Give the Line a name", "Line Name", JOptionPane.QUESTION_MESSAGE);
                         if (name != null) {
                             curveID++;
-                            fireEvent(new GuiEventsCurrent(this, curveID));
                             switch (optionSelected) {
                                 case "PolyLine":
                                     fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.POLYLINE}, name));

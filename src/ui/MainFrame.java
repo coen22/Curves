@@ -16,7 +16,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -29,6 +28,20 @@ import ui.Events.GuiEventsRefresh;
  * @author Kareem Horstink
  */
 public class MainFrame extends JFrame implements GuiEventListner {
+
+    /**
+     * To test the rest of the program
+     *
+     * @param args This will be ignored
+     */
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (UnsupportedLookAndFeelException ex) {
+            System.out.println(ex);
+        }
+        new MainFrame();
+    }
 
     private final Canvas CANVAS;
     private final SideBar SIDE_BAR;
@@ -56,37 +69,24 @@ public class MainFrame extends JFrame implements GuiEventListner {
     }
 
     /**
-     * To test the rest of the program
-     *
-     * @param args This will be ignored
-     */
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(new NimbusLookAndFeel());
-        } catch (UnsupportedLookAndFeelException ex) {
-            System.out.println(ex);
-        }
-        new MainFrame();
-    }
-
-    /**
      * Fully update the canvas and side bar
      */
     private void update() {
         int amount = CONTROLLER.amountOfCurves();
         ArrayList tmpList = new ArrayList();
-        System.out.println(10 * CANVAS.getZoom());
         for (int i = 0; i < amount; i++) {
             tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
         }
 
-        if (amount >= 0) {
+        if (amount > 0) {
             CANVAS.setCurves(tmpList);
             tmpList = new ArrayList();
             for (int i = 0; i < amount; i++) {
                 tmpList.add(CONTROLLER.getControlsPoints(i));
             }
+            SIDE_BAR.setCurveID(selected);
             SIDE_BAR.setCurves(tmpList);
+            SIDE_BAR.setNumberOfCurve(amount);
             SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
             CANVAS.setControls(tmpList);
             System.out.println("Updating");
@@ -106,7 +106,9 @@ public class MainFrame extends JFrame implements GuiEventListner {
             tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
         }
         if (amount >= 0) {
-            SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
+            SIDE_BAR.setCurveID(selected);
+            SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
+            SIDE_BAR.setNumberOfCurve(amount);
             CANVAS.setCurves(tmpList);
             System.out.println("UpdatingG");
         } else {
@@ -119,6 +121,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         if (DEBUG) {
             System.out.println("Creating");
         }
+        selected++;
         if (e.getInfo().length == 4) {
             CONTROLLER.createCurve((int) e.getInfo()[2], e.getInfo()[0], e.getInfo()[1], e.getName(), (int) e.getInfo()[3]);
         } else if (e.getInfo().length == 3) {
@@ -211,6 +214,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         } else {
             SIDE_BAR.setCurveID(e.getCurveID());
         }
+        update();
     }
 
     @Override
@@ -247,4 +251,5 @@ public class MainFrame extends JFrame implements GuiEventListner {
             System.out.println("Not handled");
         }
     }
+
 }
