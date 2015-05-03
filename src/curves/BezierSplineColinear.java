@@ -38,7 +38,6 @@ public class BezierSplineColinear extends BezierSpline {
      * @param c2 second control point which will be adjusted
      */
     void adjust(int c1, int knot, int c2) {
-    	System.out.println("moved pointed = " + c1 + " , knot = " + knot + " , c2 = " + c2);
     	
         double ij = distance(points.get(c1).getX(),
         					points.get(c1).getY(),
