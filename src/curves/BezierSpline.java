@@ -66,6 +66,11 @@ public class BezierSpline extends Curve {
 		}
 	}
 
+	/**
+	 * method to make sure that a point is inside the domain
+	 * @param index of a point
+	 * @return index of that point inside the domain
+	 */
 	int getInBounds(int i) {
 		if (points.size() == 0)
 			return 0;
