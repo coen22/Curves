@@ -71,6 +71,7 @@ public class BezierSplineColinear extends BezierSpline {
         return points.size() - 1;
     }
     
+    @Override
 	protected void setPoint(int index, double x, double y) {
         // save old position to translate control points if needed
         double dx = x - points.get(index).getX();
@@ -79,6 +80,7 @@ public class BezierSplineColinear extends BezierSpline {
         adjustColinear(index, dx, dy);
     }
     
+    @Override
     protected Point2D removePoint(int index) {
         super.removePoint(index);
         adjustColinear(index, 0, 0);
