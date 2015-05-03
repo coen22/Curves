@@ -66,10 +66,12 @@ public class BezierSpline extends Curve {
 		}
 	}
 
-	protected int getInBounds(int i) {
-		if (i < 0) {
-			i = points.size() - i;
-		}
+	int getInBounds(int i) {
+		if (points.size() == 0)
+			return 0;
+		
+		if (i < 0)
+			i = points.size() + i;
 
 		return i % points.size();
 	}
