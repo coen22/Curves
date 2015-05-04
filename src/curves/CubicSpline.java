@@ -9,8 +9,6 @@ public class CubicSpline extends Curve {
 	public static final int NOT_A_KNOT_SPLINE = 3;
 	public static final int CLOSED_SPLINE = 4;
 	
-	private static final double EPSILON = 1e-10;
-	
 	private double[][] Xcoefficients;
 	private double[][] Ycoefficients;
 	private double[][] dXcoefficients;
@@ -56,11 +54,37 @@ public class CubicSpline extends Curve {
 		calcCoefficients();
 		calcPlot(divisions);
 		calcDerivatives();
-		calcAreaCoefficients();
+		recalcAaA();
+		
+	}
+	
+	protected double area(int method) {
+		if (method != areaAlgorithm){
+			areaAlgorithm = method;
+			recalcAaA();
+		}
+		return this.area;
+	}
+	
+	@Override
+	protected double length(int method) {
+		if (method != arcLengthAlgorithm){
+			arcLengthAlgorithm = method;
+			recalcAaA();
+		}
+		return this.length;
+	}
+	
+	private void recalcAaA(){
+		calcAreaCoefs();
+		this.area = NumericalApproximation.calcArea(this);
+		this.length = NumericalApproximation.calcArcLength(this);
+		
+		//only tmp
 		calcArcLength();
 	}
 	
-        @Override
+       @Override
 	protected void setPoint(int index, double x, double y) {
 		super.setPoint(index, x, y);
 		update();
@@ -242,17 +266,6 @@ public class CubicSpline extends Curve {
 		
 	}
 	
-	//currently uses exact coefficient method
-	protected double area(int METHOD) {
-		return this.area;
-	}
-	
-	private void calcAreaCoefficients(){
-		double[][] tmpCoefs = calcAreaFunctionCoefficients();
-		this.areaCoefficients = calcIntegralCoefficients(tmpCoefs);
-		this.area = NumericalApproximation.calcArea(this, areaAlgorithm);
-	}
-	
 	/**
 	 * Method used to calculate the numerical value of the area under a piece of the cubic spline. This method uses integrated form of the function y(t)*x'(t)
 	 * @param i the index of the piece which is to be used for the integration
@@ -266,24 +279,7 @@ public class CubicSpline extends Curve {
 		return upper-lower;
 	}
 	
-	/**
-	 * 
-	 * @param coefficients the un-integrated coefficients of the polynomial function to be integrated. index 0 has power x^0, index n has x^n
-	 * @return returns the integrated matrix. index 0 has x^1 and index n has x^(n+1)
-	 */
-	private double[][] calcIntegralCoefficients(double[][] coefficients){
-		double[][] integratedCoefficients = new double[coefficients.length][6];
-		
-		for (int i = 0; i < coefficients.length; i++){
-			for (int k = 0; k < coefficients[0].length; k++){
-				integratedCoefficients[i][k] = coefficients[i][k] / (k+1);
-			}
-		}
-		
-		return integratedCoefficients;
-	}
-	
-	private double[][] calcAreaFunctionCoefficients(){
+	private void calcAreaCoefs(){
 		double[][] unintegratedCoefficients = new double[dYcoefficients.length][6];
 		
 		//finding coefficients of y(t)*x'(t)
@@ -295,7 +291,14 @@ public class CubicSpline extends Curve {
 			unintegratedCoefficients[i][4] = Ycoefficients[i][3]*dXcoefficients[i][1] + Ycoefficients[i][2]*dXcoefficients[i][2];
 			unintegratedCoefficients[i][5] = Ycoefficients[i][3]*dXcoefficients[i][2];
 		}
-		return unintegratedCoefficients;
+		
+		//integration
+		for (int i = 0; i < unintegratedCoefficients.length; i++){
+			for (int k = 0; k < unintegratedCoefficients[0].length; k++){
+				unintegratedCoefficients[i][k] = unintegratedCoefficients[i][k] / (k+1);
+			}
+		}
+		this.areaCoefficients = unintegratedCoefficients;
 	}
 	
 	/**
@@ -312,11 +315,6 @@ public class CubicSpline extends Curve {
 			}
 		}
 		
-	}
-	
-	@Override
-	protected double length(int METHOD) {
-		return this.length;
 	}
 	
 	private void calcArcLength(){
@@ -456,7 +454,7 @@ public class CubicSpline extends Curve {
 						for (int k = 0; k < matrix[0].length; k++) {
 							if (matrix[i][k] != 0) {
 								mul = matrix[j][k];
-								System.out.println("mul " + matrix[j][k]);
+//								System.out.println("mul " + matrix[j][k]);
 								break;
 							}
 						}
@@ -485,74 +483,29 @@ public class CubicSpline extends Curve {
 			}
 			return result;
 		} else {
-			System.out.println("The vector is incompatible with the matrix");
+//			System.out.println("The vector is incompatible with the matrix");
 		}
 		return null;
 	}
 	
-	//Gaussian elimination with partial pivoting
-	//method for temporary testing copied from: http://introcs.cs.princeton.edu/java/95linear/GaussianElimination.java.html
-	//all credit belongs to original authors: Robert Sedgewick and Kevin Wayne
-//    public static double[] gaussianElimination (double[][] A, double[] b) {
-//        int N  = b.length;
-//
-//        for (int p = 0; p < N; p++) {
-//
-//            // find pivot row and swap
-//            int max = p;
-//            for (int i = p + 1; i < N; i++) {
-//                if (Math.abs(A[i][p]) > Math.abs(A[max][p])) {
-//                    max = i;
-//                }
-//            }
-//            double[] temp = A[p]; A[p] = A[max]; A[max] = temp;
-//            double   t    = b[p]; b[p] = b[max]; b[max] = t;
-//
-//            // singular or nearly singular
-//            if (Math.abs(A[p][p]) <= EPSILON) {
-//                throw new RuntimeException("Matrix is singular or nearly singular");
-//            }
-//
-//            // pivot within A and b
-//            for (int i = p + 1; i < N; i++) {
-//                double alpha = A[i][p] / A[p][p];
-//                b[i] -= alpha * b[p];
-//                for (int j = p; j < N; j++) {
-//                    A[i][j] -= alpha * A[p][j];
-//                }
-//            }
-//        }
-//
-//        // back substitution
-//        double[] x = new double[N];
-//        for (int i = N - 1; i >= 0; i--) {
-//            double sum = 0.0;
-//            for (int j = i + 1; j < N; j++) {
-//                sum += A[i][j] * x[j];
-//            }
-//            x[i] = (b[i] - sum) / A[i][i];
-//        }
-//        return x;
-//    }
-//    
-//    public String toString(){
-//		String string = "CubicSpline: ";
-//		for (int i = 0; i < super.points.size(); i++){
-//			string = string + "[" + super.points.get(i).getX() +","+ super.points.get(i).getY() + "] " ;
-//		}
-//		return string;
-//	}
-//    
-//    public static String printMatrix(double[][] matrix, String name){
-//    	String string = name + ": \n";
-//		for (int i = 0; i < matrix.length; i++){
-//			for(int k = 0; k < matrix[0].length; k++){
-//				string = string + matrix[i][k] + ", ";
-//			}
-//			string = string + "\n";
-//		}
-//		return string;
-//    }
+    public String toString(){
+		String string = "CubicSpline: ";
+		for (int i = 0; i < super.points.size(); i++){
+			string = string + "[" + super.points.get(i).getX() +","+ super.points.get(i).getY() + "] " ;
+		}
+		return string;
+	}
+    
+    public static String printMatrix(double[][] matrix, String name){
+    	String string = name + ": \n";
+		for (int i = 0; i < matrix.length; i++){
+			for(int k = 0; k < matrix[0].length; k++){
+				string = string + matrix[i][k] + ", ";
+			}
+			string = string + "\n";
+		}
+		return string;
+    }
     
     public static String printVector(double[] vector, String name){
     	String string = name + ":";

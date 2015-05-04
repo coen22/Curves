@@ -11,14 +11,17 @@ public class NumericalApproximation {
 	public static final int SIMPSON_ARCLENGTH = 2;
 	public static final int PYTHAGOREAN_ARCLENGTH = 3;
 
-	public static double calcArea(Curve curve, int method){
-		if (method == EXACT_AREA_CUBIC){
+	public static double calcArea(Curve curve){
+		if (curve.areaAlgorithm == EXACT_AREA_CUBIC){
 			return Math.abs(exactCubicArea(curve));
+		}
+		else if (curve.areaAlgorithm == SHOELACE_AREA){
+			return Math.abs(shoeLaceArea(curve));
 		}
 		return 0.0;
 	}
 	
-	public static double calcArcLength(Curve curve, int method){
+	public static double calcArcLength(Curve curve){
 		
 		return 0.0;
 	}
@@ -55,7 +58,7 @@ public class NumericalApproximation {
 		area += listOfPoints.get(listOfPoints.size() - 1).getX()
 				* listOfPoints.get(0).getY() - listOfPoints.get(0).getX()
 				* listOfPoints.get(listOfPoints.size() - 1).getY();
-
+		
 		return Math.abs(area / 2);
 	}
 	

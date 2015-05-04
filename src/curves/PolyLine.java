@@ -8,7 +8,18 @@ public class PolyLine extends Curve {
     protected PolyLine(Point2D point, String name) {
         super(name);
         super.points.add(point);
+        algorithmDefinition();
     }
+    
+    private void algorithmDefinition(){
+		areaAlgorithms = new ArrayList<Integer>();
+		areaAlgorithms.add(NumericalApproximation.SHOELACE_AREA);
+		areaAlgorithm = NumericalApproximation.SHOELACE_AREA;
+		
+		arcLengthAlgorithms = new ArrayList<Integer>();
+		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
+		arcLengthAlgorithm = NumericalApproximation.PYTHAGOREAN_ARCLENGTH;
+	}
 
     @Override
     protected ArrayList<Point2D> getPlot(int interval) {
