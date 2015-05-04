@@ -410,69 +410,153 @@ public class CubicSpline extends Curve {
 		return Math.sqrt(dx2+dy2);
 	}
 	
+	public static double[] gaussianElimination(double[][] A, double[] b) {
+		if (A.length == b.length) {
+			double[][] matrix = new double[A.length][A[0].length + 1];
+			// Creates the matrix with the b vector in it
+			for (int i = 0; i < matrix.length; i++) {
+				for (int j = 0; j < matrix[0].length; j++) {
+					if (j == matrix[0].length - 1) {
+						matrix[i][j] = b[i];
+					} else {
+						matrix[i][j] = A[i][j];
+					}
+				}
+			}
+			int x = matrix.length;
+			double[] temp = new double[matrix[0].length];
+			for (int i = 0; i < x; i++) {
+				int pivot = i;
+				for (int k = i + 1; k < x; k++) {
+					if (matrix[k][i] == 1) {
+						pivot = k;
+					}
+				}
+				if (pivot != i) {
+					System.arraycopy(matrix[i], 0, temp, 0, temp.length);
+					System.arraycopy(matrix[pivot], 0, matrix[i], 0,
+							matrix[0].length);
+					System.arraycopy(temp, 0, matrix[pivot], 0,
+							matrix[0].length);
+				} else {
+					double div = 1;
+					for (int k = 0; k < matrix[0].length; k++) {
+						if (matrix[i][k] != 0) {
+							div = matrix[i][k];
+							break;
+						}
+					}
+					for (int j = 0; j < matrix[0].length; j++) {
+						if (matrix[i][j] == 0) {
+						} else {
+							matrix[i][j] = matrix[i][j] / div;
+						}
+					}
+				}
+				// Makes all rows above 0
+				if (i != 0) {
+					for (int j = i - 1; j >= 0; j--) {
+						double mul = 1;
+						for (int k = 0; k < matrix[0].length; k++) {
+							if (matrix[i][k] != 0) {
+								mul = matrix[j][k];
+								System.out.println("mul " + matrix[j][k]);
+								break;
+							}
+						}
+						for (int k = 0; k < matrix[0].length; k++) {
+							matrix[j][k] = matrix[j][k] - (matrix[i][k] * mul);
+						}
+					}
+				}
+				// Makes all rows underneath 0
+				for (int j = i + 1; j < x; j++) {
+					double mul = 1;
+					for (int k = 0; k < matrix[0].length; k++) {
+						if (matrix[i][k] != 0) {
+							mul = matrix[j][k];
+							break;
+						}
+					}
+					for (int k = 0; k < matrix[0].length; k++) {
+						matrix[j][k] = matrix[j][k] - (matrix[i][k] * mul);
+					}
+				}
+			}
+			double[] result = new double[b.length];
+			for (int i = 0; i < b.length; i++) {
+				result[i] = Math.round(matrix[i][matrix[0].length - 1] * 100.0) / 100.0;
+			}
+			return result;
+		} else {
+			System.out.println("The vector is incompatible with the matrix");
+		}
+		return null;
+	}
+	
 	//Gaussian elimination with partial pivoting
 	//method for temporary testing copied from: http://introcs.cs.princeton.edu/java/95linear/GaussianElimination.java.html
 	//all credit belongs to original authors: Robert Sedgewick and Kevin Wayne
-    public static double[] gaussianElimination (double[][] A, double[] b) {
-        int N  = b.length;
-
-        for (int p = 0; p < N; p++) {
-
-            // find pivot row and swap
-            int max = p;
-            for (int i = p + 1; i < N; i++) {
-                if (Math.abs(A[i][p]) > Math.abs(A[max][p])) {
-                    max = i;
-                }
-            }
-            double[] temp = A[p]; A[p] = A[max]; A[max] = temp;
-            double   t    = b[p]; b[p] = b[max]; b[max] = t;
-
-            // singular or nearly singular
-            if (Math.abs(A[p][p]) <= EPSILON) {
-                throw new RuntimeException("Matrix is singular or nearly singular");
-            }
-
-            // pivot within A and b
-            for (int i = p + 1; i < N; i++) {
-                double alpha = A[i][p] / A[p][p];
-                b[i] -= alpha * b[p];
-                for (int j = p; j < N; j++) {
-                    A[i][j] -= alpha * A[p][j];
-                }
-            }
-        }
-
-        // back substitution
-        double[] x = new double[N];
-        for (int i = N - 1; i >= 0; i--) {
-            double sum = 0.0;
-            for (int j = i + 1; j < N; j++) {
-                sum += A[i][j] * x[j];
-            }
-            x[i] = (b[i] - sum) / A[i][i];
-        }
-        return x;
-    }
-    
-    public String toString(){
-		String string = "CubicSpline: ";
-		for (int i = 0; i < super.points.size(); i++){
-			string = string + "[" + super.points.get(i).getX() +","+ super.points.get(i).getY() + "] " ;
-		}
-		return string;
-	}
-    
-    public static String printMatrix(double[][] matrix, String name){
-    	String string = name + ": \n";
-		for (int i = 0; i < matrix.length; i++){
-			for(int k = 0; k < matrix[0].length; k++){
-				string = string + matrix[i][k] + ", ";
-			}
-			string = string + "\n";
-		}
-		return string;
-    }
+//    public static double[] gaussianElimination (double[][] A, double[] b) {
+//        int N  = b.length;
+//
+//        for (int p = 0; p < N; p++) {
+//
+//            // find pivot row and swap
+//            int max = p;
+//            for (int i = p + 1; i < N; i++) {
+//                if (Math.abs(A[i][p]) > Math.abs(A[max][p])) {
+//                    max = i;
+//                }
+//            }
+//            double[] temp = A[p]; A[p] = A[max]; A[max] = temp;
+//            double   t    = b[p]; b[p] = b[max]; b[max] = t;
+//
+//            // singular or nearly singular
+//            if (Math.abs(A[p][p]) <= EPSILON) {
+//                throw new RuntimeException("Matrix is singular or nearly singular");
+//            }
+//
+//            // pivot within A and b
+//            for (int i = p + 1; i < N; i++) {
+//                double alpha = A[i][p] / A[p][p];
+//                b[i] -= alpha * b[p];
+//                for (int j = p; j < N; j++) {
+//                    A[i][j] -= alpha * A[p][j];
+//                }
+//            }
+//        }
+//
+//        // back substitution
+//        double[] x = new double[N];
+//        for (int i = N - 1; i >= 0; i--) {
+//            double sum = 0.0;
+//            for (int j = i + 1; j < N; j++) {
+//                sum += A[i][j] * x[j];
+//            }
+//            x[i] = (b[i] - sum) / A[i][i];
+//        }
+//        return x;
+//    }
+//    
+//    public String toString(){
+//		String string = "CubicSpline: ";
+//		for (int i = 0; i < super.points.size(); i++){
+//			string = string + "[" + super.points.get(i).getX() +","+ super.points.get(i).getY() + "] " ;
+//		}
+//		return string;
+//	}
+//    
+//    public static String printMatrix(double[][] matrix, String name){
+//    	String string = name + ": \n";
+//		for (int i = 0; i < matrix.length; i++){
+//			for(int k = 0; k < matrix[0].length; k++){
+//				string = string + matrix[i][k] + ", ";
+//			}
+//			string = string + "\n";
+//		}
+//		return string;
+//    }
     
     public static String printVector(double[] vector, String name){
     	String string = name + ":";
