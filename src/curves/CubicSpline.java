@@ -95,7 +95,6 @@ public class CubicSpline extends Curve {
 			return plot;
 		}
 		else {
-			System.out.println("plotting points: " + subPoints);
 			divisions = subPoints;
 			update();
 			return plot;
@@ -319,24 +318,6 @@ public class CubicSpline extends Curve {
 		
 	}
 	
-	public void tester(){
-		System.out.println(printMatrix(dXcoefficients, "dx"));
-		System.out.println(printMatrix(dYcoefficients, "dy"));
-		int testvalue = 9;
-		long start = System.nanoTime();
-		double simpson = simpsonEvaluation(1, 0, 1, testvalue*80);
-		long end = System.nanoTime();
-		System.out.println("simpson: " + simpson + ". time: " + (end-start));
-		
-		start = System.nanoTime();
-		double romberg = rombergEvaluation(1, 0, 1, testvalue);
-		end = System.nanoTime();
-		System.out.println("romberg: " + romberg + ". time: " + (end-start));
-		
-		System.out.println("exact simpson: " + simpsonEvaluation(1, 0, 1, 100000));
-		System.out.println("exact romberg: " + rombergEvaluation(1, 0, 1, 20));
-	}
-	
 	@Override
 	protected double length(int METHOD) {
 		return this.length;
@@ -344,15 +325,27 @@ public class CubicSpline extends Curve {
 	
 	private void calcArcLength(){
 		calcArcLengthSimpson();
+		calcArcLengthRomberg();
 	}
 	
 	private void calcArcLengthSimpson(){
 		double tmpLength = 0;
 		for (int i = 0; i < dXcoefficients.length-1; i++){
-			tmpLength += simpsonEvaluation(i, 0, 1, 12);
+			tmpLength += simpsonEvaluation(i, 0, 1, 20);
 		}
 		if (type == CLOSED_SPLINE){
-			tmpLength += simpsonEvaluation(dYcoefficients.length-1, 0, 1, 12);
+			tmpLength += simpsonEvaluation(dYcoefficients.length-1, 0, 1, 20);
+		}
+		this.length = tmpLength;
+	}
+	
+	private void calcArcLengthRomberg(){
+		double tmpLength = 0;
+		for (int i = 0; i < dXcoefficients.length-1; i++){
+			tmpLength += rombergEvaluation(i, 0, 1, 7);
+		}
+		if (type == CLOSED_SPLINE){
+			tmpLength += rombergEvaluation(dYcoefficients.length-1, 0, 1, 7);
 		}
 		this.length = tmpLength;
 	}
@@ -362,7 +355,6 @@ public class CubicSpline extends Curve {
 		for (int i = 0; i < n; i++){
 			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, (int)Math.pow(2, i));
 		}
-//		System.out.println(printMatrix(rombergMatrix, "romberg"));
 		double pow;
 		for (int i = 1; i < n; i++){
 			for (int k = i; k < n; k++){
