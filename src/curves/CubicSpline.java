@@ -15,6 +15,7 @@ public class CubicSpline extends Curve {
 	private double[][] Ycoefficients;
 	private double[][] dXcoefficients;
 	private double[][] dYcoefficients;
+	private double[][] areaCoefficients;
 	
 	private int type;
 	private ArrayList<Point2D> plot;
@@ -27,7 +28,21 @@ public class CubicSpline extends Curve {
 		add(point.getX(), point.getY());
 		this.type = type;
 		divisions = 1;
+		algorithmDefinition();
 		update();
+	}
+	
+	private void algorithmDefinition(){
+		areaAlgorithms = new ArrayList<Integer>();
+		areaAlgorithms.add(NumericalApproximation.EXACT_AREA_CUBIC);
+		areaAlgorithms.add(NumericalApproximation.SHOELACE_AREA);
+		areaAlgorithm = NumericalApproximation.EXACT_AREA_CUBIC;
+		
+		arcLengthAlgorithms = new ArrayList<Integer>();
+		arcLengthAlgorithms.add(NumericalApproximation.ROMBERG_ARCLENGTH);
+		arcLengthAlgorithms.add(NumericalApproximation.SIMPSON_ARCLENGTH);
+		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
+		arcLengthAlgorithm = NumericalApproximation.ROMBERG_ARCLENGTH;
 	}
 	
 	@Override
@@ -41,7 +56,7 @@ public class CubicSpline extends Curve {
 		calcCoefficients();
 		calcPlot(divisions);
 		calcDerivatives();
-		calcExactArea();
+		calcAreaCoefficients();
 		calcArcLength();
 	}
 	
@@ -229,43 +244,25 @@ public class CubicSpline extends Curve {
 	
 	//currently uses exact coefficient method
 	protected double area(int METHOD) {
-		if (METHOD == 3){
-			double a = super.shoeLaceArea();
-			System.out.println("Shoelace area: " + a);
-		}
 		return this.area;
 	}
 	
-	private void calcExactArea(){
-		double[][] areaCoefficients = calcAreaFunctionCoefficients();
-		
-		areaCoefficients = calcIntegralCoefficients(areaCoefficients);
-		
-		
-		int cutoff = areaCoefficients.length-1;
-		if (type == CLOSED_SPLINE){
-			cutoff+= 1;
-		}
-		
-		double finalArea = 0;
-		
-		for (int i = 0; i < cutoff; i++){
-			finalArea += calcSubArea(areaCoefficients[i], 0.0, 1.0);
-		}
-		
-		this.area = Math.abs(finalArea);
+	private void calcAreaCoefficients(){
+		double[][] tmpCoefs = calcAreaFunctionCoefficients();
+		this.areaCoefficients = calcIntegralCoefficients(tmpCoefs);
+		this.area = NumericalApproximation.calcArea(this, areaAlgorithm);
 	}
 	
 	/**
 	 * Method used to calculate the numerical value of the area under a piece of the cubic spline. This method uses integrated form of the function y(t)*x'(t)
-	 * @param integratedCoefficients the 6 coefficients of the integrated function with powers ranging from t^1 to t^6
+	 * @param i the index of the piece which is to be used for the integration
 	 * @param a lower bound
 	 * @param b upper bound
 	 * @return area of defined sub-section of spline
 	 */
-	private double calcSubArea(double[] integratedCoefficients, double a, double b){
-		double upper = ((((((integratedCoefficients[5] * b + integratedCoefficients[4]) * b + integratedCoefficients[3])* b + integratedCoefficients[2]) * b + integratedCoefficients[1]) * b + integratedCoefficients[0]) * b);
-		double lower = ((((((integratedCoefficients[5] * a + integratedCoefficients[4]) * a + integratedCoefficients[3])* a + integratedCoefficients[2]) * a + integratedCoefficients[1]) * a + integratedCoefficients[0]) * a);
+	protected double calcSubArea(int i, double a, double b){
+		double upper = ((((((areaCoefficients[i][5] * b + areaCoefficients[i][4]) * b + areaCoefficients[i][3])* b + areaCoefficients[i][2]) * b + areaCoefficients[i][1]) * b + areaCoefficients[i][0]) * b);
+		double lower = ((((((areaCoefficients[i][5] * a + areaCoefficients[i][4]) * a + areaCoefficients[i][3])* a + areaCoefficients[i][2]) * a + areaCoefficients[i][1]) * a + areaCoefficients[i][0]) * a);
 		return upper-lower;
 	}
 	
@@ -298,7 +295,6 @@ public class CubicSpline extends Curve {
 			unintegratedCoefficients[i][4] = Ycoefficients[i][3]*dXcoefficients[i][1] + Ycoefficients[i][2]*dXcoefficients[i][2];
 			unintegratedCoefficients[i][5] = Ycoefficients[i][3]*dXcoefficients[i][2];
 		}
-		
 		return unintegratedCoefficients;
 	}
 	

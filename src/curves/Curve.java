@@ -9,12 +9,17 @@ public abstract class Curve {
 	protected ArrayList<Point2D> points;
 	protected boolean closed;
 	protected String name;
+	protected ArrayList<Integer> areaAlgorithms;
+	protected ArrayList<Integer> arcLengthAlgorithms;
+	protected int areaAlgorithm;
+	protected int arcLengthAlgorithm;
 
 	public Curve(String name) {
 		this.name = name;
 		closed = false;
 		points = new ArrayList<Point2D>();
 	}
+	
 
 	/**
 	 * method which calculates or returns the plotting coordinates such that the
@@ -29,17 +34,10 @@ public abstract class Curve {
 	protected abstract ArrayList<Point2D> getPlot(int subPoints);
 
 	protected double length(int METHOD) {
-		if (METHOD == 0) {
-			return pythagoreanLength();
-		}
-		
 		return Double.NaN;
 	}
 
 	protected double area(int METHOD) {
-		if (METHOD == 0) {
-			return shoeLaceArea();
-		}
 		return Double.NaN;
 	}
 
@@ -66,48 +64,6 @@ public abstract class Curve {
 
 	protected int numberOfPoints() {
 		return points.size();
-	}
-
-	protected double shoeLaceArea() {
-		double area = 0;
-
-		if (!closed)
-			return 0;
-
-		List<Point2D> listOfPoints = getPlot(numberOfPoints());
-		for (int i = 0; i < listOfPoints.size() - 1; i++) {
-			area += listOfPoints.get(i).getX() * listOfPoints.get(i + 1).getY()
-					- listOfPoints.get(i + 1).getX()
-					* listOfPoints.get(i).getY();
-		}
-		area += listOfPoints.get(listOfPoints.size() - 1).getX()
-				* listOfPoints.get(0).getY() - listOfPoints.get(0).getX()
-				* listOfPoints.get(listOfPoints.size() - 1).getY();
-
-		return Math.abs(area / 2);
-	}
-
-	protected double pythagoreanLength() {
-		double length = 0;
-		List<Point2D> listOfPoints = getPlot(numberOfPoints());
-
-		if (listOfPoints.isEmpty() || listOfPoints.size() == 1) {
-			return 0;
-		}
-		for (int i = 1; i < listOfPoints.size() - 1; i++)
-			length += Math.sqrt(Math.pow(listOfPoints.get(i).getX()
-					- listOfPoints.get(i - 1).getX(), 2)
-					+ Math.pow(
-							listOfPoints.get(i).getY()
-									- listOfPoints.get(i - 1).getY(), 2));
-		if (closed)
-			length += Math.sqrt(Math.pow(listOfPoints.get(0).getX()
-					- listOfPoints.get(listOfPoints.size() - 1).getX(), 2)
-					+ Math.pow(
-							listOfPoints.get(0).getY()
-									- listOfPoints.get(listOfPoints.size() - 1)
-											.getY(), 2));
-		return length;
 	}
 
 	protected List<Point2D> getControlPoints() {
