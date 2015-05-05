@@ -42,6 +42,8 @@ public class Controller {
      */
     private final ArrayList<Curve> CURVES;
 
+    private final boolean DEBUG = true;
+
     /**
      * Default constructor
      */
@@ -91,21 +93,31 @@ public class Controller {
     public void createCurve(int TYPE, double x, double y, String name) {
         if (TYPE == POLYLINE) {
             CURVES.add(new PolyLine(new Point2D.Double(x, y), name));
-            System.out.println("Polyline Created");
+            if (DEBUG) {
+                System.out.println("Polyline Created");
+            }
         } else if (TYPE == CUBIC_N) {
             CURVES.add(new CubicSpline(new Point2D.Double(x, y), name, CubicSpline.NATURAL_SPLINE));
-            System.out.println("CubicLine Created");
+            if (DEBUG) {
+                System.out.println("CubicLine Created");
+            }
         } else if (TYPE == BEZIERCURVE) {
             CURVES.add(new BezierCurve(new Point2D.Double(x, y), name));
-            System.out.println("Bezier Curve Created");
+            if (DEBUG) {
+                System.out.println("Bezier Curve Created");
+            }
         } else if (TYPE == BEZIERSPLINE) {
             CURVES.add(new BezierSpline(name));
             CURVES.get(CURVES.size() - 1).add(x, y);
-            System.out.println("Bezier Spline Created");
+            if (DEBUG) {
+                System.out.println("Bezier Spline Created");
+            }
         } else if (TYPE == BEZIERSPLINECOLINEAR) {
             CURVES.add(new BezierSplineColinear(name));
             CURVES.get(CURVES.size() - 1).add(x, y);
-            System.out.println("Bezier Spline Colinear Created");
+            if (DEBUG) {
+                System.out.println("Bezier Spline Colinear Created");
+            }
         }
     }
 
