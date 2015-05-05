@@ -63,7 +63,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
      */
     private int selected = -1;
 
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     /**
      * Default constructor
@@ -72,6 +72,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         setTitle("Dem Curves");
         CONTROLLER = new Controller();
         CANVAS = new Canvas(1, 1);
+        CANVAS.setGridspacing(100);
         CANVAS.addEventListener(this);
         SIDE_BAR = new SideBar();
         add(CANVAS);
@@ -105,7 +106,9 @@ public class MainFrame extends JFrame implements GuiEventListner {
             SIDE_BAR.setNumberOfCurve(amount);
             SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
             CANVAS.setControls(tmpList);
-            System.out.println("Updating");
+            if (DEBUG) {
+                System.out.println("Updating");
+            }
         } else {
             System.out.println("Insufficient amount of curves");
         }
@@ -117,7 +120,9 @@ public class MainFrame extends JFrame implements GuiEventListner {
     private void updateG() {
         int amount = CONTROLLER.amountOfCurves();
         ArrayList tmpList = new ArrayList();
-        System.out.println(10 * CANVAS.getZoom());
+        if (DEBUG) {
+            System.out.println(10 * CANVAS.getZoom());
+        }
         for (int i = 0; i < amount; i++) {
             tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
         }
@@ -126,7 +131,9 @@ public class MainFrame extends JFrame implements GuiEventListner {
             SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
             SIDE_BAR.setNumberOfCurve(amount);
             CANVAS.setCurves(tmpList);
-            System.out.println("UpdatingG");
+            if (DEBUG) {
+                System.out.println("UpdatingG");
+            }
         } else {
             System.out.println("Insufficient amount of curves");
         }

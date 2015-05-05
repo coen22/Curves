@@ -129,7 +129,7 @@ public class Canvas extends JPanel implements ActionListener {
      */
     private boolean moveSelected;
 
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     /**
      * Creates a new canvas and sets the default zoom level as well the units to be used by the grid
@@ -306,10 +306,11 @@ public class Canvas extends JPanel implements ActionListener {
             String split[] = tmp.split(",");
             double x = Double.valueOf(split[0]);
             double y = Double.valueOf(split[1]);
-            System.out.println("x " + x + ", y " + y);
-            System.out.println("point " + selectPoint);
-            System.out.println("curve " + curveID);
-
+            if (DEBUG) {
+                System.out.println("x " + x + ", y " + y);
+                System.out.println("point " + selectPoint);
+                System.out.println("curve " + curveID);
+            }
             fireEvent(new GuiEventsMove(this, new double[]{x, y}, selectPoint, curveID));
         } catch (Exception e) {
             System.out.println("Please enter a proper location " + e);
@@ -327,9 +328,7 @@ public class Canvas extends JPanel implements ActionListener {
         super.paint(g);
         drawGrid(g2);
         drawLines(g2);
-        if (DEBUG) {
-            drawControls(g2);
-        }
+        drawControls(g2);
     }
 
     /**
@@ -346,16 +345,26 @@ public class Canvas extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Draws the grid line
+     *
+     * @param g
+     */
     private void drawGrid(Graphics2D g) {
-        for (int i = -500; i < 500; i++) {
+        for (int i = (int) (-10 / zoom); i < (int) (10 / zoom); i++) {
             g.setColor(Color.lightGray);
-            g.drawLine(Integer.MAX_VALUE * -1, (int) y(gridspacing * i), Integer.MAX_VALUE, (int) y(gridspacing * i));
-            g.drawLine((int) x(gridspacing * i), Integer.MAX_VALUE * -1, (int) x(gridspacing * i), Integer.MAX_VALUE);
-            g.drawString(Double.toString(i * units), (int) x(i * gridspacing + 5), (int) y(0) - 2);
-            g.drawString(Double.toString(i * units), (int) x(5), (int) y(i * gridspacing) - 2);
+            g.drawLine(Integer.MAX_VALUE * -1, (int) y((int) (i * gridspacing)), Integer.MAX_VALUE, (int) y((int) (i * gridspacing)));
+            g.drawLine((int) x((int) (i * gridspacing)), Integer.MAX_VALUE * -1, (int) x((int) (i * gridspacing)), Integer.MAX_VALUE);
+            g.drawString(Double.toString(i * units), (int) x((int) (i * gridspacing + 5)), (int) y(0) - 2);
+            g.drawString(Double.toString(i * units), (int) x((int) (5)), (int) y((int) (i * gridspacing)) - 2);
         }
     }
 
+    /**
+     * Draws the curve/spline
+     *
+     * @param g
+     */
     private void drawLines(Graphics2D g) {
         int counter = 0;
         for (List<Point2D> curve : curves) {
@@ -379,6 +388,9 @@ public class Canvas extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Creates random colors
+     */
     private void colorPicker() {
         Random r = new Random();
         while (COLORS.size() != curves.size()) {
@@ -386,6 +398,11 @@ public class Canvas extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Sets the current selected curve/spline
+     *
+     * @param currentLine The index of the current selected curve/spline
+     */
     protected void setCurrentLine(int currentLine) {
         this.curveID = currentLine;
     }
@@ -524,7 +541,7 @@ public class Canvas extends JPanel implements ActionListener {
      * @return The corrected x location
      */
     private double xm(double x) {
-        return (x - getVisibleRect().width / 2 - offSetX) / zoom;
+        return ((x - getVisibleRect().width / 2 - offSetX) / zoom) / gridspacing;
     }
 
     /**
@@ -534,7 +551,7 @@ public class Canvas extends JPanel implements ActionListener {
      * @return The corrected y location
      */
     private double ym(double y) {
-        return (getVisibleRect().height / 2 - y - offSetY) / zoom;
+        return ((getVisibleRect().height / 2 - y - offSetY) / zoom) / gridspacing;
     }
 
     /**
@@ -544,7 +561,7 @@ public class Canvas extends JPanel implements ActionListener {
      * @return The corrected x location
      */
     private double x(double x) {
-        return zoom * (x) + offSetX + getVisibleRect().width / 2;
+        return (zoom * (x * gridspacing) + offSetX + getVisibleRect().width / 2);
     }
 
     /**
@@ -554,7 +571,7 @@ public class Canvas extends JPanel implements ActionListener {
      * @return The corrected x location
      */
     private double x(int x) {
-        return zoom * (x) + offSetX + getVisibleRect().width / 2;
+        return (zoom * (x) + offSetX + getVisibleRect().width / 2);
     }
 
     /**
@@ -564,7 +581,7 @@ public class Canvas extends JPanel implements ActionListener {
      * @return The corrected y location
      */
     private double y(double y) {
-        return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
+        return ((zoom * getVisibleRect().height / 2 - zoom * y * gridspacing) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY);
     }
 
     /**
@@ -574,7 +591,7 @@ public class Canvas extends JPanel implements ActionListener {
      * @return The corrected y location
      */
     private double y(int y) {
-        return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
+        return ((zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY);
     }
 
     /**

@@ -105,7 +105,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      * Combo box to select the current line
      */
     private JComboBox<String> cb;
-    private final boolean DEBUG = true;
+
+    private final boolean DEBUG = false;
 
     /**
      * The constructor of the side bar
@@ -199,7 +200,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(e.getActionCommand());
+                if (DEBUG) {
+                    System.out.println(e.getActionCommand());
+                }
                 if (e.getSource() == cb && cb.getItemCount() != 0 && !updating2) {
                     fireEvent(new GuiEventsCurrent(this, cb.getSelectedIndex()));
                     curveID = cb.getSelectedIndex();
@@ -273,7 +276,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         for (int i = 0; i < numberOfCurve; i++) {
             cb.addItem(Integer.toString(i + 1));
         }
-        System.out.println(curveID);
+        if (DEBUG) {
+            System.out.println(curveID);
+        }
         cb.setSelectedIndex(curveID);
         updating2 = false;
     }
@@ -309,7 +314,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     public void tableChanged(TableModelEvent e) {
         if (!updating1) {
             int row = e.getFirstRow();
-            System.out.println(row);
+            if (DEBUG) {
+                System.out.println(row);
+            }
             double fir = mod.getValueAt(row, 1);
             double sec = mod.getValueAt(row, 2);
             if (DEBUG) {

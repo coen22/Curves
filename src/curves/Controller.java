@@ -42,7 +42,7 @@ public class Controller {
      */
     private final ArrayList<Curve> CURVES;
 
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     /**
      * Default constructor
