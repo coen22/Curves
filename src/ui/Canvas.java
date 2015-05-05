@@ -42,85 +42,90 @@ import ui.events.GuiEventsRefresh;
  */
 public class Canvas extends JPanel implements ActionListener {
 
-    /*
-     *List of the gui listeners attached to the object
+    /**
+     * List of the gui listeners attached to the object
      */
     private final List<GuiEventListner> LISTENERS = new ArrayList<>();
 
-    /*
-     *The offset of the view port to the origin
+    /**
+     * The offset of the view port to the origin
      */
     private double offSetX = 0;
+    /**
+     * The offset of the view port to the origin
+     */
     private double offSetY = 0;
 
-    /*
-     *The zoom level
+    /**
+     * The zoom level
      */
     private double zoom = 1;
 
-    /*
-     *The units to be shown the grid spacing
+    /**
+     * The units to be shown the grid spacing
      */
     private double units = 1;
-    /* 
+    /* *
      *The spacing between grid line in pixels
      */
     private double gridspacing = 100;
 
-    /*
-     *A list of the curve
+    /**
+     * A list of the curve
      */
     private ArrayList<List<Point2D>> curves = new ArrayList<>();
 
-    /*
-     *List of the control point (only for current line)
+    /**
+     * List of the control point (only for current line)
      */
     private List<Point2D> controls = new ArrayList<>();
 
-    /*
-     *List of the colors for the line
+    /**
+     * List of the colors for the line
      */
     private final ArrayList<Color> COLORS = new ArrayList<>();
 
-    /*
-     *The visiblity of the line
+    /**
+     * The visiblity of the line
      */
     private boolean Visiblity = true;
 
-    /*
-     *The current selected line
+    /**
+     * The current selected line
      */
     private int curveID = -1;
 
-    /*
-     *Used to see if the points are being edit or not
+    /**
+     * Used to see if the points are being edit or not
      */
     private boolean first = false;
-    private boolean select = false;
 
-    /*
-     *The pop up menus 
+    /**
+     * The pop up menus
      */
     private JPopupMenu popup1;
+    /**
+     * The pop up menus
+     */
     private JPopupMenu popup2;
 
-    /*
-     *Point of where the user open the pop 
+    /**
+     * Point of where the user open the pop
      */
     private Point2D.Double point = new Point2D.Double();
 
-    /*
-     *The list of clickable area
+    /**
+     * The list of clickable area
      */
     private ArrayList<Ellipse2D> controlPoints;
 
-    /*
-     *Which current line is being selected
+    /**
+     * Which current line is being selected
      */
     private int selectPoint;
 
-    /*
-     *If the point is to be moved
+    /**
+     * If the point is to be moved
      */
     private boolean moveSelected;
 
