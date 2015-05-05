@@ -9,7 +9,19 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import ui.events.*;
+import ui.events.GuiEventListner;
+import ui.events.GuiEvents;
+import ui.events.GuiEventsAdd;
+import ui.events.GuiEventsClose;
+import ui.events.GuiEventsCreate;
+import ui.events.GuiEventsCurrent;
+import ui.events.GuiEventsDeleteC;
+import ui.events.GuiEventsDeleteP;
+import ui.events.GuiEventsMove;
+import ui.events.GuiEventsOpen;
+import ui.events.GuiEventsRefresh;
+import ui.events.GuiEventsVisibility;
+
 
 /**
  * The main frame to put everything on

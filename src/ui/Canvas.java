@@ -34,38 +34,100 @@ import ui.events.GuiEventsOpen;
 import ui.events.GuiEventsRefresh;
 
 /**
- * The canvas in which to draw various elements of the UI, mostly focusing on
- * the graphical side of things as well intuitive controls
+ * The canvas in which to draw various elements of the UI, mostly focusing on the graphical side of
+ * things as well intuitive controls
  *
  * @author Kareem Horstink
- * @version 0.8
+ * @version 0.8b
  */
 public class Canvas extends JPanel implements ActionListener {
 
+    /*
+     *List of the gui listeners attached to the object
+     */
     private final List<GuiEventListner> LISTENERS = new ArrayList<>();
+
+    /*
+     *The offset of the view port to the origin
+     */
     private double offSetX = 0;
     private double offSetY = 0;
+
+    /*
+     *The zoom level
+     */
     private double zoom = 1;
+
+    /*
+     *The units to be shown the grid spacing
+     */
     private double units = 1;
+    /* 
+     *The spacing between grid line in pixels
+     */
     private double gridspacing = 100;
+
+    /*
+     *A list of the curve
+     */
     private ArrayList<List<Point2D>> curves = new ArrayList<>();
+
+    /*
+     *List of the control point (only for current line)
+     */
     private List<Point2D> controls = new ArrayList<>();
+
+    /*
+     *List of the colors for the line
+     */
     private final ArrayList<Color> COLORS = new ArrayList<>();
+
+    /*
+     *The visiblity of the line
+     */
     private boolean Visiblity = true;
+
+    /*
+     *The current selected line
+     */
     private int curveID = -1;
+
+    /*
+     *Used to see if the points are being edit or not
+     */
     private boolean first = false;
     private boolean select = false;
+
+    /*
+     *The pop up menus 
+     */
     private JPopupMenu popup1;
     private JPopupMenu popup2;
+
+    /*
+     *Point of where the user open the pop 
+     */
     private Point2D.Double point = new Point2D.Double();
-    private final boolean DEBUG = true;
+
+    /*
+     *The list of clickable area
+     */
     private ArrayList<Ellipse2D> controlPoints;
+
+    /*
+     *Which current line is being selected
+     */
     private int selectPoint;
+
+    /*
+     *If the point is to be moved
+     */
     private boolean moveSelected;
 
+    private final boolean DEBUG = true;
+
     /**
-     * Creates a new canvas and sets the default zoom level as well the units to
-     * be used by the grid
+     * Creates a new canvas and sets the default zoom level as well the units to be used by the grid
      *
      * @param zoom The current zoom level
      * @param units The units to be shown on the grid
@@ -372,10 +434,23 @@ public class Canvas extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        /*
+         *Checks if the source of the event comes from the popup menu
+         */
         if (e.getSource().getClass().isInstance(new JMenuItem())) {
+            //Converts it to a JMenuItem
             JMenuItem tmp = (JMenuItem) e.getSource();
 
+            /*
+             *Checks event comes from the first popup or the 2nd
+             */
             if (tmp.getParent().equals(popup1)) {
+
+                /*
+                 *Does the action if the user clicks on "New Line" 
+                 * or "Close curve" or "Open curve"
+                 */
                 if (e.getActionCommand().equals("New Line")) {
                     String optionSelected = (String) JOptionPane.showInputDialog(this, "Please Select a Line Type", "Line Type", JOptionPane.QUESTION_MESSAGE, null, new String[]{
                         "PolyLine",
@@ -384,6 +459,9 @@ public class Canvas extends JPanel implements ActionListener {
                         "Bezier Spline",
                         "Bezier Spline Colinear"
                     }, null);
+                    /*
+                     *Fires the currect event based on what was selected
+                     */
                     if (optionSelected != null) {
                         String name = (String) JOptionPane.showInputDialog(this, "Please Give the Line a name", "Line Name", JOptionPane.QUESTION_MESSAGE);
                         if (name != null) {
