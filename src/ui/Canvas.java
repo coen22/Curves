@@ -606,7 +606,7 @@ public class Canvas extends JPanel implements ActionListener {
      *
      * @param units The units to be used
      */
-    public void setUnits(double units) {
+    protected void setUnits(double units) {
         this.units = units;
     }
 
@@ -615,7 +615,7 @@ public class Canvas extends JPanel implements ActionListener {
      *
      * @param gridspacing The spacing between grid line in pixels
      */
-    public void setGridspacing(double gridspacing) {
+    protected void setGridspacing(double gridspacing) {
         this.gridspacing = gridspacing;
     }
 

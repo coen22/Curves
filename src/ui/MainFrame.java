@@ -22,7 +22,6 @@ import ui.events.GuiEventsOpen;
 import ui.events.GuiEventsRefresh;
 import ui.events.GuiEventsVisibility;
 
-
 /**
  * The main frame to put everything on
  *
@@ -44,11 +43,27 @@ public class MainFrame extends JFrame implements GuiEventListner {
         new MainFrame();
     }
 
+    /**
+     * The canvas
+     */
     private final Canvas CANVAS;
+
+    /**
+     * The side bar
+     */
     private final SideBar SIDE_BAR;
+
+    /**
+     * The controller that changes the line
+     */
     private final Controller CONTROLLER;
-    private final boolean DEBUG = true;
+
+    /**
+     * The current selected line
+     */
     private int selected = -1;
+
+    private final boolean DEBUG = true;
 
     /**
      * Default constructor
@@ -123,9 +138,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             System.out.println("Creating");
         }
         selected++;
-        if (e.getInfo().length == 4) {
-            CONTROLLER.createCurve((int) e.getInfo()[2], e.getInfo()[0], e.getInfo()[1], e.getName(), (int) e.getInfo()[3]);
-        } else if (e.getInfo().length == 3) {
+        if (e.getInfo().length == 3) {
             CONTROLLER.createCurve((int) e.getInfo()[2], e.getInfo()[0], e.getInfo()[1], e.getName());
         } else {
             System.out.println("Error");
@@ -133,11 +146,6 @@ public class MainFrame extends JFrame implements GuiEventListner {
         update();
     }
 
-    /**
-     * TODO
-     *
-     * @param e
-     */
     @Override
     public void handleAdd(GuiEventsAdd e) {
         if (DEBUG) {

@@ -4,128 +4,216 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * The controller which stores the curves and constructs the curves
+ *
+ * @author Kareem Horstink
+ * @version 0.823
+ */
 public class Controller {
 
-    public static final int POLYLINE = 1;
+    /**
+     * The variable to set the constructed line to be a polyline
+     */
+    public static final int POLYLINE = 11;
+
+    /**
+     * The variable to set the constructed line to be a natural cubic spline
+     */
     public static final int CUBIC_N = 21;
+
+    /**
+     * The variable to set the constructed line to be a bezier curve
+     */
     public static final int BEZIERCURVE = 31;
+
+    /**
+     * The variable to set the constructed line to be a bezier spline
+     */
     public static final int BEZIERSPLINE = 32;
+
+    /**
+     * The variable to set the constructed line to be a colinear bezier spline
+     */
     public static final int BEZIERSPLINECOLINEAR = 33;
-    private ArrayList<Curve> curves = new ArrayList<Curve>();
 
+    /**
+     * List of the all the curves
+     */
+    private final ArrayList<Curve> CURVES;
+
+    /**
+     * Default constructor
+     */
     public Controller() {
-        curves = new ArrayList<Curve>();
-    }
-
-    public int amountOfCurves() {
-        return curves.size();
-    }
-
-    public String getCurveName(int index) {
-        return curves.get(index).getName();
-    }
-
-    public String curveName(int index) {
-        return curves.get(index).getName();
+        CURVES = new ArrayList<>();
     }
 
     /**
-     * Method to retrieve the plotting coordinates of each curve. NOTE THE
-     * DEFINITION OF SUB-POINTS!
+     * Returns the amount of curves that is currently in the system
+     *
+     * @return Return the amount of curves in the system (integer)
+     */
+    public int amountOfCurves() {
+        return CURVES.size();
+    }
+
+    /**
+     * Gets the name of the current curve
+     *
+     * @param index The index of the line
+     * @return The name of the curve
+     */
+    public String getCurveName(int index) {
+        return CURVES.get(index).getName();
+    }
+
+    /**
+     * Method to retrieve the plotting coordinates of each curve. NOTE THE DEFINITION OF SUB-POINTS!
      *
      * @param curveIndex index of which curve to retrieve
-     * @param subPoints this number signifies the number of plotting points
-     * in-between each pair of control-points. The larger the number, the more
-     * fine-grained the curve plot will be.
+     * @param subPoints this number signifies the number of plotting points in-between each pair of
+     * control-points. The larger the number, the more fine-grained the curve plot will be.
      * @return
      */
     public ArrayList<Point2D> getCurvePlot(int curveIndex, int subPoints) {
-        return curves.get(curveIndex).getPlot(subPoints);
+        return CURVES.get(curveIndex).getPlot(subPoints);
     }
 
+    /**
+     * Constructs the new spline/curve
+     *
+     * @param TYPE The type of curve/spline to be created
+     * @param x The x location of the first point
+     * @param y The y location of the first points
+     * @param name The name of the curve/spline
+     */
     public void createCurve(int TYPE, double x, double y, String name) {
-        //created the constructor for polyline
         if (TYPE == POLYLINE) {
-            curves.add(new PolyLine(new Point2D.Double(x, y), name));
+            CURVES.add(new PolyLine(new Point2D.Double(x, y), name));
             System.out.println("Polyline Created");
         } else if (TYPE == CUBIC_N) {
-            curves.add(new CubicSpline(new Point2D.Double(x, y), name, CubicSpline.NATURAL_SPLINE));
+            CURVES.add(new CubicSpline(new Point2D.Double(x, y), name, CubicSpline.NATURAL_SPLINE));
             System.out.println("CubicLine Created");
         } else if (TYPE == BEZIERCURVE) {
-            curves.add(new BezierCurve(new Point2D.Double(x, y), name));
+            CURVES.add(new BezierCurve(new Point2D.Double(x, y), name));
             System.out.println("Bezier Curve Created");
         } else if (TYPE == BEZIERSPLINE) {
-            curves.add(new BezierSpline(name));
-            curves.get(curves.size() - 1).add(x, y);
+            CURVES.add(new BezierSpline(name));
+            CURVES.get(CURVES.size() - 1).add(x, y);
             System.out.println("Bezier Spline Created");
         } else if (TYPE == BEZIERSPLINECOLINEAR) {
-            curves.add(new BezierSplineColinear(name));
-            curves.get(curves.size() - 1).add(x, y);
+            CURVES.add(new BezierSplineColinear(name));
+            CURVES.get(CURVES.size() - 1).add(x, y);
             System.out.println("Bezier Spline Colinear Created");
         }
     }
 
+    /**
+     * Removes a control point
+     *
+     * @param CurveID The index of the curve
+     * @param PointID The index of the point
+     * @return Returns the deleted point
+     */
     public Point2D removePoint(int CurveID, int PointID) {
-        return curves.get(CurveID).removePoint(PointID);
+        return CURVES.get(CurveID).removePoint(PointID);
     }
 
-    public void createCurve(int TYPE, double x, double y, String name, int cubicType) {
-        //created the constructor for polyline
-        if (TYPE == POLYLINE) {
-            curves.add(new PolyLine(new Point2D.Double(x, y), name));
-            System.out.println("Polyline Created");
-        } else if (TYPE == CUBIC_N) {
-            curves.add(new CubicSpline(new Point2D.Double(x, y), name, cubicType));
-            System.out.println("CubicLine Created");
-        } else if (TYPE == BEZIERCURVE) {
-            curves.add(new BezierCurve(new Point2D.Double(x, y), name));
-            System.out.println("Bezier Curve Created");
-        } else if (TYPE == BEZIERSPLINE) {
-            curves.add(new BezierSpline(name));
-            curves.get(curves.size() - 1).add(x, y);
-            System.out.println("Bezier Spline Created");
-        } else if (TYPE == BEZIERSPLINECOLINEAR) {
-            curves.add(new BezierSplineColinear(name));
-            curves.get(curves.size() - 1).add(x, y);
-            System.out.println("Bezier Spline Colinear Created");
-        }
-    }
-
+    /**
+     * Closes the curve/spline
+     *
+     * @param curveIndex The index of the curve/spline
+     * @return Returns if the curve/spline is closed or not
+     */
     public boolean closeCurve(int curveIndex) {
-        curves.get(curveIndex).setClosed(true);
-        return curves.get(curveIndex).isClosed();
+        CURVES.get(curveIndex).setClosed(true);
+        return CURVES.get(curveIndex).isClosed();
     }
 
+    /**
+     * Opens the curve/spline
+     *
+     * @param curveIndex The index of the curve/index
+     * @return Returns if the curve/spline is closed or not
+     */
     public boolean openCurve(int curveIndex) {
-        curves.get(curveIndex).setClosed(false);
-        return curves.get(curveIndex).isClosed();
+        CURVES.get(curveIndex).setClosed(false);
+        return CURVES.get(curveIndex).isClosed();
     }
 
+    /**
+     * Gets the index of the curve in the controller
+     *
+     * @param curve The controller to be searched
+     * @return The index of the selected curve
+     */
     public int getCurveID(Curve curve) {
-        return 0;
+        return CURVES.indexOf(curve);
     }
 
+    /**
+     * Add a point to last position of the curve/spline
+     *
+     * @param x The x location of the point
+     * @param y The y location of the point
+     * @param curveIndex The index of the curve/spline
+     */
     public void addLastPoint(double x, double y, int curveIndex) {
-        curves.get(curveIndex).add(x, y);
+        CURVES.get(curveIndex).add(x, y);
     }
 
+    /**
+     * Adds a point to desired location of the curve/spline
+     *
+     * @param x The x location of the point
+     * @param y The y location of the point
+     * @param curveIndex The index of the of the curve/spline
+     * @param index The desired location to add the point
+     */
     public void addPoint(double x, double y, int curveIndex, int index) {
-
+        //TO DO
     }
 
+    /**
+     * Updates the location of a particular point
+     *
+     * @param x The x location of the point
+     * @param y The y location of the point
+     * @param curveIndex The index of the of the curve/spline
+     * @param pointIndex The index of the point to be updated
+     */
     public void setPointLocation(double x, double y, int curveIndex, int pointIndex) {
-        curves.get(curveIndex).setPoint(pointIndex, x, y);
+        CURVES.get(curveIndex).setPoint(pointIndex, x, y);
     }
 
+    /**
+     * Returns the list of the control points
+     *
+     * @param curveIndex The index of the curve/spline
+     * @return Returns a list of Point2Dd
+     */
     public List<Point2D> getControlsPoints(int curveIndex) {
-        return curves.get(curveIndex).getControlPoints();
+        return CURVES.get(curveIndex).getControlPoints();
     }
-    
-    public double curveArea(int curveID){
-        return curves.get(curveID).area(0);
+
+    /**
+     * Returns the area of a curve/spline
+     *
+     * @param curveID The index of the curve/spline
+     * @return Returns the area of the curve/spline based on the selected method
+     */
+    public double curveArea(int curveID) {
+        return CURVES.get(curveID).area(0);
     }
-    
-    public double curveLength(int curveID){
-        return curves.get(curveID).length(0);
+
+    /**
+     * Returns the length of a curve/spline
+     *
+     * @param curveID The index of the curve/spline
+     * @return Returns the length of the curve/spline based on the selected method
+     */
+    public double curveLength(int curveID) {
+        return CURVES.get(curveID).length(0);
     }
 }
