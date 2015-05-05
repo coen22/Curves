@@ -104,8 +104,18 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     /**
      * Combo box to select the current line
      */
-    private JComboBox<String> cb;
+    private JComboBox<String> comboSelected;
 
+    /**
+     * Combo box to select the algorithm 
+     */
+    private JComboBox<String> comboLenth;
+    
+    /**
+     * Combo box to select the algorithm
+     */
+    private JComboBox<String> comboArea;
+    
     private final boolean DEBUG = false;
 
     /**
@@ -195,21 +205,23 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         });
         visibleBox.setToolTipText("Sets all other line to not be visible");
         controls.add(visibleBox);
-        cb = new JComboBox<>(new String[]{""});
-        cb.addActionListener(new ActionListener() {
+        comboSelected = new JComboBox<>(new String[]{""});
+        comboSelected.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (DEBUG) {
                     System.out.println(e.getActionCommand());
                 }
-                if (e.getSource() == cb && cb.getItemCount() != 0 && !updating2) {
-                    fireEvent(new GuiEventsCurrent(this, cb.getSelectedIndex()));
-                    curveID = cb.getSelectedIndex();
+                if (e.getSource() == comboSelected && comboSelected.getItemCount() != 0 && !updating2) {
+                    fireEvent(new GuiEventsCurrent(this, comboSelected.getSelectedIndex()));
+                    curveID = comboSelected.getSelectedIndex();
                 }
             }
         });
-        controls.add(cb);
+        controls.add(comboSelected);
+        
+        
 
         curveInfo = new String[5];
 
@@ -272,14 +284,14 @@ public class SideBar extends JTabbedPane implements TableModelListener {
             curveInfo = info;
         }
         updateInfoPanel();
-        cb.removeAllItems();
+        comboSelected.removeAllItems();
         for (int i = 0; i < numberOfCurve; i++) {
-            cb.addItem(Integer.toString(i + 1));
+            comboSelected.addItem(Integer.toString(i + 1));
         }
         if (DEBUG) {
             System.out.println(curveID);
         }
-        cb.setSelectedIndex(curveID);
+        comboSelected.setSelectedIndex(curveID);
         updating2 = false;
     }
 

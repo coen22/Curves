@@ -85,4 +85,17 @@ public interface GuiEventListner {
      */
     public void handleRefresh(GuiEventsRefresh e);
 
+    /**
+     * Handles the changing algorithm for area
+     *
+     * @param e Area change event
+     */
+    public void handleAreaChange(GuiEventAreaChange e);
+
+    /**
+     * Handles the changing algorithm for length
+     *
+     * @param e Length change event
+     */
+    public void handleLengthChange(GuiEventLengthChange e);
 }

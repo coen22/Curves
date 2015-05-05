@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import ui.events.GuiEventAreaChange;
+import ui.events.GuiEventLengthChange;
 import ui.events.GuiEventListner;
 import ui.events.GuiEvents;
 import ui.events.GuiEventsAdd;
@@ -266,6 +268,16 @@ public class MainFrame extends JFrame implements GuiEventListner {
         } else {
             System.out.println("Not handled");
         }
+    }
+
+    @Override
+    public void handleAreaChange(GuiEventAreaChange e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void handleLengthChange(GuiEventLengthChange e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
