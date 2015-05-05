@@ -23,7 +23,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import ui.events.*;
+import ui.events.GuiEventListner;
+import ui.events.GuiEvents;
+import ui.events.GuiEventsAdd;
+import ui.events.GuiEventsClose;
+import ui.events.GuiEventsCreate;
+import ui.events.GuiEventsDeleteP;
+import ui.events.GuiEventsMove;
+import ui.events.GuiEventsOpen;
+import ui.events.GuiEventsRefresh;
 
 /**
  * The canvas in which to draw various elements of the UI, mostly focusing on
@@ -38,7 +46,8 @@ public class Canvas extends JPanel implements ActionListener {
     private double offSetX = 0;
     private double offSetY = 0;
     private double zoom = 1;
-    private double gridSpacing = 50;
+    private double units = 1;
+    private double gridspacing = 100;
     private ArrayList<List<Point2D>> curves = new ArrayList<>();
     private List<Point2D> controls = new ArrayList<>();
     private final ArrayList<Color> COLORS = new ArrayList<>();
@@ -55,21 +64,28 @@ public class Canvas extends JPanel implements ActionListener {
     private boolean moveSelected;
 
     /**
-     * Creates a new canvas and sets the default zoom level as well the grid
-     * spacing
+     * Creates a new canvas and sets the default zoom level as well the units to
+     * be used by the grid
      *
-     * @param zoom
-     * @param gridSpace
+     * @param zoom The current zoom level
+     * @param units The units to be shown on the grid
      */
-    protected Canvas(double zoom, double gridSpace) {
+    protected Canvas(double zoom, double units) {
         setBackground(Color.gray);
         init();
         this.zoom = zoom;
-        this.gridSpacing = gridSpace;
+        this.units = units;
         this.setSize(400, 500);
     }
 
+    /**
+     * Creates the overall interface
+     */
     private void init() {
+        /*
+         * Creates the first popup menu
+         * New line;Close curve; Open curve
+         */
         popup1 = new JPopupMenu();
 
         JMenuItem menuItem = new JMenuItem("New Line");
@@ -82,6 +98,10 @@ public class Canvas extends JPanel implements ActionListener {
         menuItem.addActionListener(this);
         popup1.add(menuItem);
 
+        /*
+         * Creates the second popup menu
+         * Move point; delete point
+         */
         popup2 = new JPopupMenu();
         menuItem = new JMenuItem("Move point");
         menuItem.addActionListener(this);
@@ -90,6 +110,11 @@ public class Canvas extends JPanel implements ActionListener {
         menuItem.addActionListener(this);
         popup2.add(menuItem);
 
+        /*
+         * Add a mouse listener to the canvas
+         * Add new point; Open popup 1; Open popup 2;
+         * Some logic for dragging points; Enter coordiantes
+         */
         addMouseListener(new MouseListener() {
 
             @Override
@@ -142,6 +167,10 @@ public class Canvas extends JPanel implements ActionListener {
             }
         });
 
+        /*
+         * Add the motion mouse listener
+         * Move point
+         */
         addMouseMotionListener(new MouseMotionListener() {
             int preX = 0;
             int preY = 0;
@@ -171,6 +200,9 @@ public class Canvas extends JPanel implements ActionListener {
             }
         });
 
+        /*
+         *  Mouse wheel listener to control zoom level
+         */
         addMouseWheelListener((MouseWheelEvent e) -> {
             if (Math.signum(e.getPreciseWheelRotation()) == 1) {
                 setZoom(Math.abs(getZoom() / (e.getPreciseWheelRotation() * 1.05)));
@@ -181,6 +213,9 @@ public class Canvas extends JPanel implements ActionListener {
 
     }
 
+    /**
+     * Open a menu to enter coordiante of a new point
+     */
     private void openNewPopUpCoordiante() {
         String tmp = JOptionPane.showInputDialog(this, "Enter Coordiante", "0.0, 0.0");
         try {
@@ -194,6 +229,9 @@ public class Canvas extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Open a menu to enter coordiante to move a point
+     */
     private void openNewPopUpCoordianteMove() {
         String tmp = JOptionPane.showInputDialog(this, "Enter Coordiante", "0.0, 0.0");
         try {
@@ -211,6 +249,11 @@ public class Canvas extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Paints the Canvas
+     *
+     * @param g The graphics
+     */
     @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -222,11 +265,11 @@ public class Canvas extends JPanel implements ActionListener {
         }
     }
 
-    protected void setVisiblity(boolean visiblity) {
-        this.Visiblity = visiblity;
-        repaint();
-    }
-
+    /**
+     * Draws the control points
+     *
+     * @param g
+     */
     private void drawControls(Graphics2D g) {
         if (curveID != -1) {
             g.setColor(COLORS.get(curveID));
@@ -239,10 +282,10 @@ public class Canvas extends JPanel implements ActionListener {
     private void drawGrid(Graphics2D g) {
         for (int i = -500; i < 500; i++) {
             g.setColor(Color.lightGray);
-            g.drawLine(Integer.MAX_VALUE * -1, (int) y(gridSpacing * i), Integer.MAX_VALUE, (int) y(gridSpacing * i));
-            g.drawLine((int) x(gridSpacing * i), Integer.MAX_VALUE * -1, (int) x(gridSpacing * i), Integer.MAX_VALUE);
-            g.drawString(Double.toString(i * gridSpacing), (int) x(i * gridSpacing + 5), (int) y(0) - 2);
-            g.drawString(Double.toString(i * gridSpacing), (int) x(5), (int) y(i * gridSpacing) - 2);
+            g.drawLine(Integer.MAX_VALUE * -1, (int) y(gridspacing * i), Integer.MAX_VALUE, (int) y(gridspacing * i));
+            g.drawLine((int) x(gridspacing * i), Integer.MAX_VALUE * -1, (int) x(gridspacing * i), Integer.MAX_VALUE);
+            g.drawString(Double.toString(i * units), (int) x(i * gridspacing + 5), (int) y(0) - 2);
+            g.drawString(Double.toString(i * units), (int) x(5), (int) y(i * gridspacing) - 2);
         }
     }
 
@@ -255,12 +298,12 @@ public class Canvas extends JPanel implements ActionListener {
                 g.setStroke(new BasicStroke(3f));
                 colorPicker();
                 g.setColor(COLORS.get(counter));
-                for (Point2D poin : curve) {
+                for (Point2D points : curve) {
                     if (fir) {
                         fir = false;
-                        tmp.moveTo(x(poin.getX()), y(poin.getY()));
+                        tmp.moveTo(x(points.getX()), y(points.getY()));
                     } else {
-                        tmp.lineTo(x(poin.getX()), y(poin.getY()));
+                        tmp.lineTo(x(points.getX()), y(points.getY()));
                     }
                 }
                 g.draw(tmp);
@@ -310,6 +353,11 @@ public class Canvas extends JPanel implements ActionListener {
         repaint();
     }
 
+    /**
+     * Give every event listener attached to this object the event
+     *
+     * @param event The event to be passed
+     */
     private void fireEvent(GuiEvents event) {
         Iterator<GuiEventListner> i = LISTENERS.iterator();
         while (i.hasNext()) {
@@ -317,6 +365,11 @@ public class Canvas extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Handles the logic of the pop up
+     *
+     * @param e The event
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().getClass().isInstance(new JMenuItem())) {
@@ -372,41 +425,70 @@ public class Canvas extends JPanel implements ActionListener {
         repaint();
     }
 
+    /**
+     * Attaches a eventListner to the object
+     *
+     * @param list The GuiEventListener
+     */
     protected synchronized void addEventListener(GuiEventListner list) {
         LISTENERS.add(list);
     }
 
+    /**
+     * Calculates the correct location of a point based on the mouse x location
+     *
+     * @param x The mouse x location
+     * @return The corrected x location
+     */
     private double xm(double x) {
         return (x - getVisibleRect().width / 2 - offSetX) / zoom;
     }
 
+    /**
+     * Calculates the correct location of a point based on the mouse y location
+     *
+     * @param y The mouse y location
+     * @return The corrected y location
+     */
     private double ym(double y) {
         return (getVisibleRect().height / 2 - y - offSetY) / zoom;
     }
 
+    /**
+     * Corrects the location so that the origin is in the center of the screen
+     *
+     * @param x The x location the object
+     * @return The corrected x location
+     */
     private double x(double x) {
         return zoom * (x) + offSetX + getVisibleRect().width / 2;
     }
 
+    /**
+     * Corrects the location so that the origin is in the center of the screen
+     *
+     * @param x The x location the object
+     * @return The corrected x location
+     */
     private double x(int x) {
         return zoom * (x) + offSetX + getVisibleRect().width / 2;
     }
 
     /**
-     * Converts the mouse or the panel y into a graphs y
+     * Corrects the location so that the origin is in the center of the screen
      *
-     * @param y The panels y value
-     * @return The graphical y value
+     * @param y The y location the object
+     * @return The corrected y location
      */
     private double y(double y) {
         return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
     }
 
     /**
-     * Converts the mouse or the panel y into a graphs y
+     * Corrects the location so that the origin is in the center of the screen
      *
-     * @param y The panels y value
-     * @return The graphical y value
+     * @param y The y location the object
+     * @return The corrected y location
      */
     private double y(int y) {
         return (zoom * getVisibleRect().height / 2 - zoom * y) - ((zoom - 1) * getVisibleRect().height / 2) - offSetY;
@@ -425,11 +507,42 @@ public class Canvas extends JPanel implements ActionListener {
 
     }
 
+    /**
+     * Updates the control points draggable area
+     */
     private void updateControls() {
         controlPoints = new ArrayList<>();
         double size = 15;
         for (Point2D control : controls) {
             controlPoints.add(new Ellipse2D.Double(x(control.getX()) - size / 2, y(control.getY()) - size / 2, size, size));
         }
+    }
+
+    /**
+     * Sets the units to be used for the grid spacing
+     *
+     * @param units The units to be used
+     */
+    public void setUnits(double units) {
+        this.units = units;
+    }
+
+    /**
+     * Sets the spacing between the grid line
+     *
+     * @param gridspacing The spacing between grid line in pixels
+     */
+    public void setGridspacing(double gridspacing) {
+        this.gridspacing = gridspacing;
+    }
+
+    /**
+     * Set if other lines are visible
+     *
+     * @param visiblity Boolean to set if its true or false
+     */
+    protected void setVisiblity(boolean visiblity) {
+        this.Visiblity = visiblity;
+        repaint();
     }
 }

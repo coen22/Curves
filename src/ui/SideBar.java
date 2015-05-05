@@ -19,7 +19,12 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import ui.events.*;
+import ui.events.GuiEventListner;
+import ui.events.GuiEvents;
+import ui.events.GuiEventsCurrent;
+import ui.events.GuiEventsMove;
+import ui.events.GuiEventsRefresh;
+import ui.events.GuiEventsVisibility;
 
 /**
  * The sidebar which shows the data input grid and other controls
@@ -58,7 +63,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     /**
-     * Sets the control poi nts
+     * Sets the control points
      *
      * @param controlPoints The control points to be passed
      */

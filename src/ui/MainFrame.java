@@ -44,7 +44,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
     public MainFrame() {
         setTitle("Dem Curves");
         CONTROLLER = new Controller();
-        CANVAS = new Canvas(1, 100);
+        CANVAS = new Canvas(1, 1);
         CANVAS.addEventListener(this);
         SIDE_BAR = new SideBar();
         add(CANVAS);
