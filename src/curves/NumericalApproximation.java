@@ -37,7 +37,7 @@ public class NumericalApproximation {
 	}
 	
 	private static double rombergArcLength(Curve curve) {
-		CubicSpline local = (CubicSpline)curve;
+		Evaluateable local = (Evaluateable)curve;
 		double tmpLength = 0;
 		
 		for (int i = 0; i < curve.points.size()-1; i++){
@@ -50,7 +50,7 @@ public class NumericalApproximation {
 	}
 	
 	private static double simpsonArcLength(Curve curve) {
-		CubicSpline local = (CubicSpline)curve;
+		Evaluateable local = (Evaluateable)curve;
 		double tmpLength = 0;
 		
 		for (int i = 0; i < curve.points.size()-1; i++){

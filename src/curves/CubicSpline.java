@@ -3,7 +3,7 @@ package curves;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class CubicSpline extends Curve {
+public class CubicSpline extends Curve implements Evaluateable {
 	public static final int NATURAL_SPLINE = 1;
 	public static final int CLAMPED_SPLINE = 2;
 	public static final int NOT_A_KNOT_SPLINE = 3;
@@ -313,7 +313,7 @@ public class CubicSpline extends Curve {
 		
 	}
 
-	protected double rombergEvaluation(int piece, double lower, double higher, int n){
+	public double rombergEvaluation(int piece, double lower, double higher, int n){
 		double[][] rombergMatrix = new double[n][n];
 		for (int i = 0; i < n; i++){
 			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, (int)Math.pow(2, i));
@@ -340,7 +340,7 @@ public class CubicSpline extends Curve {
 		return sum*h;
 	}
 	
-	protected double simpsonEvaluation(int piece, double lower, double higher, int n){
+	public double simpsonEvaluation(int piece, double lower, double higher, int n){
 		double h = (higher-lower) / n;
 		double sum = 0;
 		
