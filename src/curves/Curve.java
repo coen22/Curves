@@ -67,7 +67,7 @@ public abstract class Curve {
 	}
 
 	protected List<Point2D> getControlPoints() {
-		return (List) points;
+		return (List<Point2D>) points;
 	}
 
 	protected Point2D removePoint(int index) {

@@ -313,28 +313,6 @@ public class CubicSpline extends Curve {
 		
 	}
 
-	private void calcArcLengthSimpson(){
-		double tmpLength = 0;
-		for (int i = 0; i < dXcoefficients.length-1; i++){
-			tmpLength += simpsonEvaluation(i, 0, 1, 20);
-		}
-		if (type == CLOSED_SPLINE){
-			tmpLength += simpsonEvaluation(dYcoefficients.length-1, 0, 1, 20);
-		}
-		this.length = tmpLength;
-	}
-	
-	private void calcArcLengthRomberg(){
-		double tmpLength = 0;
-		for (int i = 0; i < dXcoefficients.length-1; i++){
-			tmpLength += rombergEvaluation(i, 0, 1, 7);
-		}
-		if (type == CLOSED_SPLINE){
-			tmpLength += rombergEvaluation(dYcoefficients.length-1, 0, 1, 7);
-		}
-		this.length = tmpLength;
-	}
-	
 	protected double rombergEvaluation(int piece, double lower, double higher, int n){
 		double[][] rombergMatrix = new double[n][n];
 		for (int i = 0; i < n; i++){

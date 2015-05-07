@@ -2,7 +2,6 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.List;
 
 public class NumericalApproximation {
 	public static final int SHOELACE_AREA = 1;
