@@ -50,7 +50,7 @@ public class CubicSpline extends Curve {
     	return returnPoint;
     }
 	
-	private void update() {
+	protected void update() {
 		calcCoefficients();
 		calcPlot(divisions);
 		calcDerivatives();
