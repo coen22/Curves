@@ -5,10 +5,14 @@ import java.util.ArrayList;
 
 public class PolyLine extends Curve {
 
-    protected PolyLine(Point2D point, String name) {
+    private double length;
+	private double area;
+
+	protected PolyLine(Point2D point, String name) {
         super(name);
         super.points.add(point);
         algorithmDefinition();
+        recalcAaA();
     }
     
     private void algorithmDefinition(){
@@ -35,6 +39,7 @@ public class PolyLine extends Curve {
 			super.points.remove(super.numberOfPoints()-1);
 			super.setClosed(closed);
 		}
+		recalcAaA();
 	}
     
     @Override
@@ -47,7 +52,30 @@ public class PolyLine extends Curve {
     	else {
     		this.points.add(new Point2D.Double(x, y));
     	}
+    	recalcAaA();
 		return points.size() - 1;
+	}
+    
+    private void recalcAaA() {
+		this.area = NumericalApproximation.calcArea(this);
+		this.length = NumericalApproximation.calcArcLength(this);
+	}
+    
+    protected double area(int method) {
+		if (method != areaAlgorithm){
+			areaAlgorithm = method;
+			recalcAaA();
+		}
+		return this.area;
+	}
+	
+	@Override
+	protected double length(int method) {
+		if (method != arcLengthAlgorithm){
+			arcLengthAlgorithm = method;
+			recalcAaA();
+		}
+		return this.length;
 	}
     
 }

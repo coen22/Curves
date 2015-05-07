@@ -55,7 +55,6 @@ public class CubicSpline extends Curve {
 		calcPlot(divisions);
 		calcDerivatives();
 		recalcAaA();
-		
 	}
 	
 	protected double area(int method) {
@@ -79,9 +78,6 @@ public class CubicSpline extends Curve {
 		calcAreaCoefs();
 		this.area = NumericalApproximation.calcArea(this);
 		this.length = NumericalApproximation.calcArcLength(this);
-		
-		//only tmp
-		calcArcLength();
 	}
 	
        @Override
@@ -316,12 +312,7 @@ public class CubicSpline extends Curve {
 		}
 		
 	}
-	
-	private void calcArcLength(){
-		calcArcLengthSimpson();
-		calcArcLengthRomberg();
-	}
-	
+
 	private void calcArcLengthSimpson(){
 		double tmpLength = 0;
 		for (int i = 0; i < dXcoefficients.length-1; i++){
@@ -344,7 +335,7 @@ public class CubicSpline extends Curve {
 		this.length = tmpLength;
 	}
 	
-	private double rombergEvaluation(int piece, double lower, double higher, int n){
+	protected double rombergEvaluation(int piece, double lower, double higher, int n){
 		double[][] rombergMatrix = new double[n][n];
 		for (int i = 0; i < n; i++){
 			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, (int)Math.pow(2, i));
@@ -371,7 +362,7 @@ public class CubicSpline extends Curve {
 		return sum*h;
 	}
 	
-	private double simpsonEvaluation(int piece, double lower, double higher, int n){
+	protected double simpsonEvaluation(int piece, double lower, double higher, int n){
 		double h = (higher-lower) / n;
 		double sum = 0;
 		
