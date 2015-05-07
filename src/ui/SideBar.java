@@ -19,7 +19,12 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import ui.events.*;
+import ui.events.GuiEventListner;
+import ui.events.GuiEvents;
+import ui.events.GuiEventsCurrent;
+import ui.events.GuiEventsMove;
+import ui.events.GuiEventsRefresh;
+import ui.events.GuiEventsVisibility;
 
 /**
  * The sidebar which shows the data input grid and other controls
@@ -29,21 +34,89 @@ import ui.events.*;
  */
 public class SideBar extends JTabbedPane implements TableModelListener {
 
+    /**
+     * JTable to represent the table of info about points
+     */
     private JTable table;
+
+    /**
+     * The table to hold info
+     */
     private TableModel mod;
+
+    /**
+     * Current selected line
+     */
     private int curveID;
-    private JCheckBox checkBox;
+
+    /**
+     * Check box to set the line to be visible or not
+     */
+    private JCheckBox visibleBox;
+
+    /**
+     * Boolean to represent if the line is visible or not
+     */
     private boolean visiblity;
+
+    /**
+     * List of the control points
+     */
     private ArrayList<List<Point2D>> controlPoints;
+
+    /**
+     * Checks if the table is currently updating
+     */
     private boolean updating1 = false;
+
+    /**
+     * Checks if the table is currently updating
+     */
     private boolean updating2 = true;
-    private final boolean DEBUG = true;
+
+    /**
+     * List of the Gui Event Listener
+     */
     private final List<GuiEventListner> LISTENER = new ArrayList<GuiEventListner>();
+
+    /**
+     * The panel to hold info about the line
+     */
     private JPanel info;
+
+    /**
+     * An array of string to hold the curve info: Name; Area; Length; Number Of control points; Zoom
+     * Level
+     *
+     */
     private String[] curveInfo;
+
+    /**
+     * Array of JLabels containing curveInfo[]
+     */
     private JLabel[] infoText;
+
+    /**
+     * The amount of curve
+     */
     private int numberOfCurve;
-    JComboBox<String> cb;
+
+    /**
+     * Combo box to select the current line
+     */
+    private JComboBox<String> comboSelected;
+
+    /**
+     * Combo box to select the algorithm 
+     */
+    private JComboBox<String> comboLenth;
+    
+    /**
+     * Combo box to select the algorithm
+     */
+    private JComboBox<String> comboArea;
+    
+    private final boolean DEBUG = false;
 
     /**
      * The constructor of the side bar
@@ -53,19 +126,23 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         init1();
     }
 
+    /**
+     * Sets the number of lines in the system
+     *
+     * @param numberOfCurve The number of curves
+     */
     public void setNumberOfCurve(int numberOfCurve) {
         this.numberOfCurve = numberOfCurve;
     }
 
     /**
-     * Sets the control poi nts
+     * Sets the control points
      *
      * @param controlPoints The control points to be passed
      */
     protected void setCurves(ArrayList<List<Point2D>> controlPoints) {
         if (curveID == -1) {
         } else {
-//            curveID = controlPoints.size() - 1;
             this.controlPoints = controlPoints;
             while (this.controlPoints.get(curveID).size() >= mod.getRowCount()) {
                 mod.addRow(new Object[]{0d, 0d, 0d});
@@ -76,6 +153,11 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         }
     }
 
+    /**
+     * Sets the current curve
+     *
+     * @param curveID The index of the current curve
+     */
     protected void setCurveID(int curveID) {
         this.curveID = curveID;
         updating1 = true;
@@ -83,6 +165,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         updating1 = false;
     }
 
+    /**
+     * Updates the table with the current info
+     */
     protected void updateTableFull() {
         if (curveID < controlPoints.size()) {
             List<Point2D> curve = controlPoints.get(curveID);
@@ -102,35 +187,41 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         }
     }
 
+    /**
+     * Initialize the buttons and info boxes
+     */
     private void init1() {
         JPanel controls = new JPanel(new GridLayout(10, 0));
         controls.setName("Controls");
         this.addTab(controls.getName(), controls);
-        checkBox = new JCheckBox("Set Invisible");
-        checkBox.setHorizontalAlignment(SwingConstants.CENTER);
-        checkBox.addActionListener(new ActionListener() {
+        visibleBox = new JCheckBox("Set Invisible");
+        visibleBox.setHorizontalAlignment(SwingConstants.CENTER);
+        visibleBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fireEvent(new GuiEventsVisibility(this, visiblity));
                 visiblity = !visiblity;
             }
         });
-        checkBox.setToolTipText("Sets all other line to not be visible");
-        controls.add(checkBox);
-        cb = new JComboBox<>(new String[]{""});
-        cb.addActionListener(new ActionListener() {
+        visibleBox.setToolTipText("Sets all other line to not be visible");
+        controls.add(visibleBox);
+        comboSelected = new JComboBox<>(new String[]{""});
+        comboSelected.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(e.getActionCommand());
-                if (e.getSource() == cb && cb.getItemCount() != 0 && !updating2) {
-                    System.out.println("hello?");
-                    fireEvent(new GuiEventsCurrent(this, cb.getSelectedIndex()));
-                    curveID = cb.getSelectedIndex();
+                if (DEBUG) {
+                    System.out.println(e.getActionCommand());
+                }
+                if (e.getSource() == comboSelected && comboSelected.getItemCount() != 0 && !updating2) {
+                    fireEvent(new GuiEventsCurrent(this, comboSelected.getSelectedIndex()));
+                    curveID = comboSelected.getSelectedIndex();
                 }
             }
         });
-        controls.add(cb);
+        controls.add(comboSelected);
+        
+        
 
         curveInfo = new String[5];
 
@@ -147,11 +238,17 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         button = new JButton("Help");
         button.setToolTipText("Shows a help diaglog");
         button.addActionListener((ActionEvent e) -> {
-            JOptionPane.showMessageDialog(controls, "Crtl Click to Add New Points" + "\n" + "Panning with shift click");
+            JOptionPane.showMessageDialog(controls, "Crtl Click to Add New Points"
+                    + "\n" + "Panning with shift click");
         });
         controls.add(button);
 
-        infoText = new JLabel[]{new JLabel("Name"), new JLabel("Area"), new JLabel("Length"), new JLabel("Number Of control points"), new JLabel("Zoom Level")};
+        infoText = new JLabel[]{
+            new JLabel("Name"),
+            new JLabel("Area"),
+            new JLabel("Length"),
+            new JLabel("Number Of control points"),
+            new JLabel("Zoom Level")};
         info = new JPanel(new GridLayout(6, 0));
         info.setToolTipText("Information about the line");
         for (JLabel infoText1 : infoText) {
@@ -163,6 +260,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
     }
 
+    /**
+     * Initialize the table
+     */
     private void init2() {
         JPanel dataViewer = new JPanel();
         createTable();
@@ -173,21 +273,31 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         this.addTab(dataViewer.getName(), dataViewer);
     }
 
+    /**
+     * Update the info for the curve
+     *
+     * @param info The info from the curve
+     */
     protected void updateInfo(String[] info) {
         updating2 = true;
         if (info.length == 5) {
             curveInfo = info;
         }
         updateInfoPanel();
-        cb.removeAllItems();
+        comboSelected.removeAllItems();
         for (int i = 0; i < numberOfCurve; i++) {
-            cb.addItem(Integer.toString(i + 1));
+            comboSelected.addItem(Integer.toString(i + 1));
         }
-        System.out.println(curveID);
-        cb.setSelectedIndex(curveID);
+        if (DEBUG) {
+            System.out.println(curveID);
+        }
+        comboSelected.setSelectedIndex(curveID);
         updating2 = false;
     }
 
+    /**
+     * Updates the jLabel
+     */
     private void updateInfoPanel() {
         infoText[0].setText("Name " + curveInfo[0]);
         infoText[1].setText("Area " + curveInfo[1]);
@@ -197,6 +307,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
 
     }
 
+    /**
+     * Creates the JTable and the table model
+     */
     private void createTable() {
         String[] header = {"Point ID", "X-coordinates", "Y-coordinates"};
         mod = new TableModel(header);
@@ -204,11 +317,18 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         mod.addTableModelListener(this);
     }
 
+    /**
+     * A listener to check if the table has been changed
+     *
+     * @param e
+     */
     @Override
     public void tableChanged(TableModelEvent e) {
         if (!updating1) {
             int row = e.getFirstRow();
-            System.out.println(row);
+            if (DEBUG) {
+                System.out.println(row);
+            }
             double fir = mod.getValueAt(row, 1);
             double sec = mod.getValueAt(row, 2);
             if (DEBUG) {
@@ -218,6 +338,11 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         }
     }
 
+    /**
+     * Handles the logic of the pop up
+     *
+     * @param e The event
+     */
     private void fireEvent(GuiEvents event) {
         Iterator<GuiEventListner> i = LISTENER.iterator();
         while (i.hasNext()) {
@@ -225,6 +350,11 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         }
     }
 
+    /**
+     * Attaches a eventListner to the object
+     *
+     * @param list The GuiEventListener
+     */
     protected synchronized void addEventListener(GuiEventListner list) {
         LISTENER.add(list);
     }

@@ -9,7 +9,20 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import ui.events.*;
+import ui.events.GuiEventAreaChange;
+import ui.events.GuiEventLengthChange;
+import ui.events.GuiEventListner;
+import ui.events.GuiEvents;
+import ui.events.GuiEventsAdd;
+import ui.events.GuiEventsClose;
+import ui.events.GuiEventsCreate;
+import ui.events.GuiEventsCurrent;
+import ui.events.GuiEventsDeleteC;
+import ui.events.GuiEventsDeleteP;
+import ui.events.GuiEventsMove;
+import ui.events.GuiEventsOpen;
+import ui.events.GuiEventsRefresh;
+import ui.events.GuiEventsVisibility;
 
 /**
  * The main frame to put everything on
@@ -32,11 +45,27 @@ public class MainFrame extends JFrame implements GuiEventListner {
         new MainFrame();
     }
 
+    /**
+     * The canvas
+     */
     private final Canvas CANVAS;
+
+    /**
+     * The side bar
+     */
     private final SideBar SIDE_BAR;
+
+    /**
+     * The controller that changes the line
+     */
     private final Controller CONTROLLER;
-    private final boolean DEBUG = true;
+
+    /**
+     * The current selected line
+     */
     private int selected = -1;
+
+    private final boolean DEBUG = false;
 
     /**
      * Default constructor
@@ -44,7 +73,8 @@ public class MainFrame extends JFrame implements GuiEventListner {
     public MainFrame() {
         setTitle("Dem Curves");
         CONTROLLER = new Controller();
-        CANVAS = new Canvas(1, 100);
+        CANVAS = new Canvas(1, 1);
+        CANVAS.setGridspacing(100);
         CANVAS.addEventListener(this);
         SIDE_BAR = new SideBar();
         add(CANVAS);
@@ -78,7 +108,9 @@ public class MainFrame extends JFrame implements GuiEventListner {
             SIDE_BAR.setNumberOfCurve(amount);
             SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
             CANVAS.setControls(tmpList);
-            System.out.println("Updating");
+            if (DEBUG) {
+                System.out.println("Updating");
+            }
         } else {
             System.out.println("Insufficient amount of curves");
         }
@@ -90,7 +122,9 @@ public class MainFrame extends JFrame implements GuiEventListner {
     private void updateG() {
         int amount = CONTROLLER.amountOfCurves();
         ArrayList tmpList = new ArrayList();
-        System.out.println(10 * CANVAS.getZoom());
+        if (DEBUG) {
+            System.out.println(10 * CANVAS.getZoom());
+        }
         for (int i = 0; i < amount; i++) {
             tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
         }
@@ -99,7 +133,9 @@ public class MainFrame extends JFrame implements GuiEventListner {
             SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
             SIDE_BAR.setNumberOfCurve(amount);
             CANVAS.setCurves(tmpList);
-            System.out.println("UpdatingG");
+            if (DEBUG) {
+                System.out.println("UpdatingG");
+            }
         } else {
             System.out.println("Insufficient amount of curves");
         }
@@ -111,9 +147,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             System.out.println("Creating");
         }
         selected++;
-        if (e.getInfo().length == 4) {
-            CONTROLLER.createCurve((int) e.getInfo()[2], e.getInfo()[0], e.getInfo()[1], e.getName(), (int) e.getInfo()[3]);
-        } else if (e.getInfo().length == 3) {
+        if (e.getInfo().length == 3) {
             CONTROLLER.createCurve((int) e.getInfo()[2], e.getInfo()[0], e.getInfo()[1], e.getName());
         } else {
             System.out.println("Error");
@@ -121,11 +155,6 @@ public class MainFrame extends JFrame implements GuiEventListner {
         update();
     }
 
-    /**
-     * TODO
-     *
-     * @param e
-     */
     @Override
     public void handleAdd(GuiEventsAdd e) {
         if (DEBUG) {
@@ -239,6 +268,16 @@ public class MainFrame extends JFrame implements GuiEventListner {
         } else {
             System.out.println("Not handled");
         }
+    }
+
+    @Override
+    public void handleAreaChange(GuiEventAreaChange e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void handleLengthChange(GuiEventLengthChange e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
