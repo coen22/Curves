@@ -112,9 +112,7 @@ public class GenitorIndividual implements Comparable<GenitorIndividual>{
 			child.shiftX();
 		}
 		if (Math.random() < NOISE_RATE){
-			System.out.println("fitness before: " + child.fitness());
 			child.noiseY();
-			System.out.println("fitness after: " + child.fitness() + "\n");
 		}
 		return child;
 	}

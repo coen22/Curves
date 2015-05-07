@@ -6,13 +6,14 @@ import java.util.ArrayList;
 public class GenitorBowl extends Curve{
 	private static final int POP_SIZE = 2000;
 	private static final int CHILDREN = 100000;
+	private static final int NUMBER_OF_POINTS = 7;
 	
 	ArrayList<GenitorIndividual> population;
 	
-	public GenitorBowl(String name, double targetLength, int numberOfPoints){
+	public GenitorBowl(String name, double targetLength){
 		super(name);
 		population = new ArrayList<GenitorIndividual>();
-		generatePopulation(targetLength, numberOfPoints);
+		generatePopulation(targetLength, NUMBER_OF_POINTS);
 		replicate();
 	}
 	
