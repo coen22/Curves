@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class GenitorBowl extends Curve{
 	private static final int POP_SIZE = 2000;
-	private static final int CHILDREN = 100000;
-	private static final int NUMBER_OF_POINTS = 7;
+	private static final int CHILDREN = 300000;
+	private static final int NUMBER_OF_POINTS = 5;
 	
 	ArrayList<GenitorIndividual> population;
 	

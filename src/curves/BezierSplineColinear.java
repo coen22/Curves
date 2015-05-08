@@ -6,7 +6,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 public class BezierSplineColinear extends BezierSpline {
 
-	double SDIFF = 100;
+	double SDIFF = 1;
 	
 	public BezierSplineColinear(String name) {
 		super(name);

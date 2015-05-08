@@ -4,15 +4,22 @@ import java.awt.geom.Point2D;
 
 public class GenitorIndividual implements Comparable<GenitorIndividual>{
 	private static final double SHIFT_RATE_X = 1;
-	private static final double NOISE_RATE = 0.5;
+	private static final double NOISE_RATE_Y = 0.5;
+	private static final double NOISE_RATE_X = 0.0;
 	private static final double X_SHIFT_FACTOR = 0.2;
 	private static final double Y_NOISE_FACTOR = 0.05;
-	private static final double FITNESS_WEIGHT = 10;
+	private static final double X_NOISE_FACTOR = 0.01;
+	private static final double FITNESS_WEIGHT = 20;
 	
 	private double fitness;
 	private CubicSpline curve;
 	private double targetLength;
 	
+	/**
+	 * 
+	 * @param targetLength
+	 * @param n
+	 */
 	public GenitorIndividual(double targetLength, int n){
 		this.targetLength = targetLength;
 		this.curve = randomCubicSpline(n);
@@ -29,7 +36,7 @@ public class GenitorIndividual implements Comparable<GenitorIndividual>{
 		double seed = targetLength*Math.random();
 		CubicSpline curve = new CubicSpline(new Point2D.Double(0, 0), "curve", CubicSpline.NATURAL_SPLINE);
 		for (int i = 1; i < n-1; i++){
-			curve.add(Math.abs(i*(seed/(n-1))), Math.abs(targetLength*Math.random()));
+			curve.add(Math.abs(i*(seed/(n-1))) + ((seed/(n-1))*(Math.random()-0.5)), Math.abs(targetLength*Math.random()));
 		}
 		curve.add(seed,0.0);
 		return curve;
@@ -47,6 +54,14 @@ public class GenitorIndividual implements Comparable<GenitorIndividual>{
 	protected void noiseY(){
 		for (int i = 0; i < this.curve.points.size()-1; i++){
 			this.curve.points.get(i).setLocation(this.curve.points.get(i).getX(), this.curve.points.get(i).getY() + (this.curve.points.get(i).getY() * (Math.random()-0.5) * Y_NOISE_FACTOR));
+		}
+		this.curve.update();
+		calcFitness();
+	}
+	
+	protected void noiseX(){
+		for (int i = 0; i < this.curve.points.size()-1; i++){
+			this.curve.points.get(i).setLocation(this.curve.points.get(i).getX() + (this.curve.points.get(i).getX() * (Math.random()-0.5) * X_NOISE_FACTOR), this.curve.points.get(i).getY());
 		}
 		this.curve.update();
 		calcFitness();
@@ -111,8 +126,11 @@ public class GenitorIndividual implements Comparable<GenitorIndividual>{
 		if (Math.random() < SHIFT_RATE_X){
 			child.shiftX();
 		}
-		if (Math.random() < NOISE_RATE){
+		if (Math.random() < NOISE_RATE_Y){
 			child.noiseY();
+		}
+		if (Math.random() < NOISE_RATE_X){
+			child.noiseX();
 		}
 		return child;
 	}
