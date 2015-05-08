@@ -5,21 +5,16 @@ import java.awt.geom.Point2D;
 public class GenitorIndividual implements Comparable<GenitorIndividual>{
 	private static final double SHIFT_RATE_X = 1;
 	private static final double NOISE_RATE_Y = 0.5;
-	private static final double NOISE_RATE_X = 0.0;
+	private static final double NOISE_RATE_X = 0.2;
 	private static final double X_SHIFT_FACTOR = 0.2;
-	private static final double Y_NOISE_FACTOR = 0.05;
-	private static final double X_NOISE_FACTOR = 0.01;
-	private static final double FITNESS_WEIGHT = 20;
+	private static final double Y_NOISE_FACTOR = 0.03;
+	private static final double X_NOISE_FACTOR = 0.03;
+	private static final double FITNESS_WEIGHT = 200;
 	
 	private double fitness;
 	private CubicSpline curve;
 	private double targetLength;
 	
-	/**
-	 * 
-	 * @param targetLength
-	 * @param n
-	 */
 	public GenitorIndividual(double targetLength, int n){
 		this.targetLength = targetLength;
 		this.curve = randomCubicSpline(n);

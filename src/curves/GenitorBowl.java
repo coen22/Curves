@@ -4,10 +4,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class GenitorBowl extends Curve{
-	private static final int POP_SIZE = 2000;
-	private static final int CHILDREN = 300000;
+	private static final int POP_SIZE = 20000;
+	private static final int CHILDREN = 200000;
 	private static final int NUMBER_OF_POINTS = 5;
-	
+
 	ArrayList<GenitorIndividual> population;
 	
 	public GenitorBowl(String name, double targetLength){
@@ -20,9 +20,12 @@ public class GenitorBowl extends Curve{
 	private void replicate(){
 		for (int i = 0; i < CHILDREN; i++){
 			binaryInsert(population.get(((int) ((Math.random()*Math.random())* POP_SIZE))).reproduce(population.get(((int) ((Math.random()*Math.random())* POP_SIZE)))));
-			population.remove(POP_SIZE-1);
+			population.remove(POP_SIZE);
+			if (i % 10000 == 0){
+				System.out.println("current best: " + population.get(0).getALRatio() + ", fitness: " + population.get(0).fitness());
+			}
 		}
-		System.out.println(" ratio: " + population.get(0).getALRatio() + population.get(0).toString());
+		System.out.println("current best: " + population.get(0).getALRatio() + population.get(0).toString());
 	}
 	
 	private void generatePopulation(double targetLength, int numberOfPoints) {
