@@ -11,7 +11,9 @@ public class NumericalApproximation {
 	public static final int PYTHAGOREAN_ARCLENGTH = 3;
 	
 	private static final int ROMBERG_MAX = 7;
-	private static final int SIMPSON_N = 20;
+	private static final int SIMPSON_N = 30;
+	
+	private static Evaluateable localCurve;
 
 	public static double calcArea(Curve curve){
 		if (curve.areaAlgorithm == EXACT_AREA_CUBIC){
@@ -37,29 +39,75 @@ public class NumericalApproximation {
 	}
 	
 	private static double rombergArcLength(Curve curve) {
-		Evaluateable local = (Evaluateable)curve;
+		localCurve = (Evaluateable)curve;
 		double tmpLength = 0;
 		
 		for (int i = 0; i < curve.points.size()-1; i++){
-			tmpLength += local.rombergEvaluation(i, 0, 1, ROMBERG_MAX);
+			tmpLength += rombergEvaluation(curve, i, 0, 1, ROMBERG_MAX);
 		}
 		if (curve.isClosed()){
-			tmpLength += local.rombergEvaluation(curve.points.size()-1, 0, 1, ROMBERG_MAX);
+			tmpLength += rombergEvaluation(curve, curve.points.size()-1, 0, 1, ROMBERG_MAX);
 		}
 		return tmpLength;
 	}
 	
+	private static double rombergEvaluation(Curve curve, int piece, double lower, double higher, int n){
+		
+		double[][] rombergMatrix = new double[n][n];
+		for (int i = 0; i < n; i++){
+			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, (int)Math.pow(2, i));
+		}
+		double pow;
+		for (int i = 1; i < n; i++){
+			for (int k = i; k < n; k++){
+				pow = Math.pow(4, i);
+				rombergMatrix[k][i] = (pow/(pow-1))*rombergMatrix[k][i-1] - (1/(pow-1))*rombergMatrix[k-1][i-1];
+			}
+		}
+		return rombergMatrix[n-1][n-1];
+	}
+	
+	private static double trapezoidEvaluation(int piece, double lower, double higher, int n){
+		double h = (higher-lower) / n;
+		double sum = 0;
+		
+		sum += 0.5 * localCurve.evaluateArcLengthFunction(piece, lower);
+		sum += 0.5 * localCurve.evaluateArcLengthFunction(piece, higher);
+		for (int i = 1; i <= (n-1); i++){
+			sum += localCurve.evaluateArcLengthFunction(piece, lower + (h*i));
+		}
+		return sum*h;
+	}
+	
 	private static double simpsonArcLength(Curve curve) {
-		Evaluateable local = (Evaluateable)curve;
+		localCurve = (Evaluateable)curve;
 		double tmpLength = 0;
 		
 		for (int i = 0; i < curve.points.size()-1; i++){
-			tmpLength += local.simpsonEvaluation(i, 0, 1, SIMPSON_N);
+			tmpLength += simpsonEvaluation(i, 0, 1, SIMPSON_N);
 		}
 		if (curve.isClosed()){
-			tmpLength += local.simpsonEvaluation(curve.points.size()-1, 0, 1, SIMPSON_N);
+			tmpLength += simpsonEvaluation(curve.points.size()-1, 0, 1, SIMPSON_N);
 		}
 		return tmpLength;
+	}
+	
+	private static double simpsonEvaluation(int piece, double lower, double higher, int n){
+		double h = (higher-lower) / n;
+		double sum = 0;
+		
+		sum += localCurve.evaluateArcLengthFunction(piece, lower);
+		sum += localCurve.evaluateArcLengthFunction(piece, higher);
+		
+		for (int i = 1; i < n; i+=2){
+			sum += 4*localCurve.evaluateArcLengthFunction(piece, (lower + (i * h)));
+		}
+		
+		for (int i = 2; i < n; i+=2){
+			sum += 2*localCurve.evaluateArcLengthFunction(piece, (lower + (i * h)));
+		}
+		
+		return (sum * (h/3));
 	}
 	
 	private static double exactCubicArea(Curve curve){

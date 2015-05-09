@@ -4,9 +4,13 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class GenitorBowl extends Curve{
-	private static final int POP_SIZE = 20000;
-	private static final int CHILDREN = 200000;
+	private static final double SELECTIVE_PRESSURE_POWER = 2;
+	
+	private static final int POP_SIZE = 1000; //2000
+	private static final int CHILDREN = 100000; //200000
 	private static final int NUMBER_OF_POINTS = 5;
+	
+	private static final int LENGTH_METHOD = NumericalApproximation.SIMPSON_ARCLENGTH;
 
 	ArrayList<GenitorIndividual> population;
 	
@@ -19,10 +23,11 @@ public class GenitorBowl extends Curve{
 	
 	private void replicate(){
 		for (int i = 0; i < CHILDREN; i++){
-			binaryInsert(population.get(((int) ((Math.random()*Math.random())* POP_SIZE))).reproduce(population.get(((int) ((Math.random()*Math.random())* POP_SIZE)))));
+			binaryInsert(population.get(((int) ((Math.pow(Math.random(), SELECTIVE_PRESSURE_POWER))* POP_SIZE))).reproduce(population.get(((int) ((Math.pow(Math.random(), SELECTIVE_PRESSURE_POWER))* POP_SIZE)))));
 			population.remove(POP_SIZE);
+			
 			if (i % 10000 == 0){
-				System.out.println("current best: " + population.get(0).getALRatio() + ", fitness: " + population.get(0).fitness());
+				System.out.println("current best: " + population.get(0).getALRatio() + ", length: " + population.get(0).getElement().length(LENGTH_METHOD) +  ", fitness: " + population.get(0).fitness());
 			}
 		}
 		System.out.println("current best: " + population.get(0).getALRatio() + population.get(0).toString());
@@ -35,15 +40,34 @@ public class GenitorBowl extends Curve{
 	}
 
 	private void binaryInsert(GenitorIndividual indiv){
-		int i = 0;
 		if (population.size() == 0){
 			population.add(indiv);
 		}
 		else {
-			while (i < population.size() && indiv.compareTo(population.get(i)) == -1){
-				i++;
+			int test = population.size()/2;
+			int min = 0;
+			int max = population.size();
+			while (max-min > 1){
+				if (indiv.compareTo(population.get(test)) == 0){
+					max = test;
+					min = test;
+					population.add(test, indiv);
+				}
+				else if (indiv.compareTo(population.get(test)) > 0){
+					max = test;
+					test = (test+min)/2;
+				}
+				else {
+					min = test;
+					test = (max+test)/2;
+				}
 			}
-			population.add(i, indiv);
+			if (indiv.compareTo(population.get(test)) > 0){
+				population.add(test,indiv);
+			}
+			else {
+				population.add(test+1,indiv);
+			}
 		}
 	}
 

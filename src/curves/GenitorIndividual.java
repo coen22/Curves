@@ -3,13 +3,17 @@ package curves;
 import java.awt.geom.Point2D;
 
 public class GenitorIndividual implements Comparable<GenitorIndividual>{
-	private static final double SHIFT_RATE_X = 1;
-	private static final double NOISE_RATE_Y = 0.5;
-	private static final double NOISE_RATE_X = 0.2;
-	private static final double X_SHIFT_FACTOR = 0.2;
-	private static final double Y_NOISE_FACTOR = 0.03;
-	private static final double X_NOISE_FACTOR = 0.03;
-	private static final double FITNESS_WEIGHT = 200;
+	private static final double SHIFT_RATE_X = 0.5; //1.0
+	private static final double NOISE_RATE_Y = 0.5; //0.5
+	private static final double NOISE_RATE_X = 0.5; //0.5
+	private static final double X_SHIFT_FACTOR = 0.05; //0.05
+	private static final double Y_NOISE_FACTOR = 0.05; //0.05
+	private static final double X_NOISE_FACTOR = 0.05; //0.05
+	private static final double AL_RATIO_WEIGHT = 150; //150
+	private static final double LENGTH_WEIGHT = 1; //1
+	private static final double LENGTH_POWER = 1; //1
+	
+	private static final int LENGTH_METHOD = NumericalApproximation.ROMBERG_ARCLENGTH;
 	
 	private double fitness;
 	private CubicSpline curve;
@@ -38,7 +42,7 @@ public class GenitorIndividual implements Comparable<GenitorIndividual>{
 	}
 	
 	protected void shiftX(){
-		double maxShift = this.curve.points.get(this.curve.points.size()-1).getX() * ((Math.random()*-0.5)*X_SHIFT_FACTOR);
+		double maxShift = this.curve.points.get(this.curve.points.size()-1).getX() * ((Math.random()-0.5)*X_SHIFT_FACTOR);
 		for (int i = this.curve.points.size()-1; i > 0; i--){
 			this.curve.points.get(i).setLocation((this.curve.points.get(i).getX() + ((double)i/(double)(this.curve.points.size()-1))*maxShift), this.curve.points.get(i).getY());
 		}
@@ -63,12 +67,13 @@ public class GenitorIndividual implements Comparable<GenitorIndividual>{
 	}
 
 	private void calcFitness() {
-		this.fitness = FITNESS_WEIGHT * (Math.sqrt(this.curve.area(NumericalApproximation.EXACT_AREA_CUBIC))/curve.length(NumericalApproximation.ROMBERG_ARCLENGTH));
-		fitness -= Math.abs(curve.length(NumericalApproximation.ROMBERG_ARCLENGTH)-targetLength);
+		double length = curve.length(LENGTH_METHOD);
+		this.fitness = AL_RATIO_WEIGHT * (Math.sqrt(this.curve.area(NumericalApproximation.EXACT_AREA_CUBIC))/length);
+		fitness -= LENGTH_WEIGHT * (Math.pow(Math.abs(length-targetLength), LENGTH_POWER));
 	}
 	
 	public double getALRatio(){
-		return Math.sqrt(curve.area(NumericalApproximation.EXACT_AREA_CUBIC))/curve.length(NumericalApproximation.ROMBERG_ARCLENGTH);
+		return Math.sqrt(curve.area(NumericalApproximation.EXACT_AREA_CUBIC))/curve.length(LENGTH_METHOD);
 	}
 
 	public CubicSpline getElement(){
@@ -133,8 +138,8 @@ public class GenitorIndividual implements Comparable<GenitorIndividual>{
 
 	public String toString(){
 		String string = "";
+		string = string + ". length: " + curve.length(LENGTH_METHOD) + ". ";
 		string = string + this.curve + ":::" + this.fitness; 
-		string = string + "area: " + curve.area(NumericalApproximation.EXACT_AREA_CUBIC) + ". length: " + curve.length(NumericalApproximation.ROMBERG_ARCLENGTH);
 		return string;
 	}
 

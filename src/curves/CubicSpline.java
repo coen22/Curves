@@ -312,62 +312,10 @@ public class CubicSpline extends Curve implements Evaluateable {
 		}
 		
 	}
-
-	public double rombergEvaluation(int piece, double lower, double higher, int n){
-		double[][] rombergMatrix = new double[n][n];
-		for (int i = 0; i < n; i++){
-			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, (int)Math.pow(2, i));
-		}
-		double pow;
-		for (int i = 1; i < n; i++){
-			for (int k = i; k < n; k++){
-				pow = Math.pow(4, i);
-				rombergMatrix[k][i] = (pow/(pow-1))*rombergMatrix[k][i-1] - (1/(pow-1))*rombergMatrix[k-1][i-1];
-			}
-		}
-		return rombergMatrix[n-1][n-1];
-	}
 	
-	private double trapezoidEvaluation(int piece, double lower, double higher, int n){
-		double h = (higher-lower) / n;
-		double sum = 0;
-		
-		sum += 0.5 * evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], lower);
-		sum += 0.5 * evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], higher);
-		for (int i = 1; i <= (n-1); i++){
-			sum += evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], lower + (h*i));
-		}
-		return sum*h;
-	}
-	
-	public double simpsonEvaluation(int piece, double lower, double higher, int n){
-		double h = (higher-lower) / n;
-		double sum = 0;
-		
-		sum += evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], lower);
-		sum += evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], higher);
-		
-		for (int i = 1; i < n; i+=2){
-			sum += 4*evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], (lower + (i * h)));
-		}
-		
-		for (int i = 2; i < n; i+=2){
-			sum += 2*evaluateArcLengthFunction(dXcoefficients[piece], dYcoefficients[piece], (lower + (i * h)));
-		}
-		
-		return (sum * (h/3));
-	}
-	
-	/**
-	 * evaluates the functional value of the function which when integrated gives the arc-length of a parametric curve. 
-	 * @param dxCoefs the coefficients of the derivative of the x-spline
-	 * @param dyCoefs the coefficients of the derivative of the y-spline
-	 * @param x the x-value at which the function should be evaluated
-	 * @return the result
-	 */
-	private double evaluateArcLengthFunction(double[] dxCoefs, double[] dyCoefs, double x){
-		double dx2 = dxCoefs[0] + x*(dxCoefs[1] + x*dxCoefs[2]);
-		double dy2 = dyCoefs[0] + x*(dyCoefs[1] + x*dyCoefs[2]);
+	public double evaluateArcLengthFunction(int piece, double x){
+		double dx2 = dXcoefficients[piece][0] + x*(dXcoefficients[piece][1] + x*dXcoefficients[piece][2]);
+		double dy2 = dYcoefficients[piece][0] + x*(dYcoefficients[piece][1] + x*dYcoefficients[piece][2]);
 		dx2 = dx2 * dx2;
 		dy2 = dy2 * dy2;
 		return Math.sqrt(dx2+dy2);
