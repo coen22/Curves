@@ -9,8 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import ui.events.GuiEventAreaChange;
-import ui.events.GuiEventLengthChange;
+import ui.events.GuiEventsAreaChange;
+import ui.events.GuiEventsLengthChange;
 import ui.events.GuiEventListner;
 import ui.events.GuiEvents;
 import ui.events.GuiEventsAdd;
@@ -64,7 +64,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
      * The current selected line
      */
     private int selected = -1;
-
+    
     private final boolean DEBUG = false;
 
     /**
@@ -96,26 +96,26 @@ public class MainFrame extends JFrame implements GuiEventListner {
         for (int i = 0; i < amount; i++) {
             tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
         }
-
+        
         if (amount > 0) {
             CANVAS.setCurves(tmpList);
             tmpList = new ArrayList();
             for (int i = 0; i < amount; i++) {
                 tmpList.add(CONTROLLER.getControlsPoints(i));
             }
-
+            
             CANVAS.setControls(tmpList);
             SIDE_BAR.setCurves(tmpList);
             SIDE_BAR.setNumberOfCurve(amount);
             SIDE_BAR.setCurveID(selected);
-
+            
             tmpList.clear();
             for (int i = 0; i < amount; i++) {
                 tmpList.add(CONTROLLER.getCurveName(i));
             }
             SIDE_BAR.setName((String[]) tmpList.toArray(new String[amount]));
             SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
-
+            
             if (DEBUG) {
                 System.out.println("Updating");
             }
@@ -148,7 +148,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             System.out.println("Insufficient amount of curves");
         }
     }
-
+    
     @Override
     public void handleCreate(GuiEventsCreate e) {
         if (DEBUG) {
@@ -168,7 +168,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             System.out.println("Error");
         }
     }
-
+    
     @Override
     public void handleAdd(GuiEventsAdd e) {
         if (DEBUG) {
@@ -177,7 +177,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         CONTROLLER.addLastPoint(e.getInfo()[0], e.getInfo()[1], e.getCurveID());
         update();
     }
-
+    
     @Override
     public void handleMove(GuiEventsMove e) {
         if (DEBUG) {
@@ -190,7 +190,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         }
         update();
     }
-
+    
     @Override
     public void handleDeleteP(GuiEventsDeleteP e) {
         if (DEBUG) {
@@ -199,7 +199,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         CONTROLLER.removePoint(e.getCurveID(), e.getPointID());
         update();
     }
-
+    
     @Override
     public void handleDeleteC(GuiEventsDeleteC e) {
         if (DEBUG) {
@@ -208,7 +208,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         System.out.println("Not supported yet.");
         update();
     }
-
+    
     @Override
     public void handleClose(GuiEventsClose e) {
         if (DEBUG) {
@@ -217,7 +217,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         CONTROLLER.closeCurve(e.getCurveID());
         updateG();
     }
-
+    
     @Override
     public void handleOpen(GuiEventsOpen e) {
         if (DEBUG) {
@@ -226,7 +226,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         CONTROLLER.openCurve(e.getCurveID());
         updateG();
     }
-
+    
     @Override
     public void handleVisibility(GuiEventsVisibility e) {
         if (DEBUG) {
@@ -234,7 +234,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         }
         CANVAS.setVisiblity(e.getVisiablity());
     }
-
+    
     @Override
     public void handleCurrent(GuiEventsCurrent e) {
         if (DEBUG) {
@@ -248,7 +248,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         }
         update();
     }
-
+    
     @Override
     public void handleRefresh(GuiEventsRefresh e) {
         if (DEBUG) {
@@ -256,7 +256,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         }
         update();
     }
-
+    
     @Override
     public void actionPerformed(GuiEvents e) {
         if (GuiEventsAdd.class.equals(e.getClass())) {
@@ -279,19 +279,25 @@ public class MainFrame extends JFrame implements GuiEventListner {
             handleVisibility((GuiEventsVisibility) e);
         } else if (GuiEventsRefresh.class.equals(e.getClass())) {
             handleRefresh((GuiEventsRefresh) e);
+        } else if (GuiEventsAreaChange.class.equals(e.getClass())) {
+            handleAreaChange((GuiEventsAreaChange) e);
+        } else if (GuiEventsLengthChange.class.equals(e.getClass())) {
+            handleLengthChange((GuiEventsLengthChange) e);
         } else {
             System.out.println("Not handled");
         }
     }
-
+    
     @Override
-    public void handleAreaChange(GuiEventAreaChange e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void handleAreaChange(GuiEventsAreaChange e) {
+        CONTROLLER.setArea(e.getAlgorithm());
+        update();
     }
-
+    
     @Override
-    public void handleLengthChange(GuiEventLengthChange e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void handleLengthChange(GuiEventsLengthChange e) {
+        CONTROLLER.setLength(e.getAlgorithm());
+        update();
     }
-
+    
 }

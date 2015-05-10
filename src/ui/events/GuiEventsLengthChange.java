@@ -11,11 +11,11 @@ package ui.events;
  * @author Kareem Horstink
  * @version 1.0
  */
-public class GuiEventLengthChange extends GuiEvents {
+public class GuiEventsLengthChange extends GuiEvents {
 
     private int algorithm;
 
-    public GuiEventLengthChange(Object source, int algorithm) {
+    public GuiEventsLengthChange(Object source, int algorithm) {
         super(source);
         this.algorithm = algorithm;
     }

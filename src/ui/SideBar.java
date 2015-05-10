@@ -1,5 +1,6 @@
 package ui;
 
+import curves.NumericalApproximation;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,8 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import ui.events.GuiEventsAreaChange;
+import ui.events.GuiEventsLengthChange;
 import ui.events.GuiEventListner;
 import ui.events.GuiEvents;
 import ui.events.GuiEventsCurrent;
@@ -96,8 +99,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     private JPanel info;
 
     /**
-     * An array of string to hold the curve info: Name; Area; Length; Number Of control points; Zoom
-     * Level
+     * An array of string to hold the curve info: Name; Area; Length; Number Of
+     * control points; Zoom Level
      *
      */
     private String[] curveInfo;
@@ -118,15 +121,15 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     private JComboBox<String> currentLineComboBox;
 
     /**
-     * Combo box to select the algorithm 
+     * Combo box to select the algorithm
      */
     private JComboBox<String> comboLenth;
-    
+
     /**
      * Combo box to select the algorithm
      */
     private JComboBox<String> comboArea;
-    
+
     private final boolean DEBUG = false;
 
     /**
@@ -231,8 +234,52 @@ public class SideBar extends JTabbedPane implements TableModelListener {
             }
         });
         controls.add(currentLineComboBox);
-        
-        
+
+        comboLenth = new JComboBox<>(new String[]{"Shoe Lace", "Exact Area Cubic"});
+        comboLenth.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (DEBUG) {
+                    System.out.println(e.getActionCommand());
+                }
+                if (e.getSource() == comboLenth) {
+                    if ("Shoe Lace".equals((String) comboLenth.getSelectedItem())) {
+                        fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.SHOELACE_AREA));
+                    } else {
+                        fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
+                    }
+                }
+            }
+        });
+        controls.add(comboLenth);
+
+        comboArea = new JComboBox<>(new String[]{"Romberg Arc length", "Simpon Arc Length", "Pythagorean Arc Length"});
+        comboArea.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (DEBUG) {
+                    System.out.println(e.getActionCommand());
+                }
+                if (e.getSource() == comboArea) {
+                    if (null != (String) comboArea.getSelectedItem()) {
+                        switch ((String) comboArea.getSelectedItem()) {
+                            case "Romberg Arc length":
+                                fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.ROMBERG_ARCLENGTH));
+                                break;
+                            case "Simpon Arc Length":
+                                fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SIMPSON_ARCLENGTH));
+                                break;
+                            default:
+                                fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.PYTHAGOREAN_ARCLENGTH));
+                                break;
+                        }
+                    }
+                }
+            }
+        });
+        controls.add(comboArea);
 
         curveInfo = new String[5];
 

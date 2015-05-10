@@ -133,18 +133,18 @@ public class Controller {
         }
     }
 
-    public void createEllipse(double x, double y, double z, double w,String name) {
+    public void createEllipse(double x, double y, double z, double w, String name) {
         CURVES.add(new Ellipse(x, y, z, w, name, 0));
         if (DEBUG) {
-                System.out.println("Ellipse Created");
-            }
+            System.out.println("Ellipse Created");
+        }
     }
-    
-    public void createBowl(double length,String name) {
+
+    public void createBowl(double length, String name) {
         CURVES.add(new GenitorBowl(name, length));
         if (DEBUG) {
-                System.out.println("Bowl Created");
-            }
+            System.out.println("Bowl Created");
+        }
     }
 
     /**
@@ -242,7 +242,7 @@ public class Controller {
      * @return Returns the area of the curve/spline based on the selected method
      */
     public double curveArea(int curveID) {
-        return CURVES.get(curveID).area(0);
+        return CURVES.get(curveID).area(area);
     }
 
     /**
@@ -253,6 +253,29 @@ public class Controller {
      * method
      */
     public double curveLength(int curveID) {
-        return CURVES.get(curveID).length(0);
+        return CURVES.get(curveID).length(length);
     }
+
+    private int area = 1;
+
+    /**
+     * Set the value of area
+     *
+     * @param area new value of area
+     */
+    public void setArea(int area) {
+        this.area = area;
+    }
+
+    private int length = 1;
+
+    /**
+     * Set the value of length
+     *
+     * @param length new value of length
+     */
+    public void setLength(int length) {
+        this.length = length;
+    }
+
 }

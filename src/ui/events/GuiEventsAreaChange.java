@@ -6,10 +6,10 @@ package ui.events;
  * @author Kareem Horstink
  * @version 1.0
  */
-public class GuiEventAreaChange extends GuiEvents {
+public class GuiEventsAreaChange extends GuiEvents {
     private int algorithm;
 
-    public GuiEventAreaChange(Object source, int algorithm) {
+    public GuiEventsAreaChange(Object source, int algorithm) {
         super(source);
         this.algorithm = algorithm;
     }
