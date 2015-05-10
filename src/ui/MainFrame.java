@@ -103,11 +103,19 @@ public class MainFrame extends JFrame implements GuiEventListner {
             for (int i = 0; i < amount; i++) {
                 tmpList.add(CONTROLLER.getControlsPoints(i));
             }
-            SIDE_BAR.setCurveID(selected);
+
+            CANVAS.setControls(tmpList);
             SIDE_BAR.setCurves(tmpList);
             SIDE_BAR.setNumberOfCurve(amount);
+            SIDE_BAR.setCurveID(selected);
+
+            tmpList.clear();
+            for (int i = 0; i < amount; i++) {
+                tmpList.add(CONTROLLER.getCurveName(i));
+            }
+            SIDE_BAR.setName((String[]) tmpList.toArray(new String[amount]));
             SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
-            CANVAS.setControls(tmpList);
+
             if (DEBUG) {
                 System.out.println("Updating");
             }

@@ -34,6 +34,17 @@ import ui.events.GuiEventsVisibility;
  */
 public class SideBar extends JTabbedPane implements TableModelListener {
 
+    private String[] name;
+
+    /**
+     * Set the value of name
+     *
+     * @param name new value of name
+     */
+    public void setName(String[] name) {
+        this.name = name;
+    }
+
     /**
      * JTable to represent the table of info about points
      */
@@ -104,7 +115,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     /**
      * Combo box to select the current line
      */
-    private JComboBox<String> comboSelected;
+    private JComboBox<String> currentLineComboBox;
 
     /**
      * Combo box to select the algorithm 
@@ -205,21 +216,21 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         });
         visibleBox.setToolTipText("Sets all other line to not be visible");
         controls.add(visibleBox);
-        comboSelected = new JComboBox<>(new String[]{""});
-        comboSelected.addActionListener(new ActionListener() {
+        currentLineComboBox = new JComboBox<>(new String[]{""});
+        currentLineComboBox.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (DEBUG) {
                     System.out.println(e.getActionCommand());
                 }
-                if (e.getSource() == comboSelected && comboSelected.getItemCount() != 0 && !updating2) {
-                    fireEvent(new GuiEventsCurrent(this, comboSelected.getSelectedIndex()));
-                    curveID = comboSelected.getSelectedIndex();
+                if (e.getSource() == currentLineComboBox && currentLineComboBox.getItemCount() != 0 && !updating2) {
+                    fireEvent(new GuiEventsCurrent(this, currentLineComboBox.getSelectedIndex()));
+                    curveID = currentLineComboBox.getSelectedIndex();
                 }
             }
         });
-        controls.add(comboSelected);
+        controls.add(currentLineComboBox);
         
         
 
@@ -284,14 +295,14 @@ public class SideBar extends JTabbedPane implements TableModelListener {
             curveInfo = info;
         }
         updateInfoPanel();
-        comboSelected.removeAllItems();
+        currentLineComboBox.removeAllItems();
         for (int i = 0; i < numberOfCurve; i++) {
-            comboSelected.addItem(Integer.toString(i + 1));
+            currentLineComboBox.addItem(name[i]);
         }
         if (DEBUG) {
             System.out.println(curveID);
         }
-        comboSelected.setSelectedIndex(curveID);
+        currentLineComboBox.setSelectedIndex(curveID);
         updating2 = false;
     }
 
