@@ -149,10 +149,16 @@ public class MainFrame extends JFrame implements GuiEventListner {
         selected++;
         if (e.getInfo().length == 3) {
             CONTROLLER.createCurve((int) e.getInfo()[2], e.getInfo()[0], e.getInfo()[1], e.getName());
+            update();
+        } else if (e.getInfo().length == 4) {
+            CONTROLLER.createBowl(e.getInfo()[2], e.getName());
+            update();
+        } else if (e.getInfo().length == 7) {
+            CONTROLLER.createEllipse(e.getInfo()[3], e.getInfo()[4], e.getInfo()[5], e.getInfo()[6], e.getName());
+            update();
         } else {
             System.out.println("Error");
         }
-        update();
     }
 
     @Override

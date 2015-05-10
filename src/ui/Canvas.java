@@ -34,8 +34,8 @@ import ui.events.GuiEventsOpen;
 import ui.events.GuiEventsRefresh;
 
 /**
- * The canvas in which to draw various elements of the UI, mostly focusing on the graphical side of
- * things as well intuitive controls
+ * The canvas in which to draw various elements of the UI, mostly focusing on
+ * the graphical side of things as well intuitive controls
  *
  * @author Kareem Horstink
  * @version 0.8b
@@ -132,7 +132,8 @@ public class Canvas extends JPanel implements ActionListener {
     private final boolean DEBUG = false;
 
     /**
-     * Creates a new canvas and sets the default zoom level as well the units to be used by the grid
+     * Creates a new canvas and sets the default zoom level as well the units to
+     * be used by the grid
      *
      * @param zoom The current zoom level
      * @param units The units to be shown on the grid
@@ -351,7 +352,7 @@ public class Canvas extends JPanel implements ActionListener {
      * @param g
      */
     private void drawGrid(Graphics2D g) {
-        for (int i = (int) (-10 / zoom); i < (int) (10 / zoom); i++) {
+        for (int i = (int) (-1000); i < (int) (1000); i++) {
             g.setColor(Color.lightGray);
             g.drawLine(Integer.MAX_VALUE * -1, (int) y((int) (i * gridspacing)), Integer.MAX_VALUE, (int) y((int) (i * gridspacing)));
             g.drawLine((int) x((int) (i * gridspacing)), Integer.MAX_VALUE * -1, (int) x((int) (i * gridspacing)), Integer.MAX_VALUE);
@@ -479,7 +480,9 @@ public class Canvas extends JPanel implements ActionListener {
                         "Cubic Line Natural",
                         "Bezier Curve",
                         "Bezier Spline",
-                        "Bezier Spline Colinear"
+                        "Bezier Spline Colinear",
+                        "Ellipse",
+                        "Bowl"
                     }, null);
                     /*
                      *Fires the currect event based on what was selected
@@ -503,6 +506,30 @@ public class Canvas extends JPanel implements ActionListener {
                                     break;
                                 case "Bezier Spline Colinear":
                                     fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BEZIERSPLINECOLINEAR}, name));
+                                    break;
+                                case "Ellipse":
+                                    String numbers = JOptionPane.showInputDialog(this, "Enter Coordiante", "0.0, 0.0, 0.0, 0.0");
+                                    try {
+                                        numbers = numbers.replace(" ", "");
+                                        String split[] = numbers.split(",");
+                                        double x = Double.valueOf(split[0]);
+                                        double y = Double.valueOf(split[1]);
+                                        double z = Double.valueOf(split[2]);
+                                        double w = Double.valueOf(split[3]);
+                                        fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.ELLIPSE, x, y, z, w}, name));
+                                    } catch (Exception error) {
+                                        System.out.println("Please enter a proper location " + error);
+                                    }
+                                    break;
+                                case "Bowl":
+                                    String length = JOptionPane.showInputDialog(this, "Enter the target length", "0.0");
+                                    try {
+                                        length = length.replace(" ", "");
+                                        double len = Double.valueOf(length);
+                                        fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BOWL, len}, name));
+                                    } catch (Exception error) {
+                                        System.out.println("Please enter a proper location " + error);
+                                    }
                                     break;
                                 default:
                                     System.out.println("Option Panel is incorrect");

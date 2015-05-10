@@ -38,6 +38,16 @@ public class Controller {
     public static final int BEZIERSPLINECOLINEAR = 33;
 
     /**
+     * The variable to set the constructed line to be a bowl
+     */
+    public static final int BOWL = 41;
+
+    /**
+     * The variable to set the constructed line to be a ellipse
+     */
+    public static final int ELLIPSE = 41;
+
+    /**
      * List of the all the curves
      */
     private final ArrayList<Curve> CURVES;
@@ -71,11 +81,13 @@ public class Controller {
     }
 
     /**
-     * Method to retrieve the plotting coordinates of each curve. NOTE THE DEFINITION OF SUB-POINTS!
+     * Method to retrieve the plotting coordinates of each curve. NOTE THE
+     * DEFINITION OF SUB-POINTS!
      *
      * @param curveIndex index of which curve to retrieve
-     * @param subPoints this number signifies the number of plotting points in-between each pair of
-     * control-points. The larger the number, the more fine-grained the curve plot will be.
+     * @param subPoints this number signifies the number of plotting points
+     * in-between each pair of control-points. The larger the number, the more
+     * fine-grained the curve plot will be.
      * @return
      */
     public ArrayList<Point2D> getCurvePlot(int curveIndex, int subPoints) {
@@ -119,6 +131,20 @@ public class Controller {
                 System.out.println("Bezier Spline Colinear Created");
             }
         }
+    }
+
+    public void createEllipse(double x, double y, double z, double w,String name) {
+        CURVES.add(new Ellipse(x, y, z, w, name, 0));
+        if (DEBUG) {
+                System.out.println("Ellipse Created");
+            }
+    }
+    
+    public void createBowl(double length,String name) {
+        CURVES.add(new GenitorBowl(name, length));
+        if (DEBUG) {
+                System.out.println("Bowl Created");
+            }
     }
 
     /**
@@ -223,7 +249,8 @@ public class Controller {
      * Returns the length of a curve/spline
      *
      * @param curveID The index of the curve/spline
-     * @return Returns the length of the curve/spline based on the selected method
+     * @return Returns the length of the curve/spline based on the selected
+     * method
      */
     public double curveLength(int curveID) {
         return CURVES.get(curveID).length(0);
