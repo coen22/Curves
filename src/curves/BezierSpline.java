@@ -9,12 +9,7 @@ public class BezierSpline extends Curve {
 		super(name);
 	}
 
-	/**
-	 * gives a plot of the Bezier to draw
-	 *
-	 * @param the accuracy at which curve needs to be plotted
-	 * @return the list of points to plot
-	 */
+	@Override
 	public ArrayList<Point2D> getPlot(int interval) {
 		ArrayList<Point2D> plot = new ArrayList<Point2D>();
 
@@ -41,8 +36,8 @@ public class BezierSpline extends Curve {
 		double py = 0;
 		
 		for (int j = 0; j <= 3; j++) {
-			px += b(j, t) * points.get(getInBounds(i + j)).getX();
-			py += b(j, t) * points.get(getInBounds(i + j)).getY();
+			px += basic(j, t) * points.get(getInBounds(i + j)).getX();
+			py += basic(j, t) * points.get(getInBounds(i + j)).getY();
 		}
 
 		return new Point2D.Double((int) Math.round(px), (int) Math.round(py));
@@ -51,7 +46,7 @@ public class BezierSpline extends Curve {
 	/**
 	 * the basic functions of the Bezier Spline
 	 */
-	protected double b(int i, double t) {
+	protected double basic(int i, double t) {
 		switch (i) {
 		case 0:
 			return (1 - t) * (1 - t) * (1 - t);
@@ -61,9 +56,9 @@ public class BezierSpline extends Curve {
 			return 3 * t * t * (1 - t);
 		case 3:
 			return t * t * t;
-		default:
-			return 0; // something went wrong
 		}
+		
+		return 0; // something went wrong
 	}
 
 	/**

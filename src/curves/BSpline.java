@@ -9,6 +9,7 @@ public class BSpline extends Curve {
 		super(name);
 	}
 
+	@Override
 	public ArrayList<Point2D> getPlot(int interval) {
 		ArrayList<Point2D> plot = new ArrayList<Point2D>();
 
@@ -21,21 +22,29 @@ public class BSpline extends Curve {
 		return plot;
 	}
 
-	// calculate coordinate of a point
+	/**
+	 * get point at line piece i, at interval t
+	 *
+	 * @param line piece
+	 * @param interval
+	 * @return a point on the curve
+	 */
 	private Point2D calcPoint(int i, float t) {
 		double px = 0;
 		double py = 0;
 		
 		for (int j = -2; j < 2; j++) {
-			px += b(j, t) * points.get(getInBounds(i + j)).getX();
-			py += b(j, t) * points.get(getInBounds(i + j)).getY();
+			px += basic(j, t) * points.get(getInBounds(i + j)).getX();
+			py += basic(j, t) * points.get(getInBounds(i + j)).getY();
 		}
 		
 		return new Point2D.Double(px, py);
 	}
 	
-	// basic functions
-	private double b(int i, float t) {
+	/**
+	 * the basic functions of the Bezier Spline
+	 */
+	private double basic(int i, float t) {
 		switch (i) {
 			case -2:
 				return (((-t + 3) * t - 3) * t + 1) / 6;
@@ -49,7 +58,12 @@ public class BSpline extends Curve {
 				return 0;
 		}
 	}
-
+	
+	/**
+	 * method to make sure that a point is inside the domain
+	 * @param index of a point
+	 * @return index of that point inside the domain
+	 */
 	private int getInBounds(int i) {
 		if (i < 0)
 			i = points.size() - i;
