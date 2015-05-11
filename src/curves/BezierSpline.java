@@ -40,7 +40,7 @@ public class BezierSpline extends Curve {
 			py += basic(j, t) * points.get(getInBounds(i + j)).getY();
 		}
 
-		return new Point2D.Double((int) Math.round(px), (int) Math.round(py));
+		return new Point2D.Double(px, py);
 	}
 
 	/**
