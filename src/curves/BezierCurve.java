@@ -2,6 +2,7 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * resource: http://pomax.github.io/bezierinfo/ 
@@ -85,5 +86,11 @@ public class BezierCurve extends Curve {
 			string = string + "[" + super.points.get(i).getX() +","+ super.points.get(i).getY() + "] " ;
 		}
 		return string;
+	}
+	
+	//Coen, you make sure this returns the right points, that's YOUR responsibility. 
+	@Override
+	protected List<Point2D> getConversionPoints() {
+		return (List<Point2D>)this.points;
 	}
 }

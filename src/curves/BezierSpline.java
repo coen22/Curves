@@ -2,6 +2,7 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BezierSpline extends Curve {
 
@@ -76,9 +77,9 @@ public class BezierSpline extends Curve {
 		return i % points.size();
 	}
 	
-	/*
-	 * David, just implement the getConversionPoints method
-	 * It's not my problem, you created this error
-	 * and you are the one to fix it
-	 */
+	//Coen, you make sure this returns the right points, that's YOUR responsibility. 
+	@Override
+	protected List<Point2D> getConversionPoints() {
+		return null;
+	}
 }
