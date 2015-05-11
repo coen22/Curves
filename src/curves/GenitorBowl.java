@@ -2,6 +2,7 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GenitorBowl extends Curve{
 	private static final double SELECTIVE_PRESSURE_POWER = 2;
@@ -17,8 +18,7 @@ public class GenitorBowl extends Curve{
 	public GenitorBowl(String name, double targetLength){
 		super(name);
 		population = new ArrayList<GenitorIndividual>();
-		generatePopulation(targetLength, NUMBER_OF_POINTS);
-		System.out.println("target length: " + targetLength);
+		generatePopulation(Math.abs(targetLength), NUMBER_OF_POINTS);
 		replicate();
 	}
 	
@@ -26,12 +26,8 @@ public class GenitorBowl extends Curve{
 		for (int i = 0; i < CHILDREN; i++){
 			binaryInsert(population.get(((int) ((Math.pow(Math.random(), SELECTIVE_PRESSURE_POWER))* POP_SIZE))).reproduce(population.get(((int) ((Math.pow(Math.random(), SELECTIVE_PRESSURE_POWER))* POP_SIZE)))));
 			population.remove(POP_SIZE);
-			
-			if (i % 10000 == 0){
-				System.out.println("current best: " + population.get(0).getALRatio() + ", length: " + population.get(0).getElement().length(LENGTH_METHOD) +  ", fitness: " + population.get(0).fitness());
-			}
 		}
-		System.out.println("current best: " + population.get(0).getALRatio() + population.get(0).toString());
+		System.out.println("best: " + population.get(0).getALRatio() + population.get(0).toString());
 	}
 	
 	private void generatePopulation(double targetLength, int numberOfPoints) {
@@ -80,7 +76,7 @@ public class GenitorBowl extends Curve{
 	@Override
 	protected double area(int method){
 		population.get(0).getElement().update();
-		System.out.println("final area: " + population.get(0).getElement().area(method));
+//		System.out.println("final area: " + population.get(0).getElement().area(method));
 		return population.get(0).getElement().area(method);
 	}
 	
@@ -89,12 +85,22 @@ public class GenitorBowl extends Curve{
 		return population.get(0).getElement().length(method);
 	}
 	
+	@Override
+	protected boolean isClosed() {
+		return false;
+	}
+	
 	public String toString(){
 		String string = "";
 		for (int i = 0; i < population.size(); i++){
 			string = string + population.get(i).toString() + "\n";
 		}
 		return string;
+	}
+
+	@Override
+	protected List<Point2D> getConversionPoints() {
+		return population.get(0).getElement().points;
 	}
 	
 }

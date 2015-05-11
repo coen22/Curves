@@ -77,4 +77,6 @@ public abstract class Curve {
 	protected void setPoint(int index, double x, double y) {
 		points.get(index).setLocation(x, y);
 	}
+	
+	protected abstract List<Point2D> getConversionPoints();
 }
