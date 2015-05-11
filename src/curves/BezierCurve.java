@@ -63,21 +63,27 @@ public class BezierCurve extends Curve {
 	public static Point2D deCasteljauSAlgorithm(ArrayList<Point2D> originalPoints, double ratio){
 		ArrayList<Point2D> working = new ArrayList<Point2D>();
 		
-		//calculates the first step and copies from the originalPoints to the working points set
-		for (int i = 0; i < originalPoints.size()-1; i++){
-			Double newX = originalPoints.get(i).getX() + ((originalPoints.get(i+1).getX() - originalPoints.get(i).getX()) * ratio);
-			Double newY = originalPoints.get(i).getY() + ((originalPoints.get(i+1).getY() - originalPoints.get(i).getY()) * ratio);
-			working.add(new Point2D.Double(newX, newY));
-		}
-		while (working.size() > 1){
-			for (int i = 0; i < working.size()-1; i++){
-				Double newX = working.get(i).getX() + ((working.get(i+1).getX() - working.get(i).getX()) * ratio);
-				Double newY = working.get(i).getY() + ((working.get(i+1).getY() - working.get(i).getY()) * ratio);
-				working.get(i).setLocation(newX, newY);;
+		if (originalPoints.size() > 1){
+			//calculates the first step and copies from the originalPoints to the working points set
+			for (int i = 0; i < originalPoints.size()-1; i++){
+				Double newX = originalPoints.get(i).getX() + ((originalPoints.get(i+1).getX() - originalPoints.get(i).getX()) * ratio);
+				Double newY = originalPoints.get(i).getY() + ((originalPoints.get(i+1).getY() - originalPoints.get(i).getY()) * ratio);
+				working.add(new Point2D.Double(newX, newY));
 			}
-			working.remove(working.size()-1);
+			while (working.size() > 1){
+				for (int i = 0; i < working.size()-1; i++){
+					Double newX = working.get(i).getX() + ((working.get(i+1).getX() - working.get(i).getX()) * ratio);
+					Double newY = working.get(i).getY() + ((working.get(i+1).getY() - working.get(i).getY()) * ratio);
+					working.get(i).setLocation(newX, newY);;
+				}
+				working.remove(working.size()-1);
+			}
+			return working.get(0);
 		}
-		return working.get(0);
+		else {
+			return originalPoints.get(0);
+		}
+		
 	}
 	
 	public String toString(){
