@@ -18,6 +18,7 @@ public class GenitorBowl extends Curve{
 		super(name);
 		population = new ArrayList<GenitorIndividual>();
 		generatePopulation(targetLength, NUMBER_OF_POINTS);
+		System.out.println("target length: " + targetLength);
 		replicate();
 	}
 	
@@ -78,6 +79,8 @@ public class GenitorBowl extends Curve{
 	
 	@Override
 	protected double area(int method){
+		population.get(0).getElement().update();
+		System.out.println("final area: " + population.get(0).getElement().area(method));
 		return population.get(0).getElement().area(method);
 	}
 	
