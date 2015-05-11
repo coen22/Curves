@@ -2,10 +2,20 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class Curve {
 
+	protected final int POLYLINE_ID = 0;
+	protected final int CUBIC_SPLINE_ID = 1;
+	protected final int BEZIER_CURVE_ID = 2;
+	protected final int BEZIER_SPLINE_ID = 3;
+	protected final int COLINEAR_BEZIER_ID = 4;
+	protected final int B_SPLINE_ID = 5;
+	
+	protected ArrayList<Integer> curveID = new ArrayList<Integer>(Arrays.asList(new Integer[] {0,1,2,3,4,5}));
+	
 	protected ArrayList<Point2D> points;
 	protected boolean closed;
 	protected String name;
