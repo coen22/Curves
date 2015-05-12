@@ -50,22 +50,38 @@ public class Ellipse extends Curve{
 		return (c * Math.sin(d * t));
 	}
 	
-	protected double lenght(){
-		double length = 0;
+	private double calchR(){
+		//Calculate horizontalradius
+		//To get hR fill in t = 0 or t = PI. 
+		double t = 0;
+		double hR;
+		hR = calcX(t);
+		return hR;
+	}
+	
+	private double calcvR(){
+		//Calculate verticalRadius
+		//To get vR fill in t = 0.5*PI or t = 1.5*PI. 
+		double t = (0.5*Math.PI);
+		double vR;
 		
+		vR = calcY(t);
+		return vR;
+	}
+	
+	protected double length(){
+		//Length of an ellipse calculated exactly using an "infinite sum" formula
+		double length = 0;
+		double vR = calcvR();
+		double hR = calchR();
+		double x = (Math.pow((vR - hR), 2))/(Math.pow((vR + hR), 2));
+		length = Math.PI*(hR + vR)*(1 + (1/4)*x + (1/64)*Math.pow(x, 2) + (1/256)*Math.pow(x, 3));
 		return length;
 	}
 	protected double area(){
 		double area = 0;
 		//Area is calculated by 2*PI*horizontalRadius*verticalRadius
-		//First calculate hR and vR
-		//To get hR fill in t = 0 or t = PI. To get vR fill in t = 0.5*PI or t = 1.5*PI. 
-		double t1 = 0;
-		double t2 = (0.5*Math.PI);
-		double hR, vR;
-		hR = calcX(t1);
-		vR = calcY(t2);		
-		area = Math.PI*hR*vR;
+		area = Math.PI*calchR()*calcvR();
 		return area;
 	}
 	@Override
