@@ -11,8 +11,6 @@ public class GenitorBowl extends Curve{
 	private static final int CHILDREN = 100000; //200000
 	private static final int NUMBER_OF_POINTS = 5;
 	
-	private static final int LENGTH_METHOD = NumericalApproximation.SIMPSON_ARCLENGTH;
-
 	ArrayList<GenitorIndividual> population;
 	
 	public GenitorBowl(String name, double targetLength){
@@ -76,7 +74,6 @@ public class GenitorBowl extends Curve{
 	@Override
 	protected double area(int method){
 		population.get(0).getElement().update();
-//		System.out.println("final area: " + population.get(0).getElement().area(method));
 		return population.get(0).getElement().area(method);
 	}
 	
