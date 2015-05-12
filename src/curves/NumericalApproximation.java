@@ -131,7 +131,7 @@ public class NumericalApproximation {
 		double area = 0;
 
 		if (!curve.isClosed()){
-			return 0;
+			return Double.POSITIVE_INFINITY;
 		}
 			
 		ArrayList<Point2D> listOfPoints = curve.getPlot(curve.numberOfPoints());
