@@ -2,6 +2,7 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PolyLine extends Curve {
 
@@ -76,6 +77,11 @@ public class PolyLine extends Curve {
 			recalcAaA();
 		}
 		return this.length;
+	}
+
+	@Override
+	protected List<Point2D> getConversionPoints() {
+		return (List<Point2D>)this.points;
 	}
     
 }

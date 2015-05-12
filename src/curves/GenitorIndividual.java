@@ -35,7 +35,7 @@ public class GenitorIndividual implements Comparable<GenitorIndividual>{
 		double seed = targetLength*Math.random();
 		CubicSpline curve = new CubicSpline(new Point2D.Double(0, 0), "curve", CubicSpline.NATURAL_SPLINE);
 		for (int i = 1; i < n-1; i++){
-			curve.add(Math.abs(i*(seed/(n-1))) + ((seed/(n-1))*(Math.random()-0.5)), Math.abs(targetLength*Math.random()));
+			curve.add(Math.abs(i*(seed/(n-1))) + ((seed/(n-1))*(Math.random()-0.5)), -1*Math.abs(targetLength*Math.random()));
 		}
 		curve.add(seed,0.0);
 		return curve;

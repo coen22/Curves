@@ -2,6 +2,7 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Ellipse extends Curve{
 
@@ -80,6 +81,11 @@ public class Ellipse extends Curve{
 			return plot;
 //		}
 		
+	}
+	
+	@Override
+	protected List<Point2D> getConversionPoints() {
+		return null;
 	}
 
 }

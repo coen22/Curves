@@ -2,6 +2,7 @@ package curves;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CubicSpline extends Curve implements Evaluateable {
 	public static final int NATURAL_SPLINE = 1;
@@ -313,9 +314,15 @@ public class CubicSpline extends Curve implements Evaluateable {
 		
 	}
 	
-	public double evaluateArcLengthFunction(int piece, double x){
-		double dx2 = dXcoefficients[piece][0] + x*(dXcoefficients[piece][1] + x*dXcoefficients[piece][2]);
-		double dy2 = dYcoefficients[piece][0] + x*(dYcoefficients[piece][1] + x*dYcoefficients[piece][2]);
+	public double evaluateSlope(int piece, double t){
+		double dx2 = dXcoefficients[piece][0] + t*(dXcoefficients[piece][1] + t*dXcoefficients[piece][2]);
+		double dy2 = dYcoefficients[piece][0] + t*(dYcoefficients[piece][1] + t*dYcoefficients[piece][2]);
+		return dy2/dx2;
+	}
+	
+	public double evaluateArcLengthFunction(int piece, double t){
+		double dx2 = dXcoefficients[piece][0] + t*(dXcoefficients[piece][1] + t*dXcoefficients[piece][2]);
+		double dy2 = dYcoefficients[piece][0] + t*(dYcoefficients[piece][1] + t*dYcoefficients[piece][2]);
 		dx2 = dx2 * dx2;
 		dy2 = dy2 * dy2;
 		return Math.sqrt(dx2+dy2);
@@ -431,4 +438,10 @@ public class CubicSpline extends Curve implements Evaluateable {
 		}
 		return string;
     }
+
+	@Override
+	protected List<Point2D> getConversionPoints() {
+		return (List<Point2D>)this.points;
+	}
+	
 }
