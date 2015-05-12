@@ -77,9 +77,14 @@ public class BezierSpline extends Curve {
 		return i % points.size();
 	}
 	
-	//Coen, you make sure this returns the right points, that's YOUR responsibility. 
 	@Override
 	protected List<Point2D> getConversionPoints() {
-		return null;
+		ArrayList<Point2D> list = new ArrayList<Point2D>();
+		
+		for (int i = 0; i < points.size(); i += 3) {
+			list.add(points.get(i));
+		}
+		
+		return list;
 	}
 }

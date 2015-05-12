@@ -72,10 +72,8 @@ public class BSpline extends Curve {
 		return i % points.size();
 	}
 
-	
-	//Coen, you make sure this returns the right points, that's YOUR responsibility. 
 	@Override
 	protected List<Point2D> getConversionPoints() {
-		return null;
+		return points;
 	}
 }
