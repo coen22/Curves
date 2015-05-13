@@ -99,8 +99,13 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     private JPanel info;
 
     /**
-     * An array of string to hold the curve info: Name; Area; Length; Number Of
-     * control points; Zoom Level
+     * The panel to hold the control element of the ui
+     */
+    private JPanel controls;
+
+    /**
+     * An array of string to hold the curve info: Name; Area; Length; Number Of control points; Zoom
+     * Level
      *
      */
     private String[] curveInfo;
@@ -137,7 +142,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      */
     public SideBar() {
         controlPoints = new ArrayList<>();
-        init1();
+        initGeneral();
     }
 
     /**
@@ -204,8 +209,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     /**
      * Initialize the buttons and info boxes
      */
-    private void init1() {
-        JPanel controls = new JPanel(new GridLayout(10, 0));
+    private void initGeneral() {
+        controls = new JPanel(new GridLayout(10, 3));
         controls.setName("Controls");
         this.addTab(controls.getName(), controls);
         visibleBox = new JCheckBox("Set Invisible");
@@ -219,6 +224,51 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         });
         visibleBox.setToolTipText("Sets all other line to not be visible");
         controls.add(visibleBox);
+        initCombo();
+
+        curveInfo = new String[5];
+
+        JButton button = new JButton("Refresh");
+        button.setToolTipText("Refresh all the data");
+        button.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fireEvent(new GuiEventsRefresh(this));
+            }
+        });
+        
+        
+        controls.add(button);
+        button = new JButton("Help");
+        button.setToolTipText("Shows a help diaglog");
+        button.addActionListener((ActionEvent e) -> {
+            JOptionPane.showMessageDialog(controls, "Crtl Click to Add New Points"
+                    + "\n" + "Panning with shift click");
+        });
+        controls.add(button);
+
+        infoText = new JLabel[]{
+            new JLabel("Name"),
+            new JLabel("Area"),
+            new JLabel("Length"),
+            new JLabel("Number Of control points"),
+            new JLabel("Zoom Level")};
+        info = new JPanel(new GridLayout(6, 0));
+        info.setToolTipText("Information about the line");
+        for (JLabel infoText1 : infoText) {
+            infoText1.setHorizontalAlignment(SwingConstants.CENTER);
+            info.add(infoText1);
+        }
+        controls.add(info);
+        initTable();
+
+    }
+
+    /**
+     * Initialize the combo boxes
+     */
+    private void initCombo() {
         currentLineComboBox = new JComboBox<>(new String[]{""});
         currentLineComboBox.addActionListener(new ActionListener() {
 
@@ -234,6 +284,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
             }
         });
         controls.add(currentLineComboBox);
+        //------------------------------------------------------------------------------------------
 
         comboLenth = new JComboBox<>(new String[]{"Shoe Lace", "Exact Area Cubic"});
         comboLenth.addActionListener(new ActionListener() {
@@ -254,7 +305,11 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         });
         controls.add(comboLenth);
 
-        comboArea = new JComboBox<>(new String[]{"Romberg Arc length", "Simpon Arc Length", "Pythagorean Arc Length"});
+        //------------------------------------------------------------------------------------------
+        comboArea = new JComboBox<>(new String[]{
+            "Pythagorean Arc Length",
+            "Simpon Arc Length",
+            "Romberg Arc length"});
         comboArea.addActionListener(new ActionListener() {
 
             @Override
@@ -280,48 +335,12 @@ public class SideBar extends JTabbedPane implements TableModelListener {
             }
         });
         controls.add(comboArea);
-
-        curveInfo = new String[5];
-
-        JButton button = new JButton("Refresh");
-        button.setToolTipText("Refresh all the data");
-        button.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireEvent(new GuiEventsRefresh(this));
-            }
-        });
-        controls.add(button);
-        button = new JButton("Help");
-        button.setToolTipText("Shows a help diaglog");
-        button.addActionListener((ActionEvent e) -> {
-            JOptionPane.showMessageDialog(controls, "Crtl Click to Add New Points"
-                    + "\n" + "Panning with shift click");
-        });
-        controls.add(button);
-
-        infoText = new JLabel[]{
-            new JLabel("Name"),
-            new JLabel("Area"),
-            new JLabel("Length"),
-            new JLabel("Number Of control points"),
-            new JLabel("Zoom Level")};
-        info = new JPanel(new GridLayout(6, 0));
-        info.setToolTipText("Information about the line");
-        for (JLabel infoText1 : infoText) {
-            infoText1.setHorizontalAlignment(SwingConstants.CENTER);
-            info.add(infoText1);
-        }
-        controls.add(info);
-        init2();
-
     }
 
     /**
      * Initialize the table
      */
-    private void init2() {
+    private void initTable() {
         JPanel dataViewer = new JPanel();
         createTable();
         JScrollPane scrollPane = new JScrollPane(table);

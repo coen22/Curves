@@ -64,7 +64,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
      * The current selected line
      */
     private int selected = -1;
-    
+
     private final boolean DEBUG = false;
 
     /**
@@ -92,32 +92,21 @@ public class MainFrame extends JFrame implements GuiEventListner {
      */
     private void update() {
         int amount = CONTROLLER.amountOfCurves();
-        ArrayList tmpList = new ArrayList();
-        for (int i = 0; i < amount; i++) {
-            tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
-        }
-        
+
         if (amount > 0) {
-            CANVAS.setCurves(tmpList);
-            tmpList = new ArrayList();
-            for (int i = 0; i < amount; i++) {
-                tmpList.add(CONTROLLER.getControlsPoints(i));
-            }
-            
-            CANVAS.setControls(tmpList);
-            SIDE_BAR.setCurves(tmpList);
+            updateG();
             SIDE_BAR.setNumberOfCurve(amount);
             SIDE_BAR.setCurveID(selected);
-            
-            tmpList.clear();
+
+            ArrayList tmpList = new ArrayList();
             for (int i = 0; i < amount; i++) {
                 tmpList.add(CONTROLLER.getCurveName(i));
             }
             SIDE_BAR.setName((String[]) tmpList.toArray(new String[amount]));
             SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
-            
+
             if (DEBUG) {
-                System.out.println("Updating");
+                System.out.println("Updating Data");
             }
         } else {
             System.out.println("Insufficient amount of curves");
@@ -130,25 +119,26 @@ public class MainFrame extends JFrame implements GuiEventListner {
     private void updateG() {
         int amount = CONTROLLER.amountOfCurves();
         ArrayList tmpList = new ArrayList();
-        if (DEBUG) {
-            System.out.println(10 * CANVAS.getZoom());
-        }
         for (int i = 0; i < amount; i++) {
             tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
         }
-        if (amount >= 0) {
-            SIDE_BAR.setCurveID(selected);
-            SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
-            SIDE_BAR.setNumberOfCurve(amount);
+
+        if (amount > 0) {
             CANVAS.setCurves(tmpList);
+            tmpList = new ArrayList();
+            for (int i = 0; i < amount; i++) {
+                tmpList.add(CONTROLLER.getControlsPoints(i));
+            }
+
+            CANVAS.setControls(tmpList);
             if (DEBUG) {
-                System.out.println("UpdatingG");
+                System.out.println("Updating Graphics");
             }
         } else {
             System.out.println("Insufficient amount of curves");
         }
     }
-    
+
     @Override
     public void handleCreate(GuiEventsCreate e) {
         if (DEBUG) {
@@ -168,7 +158,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             System.out.println("Error");
         }
     }
-    
+
     @Override
     public void handleAdd(GuiEventsAdd e) {
         if (DEBUG) {
@@ -177,7 +167,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         CONTROLLER.addLastPoint(e.getInfo()[0], e.getInfo()[1], e.getCurveID());
         update();
     }
-    
+
     @Override
     public void handleMove(GuiEventsMove e) {
         if (DEBUG) {
@@ -190,7 +180,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         }
         update();
     }
-    
+
     @Override
     public void handleDeleteP(GuiEventsDeleteP e) {
         if (DEBUG) {
@@ -199,7 +189,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         CONTROLLER.removePoint(e.getCurveID(), e.getPointID());
         update();
     }
-    
+
     @Override
     public void handleDeleteC(GuiEventsDeleteC e) {
         if (DEBUG) {
@@ -208,7 +198,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         System.out.println("Not supported yet.");
         update();
     }
-    
+
     @Override
     public void handleClose(GuiEventsClose e) {
         if (DEBUG) {
@@ -217,7 +207,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         CONTROLLER.closeCurve(e.getCurveID());
         updateG();
     }
-    
+
     @Override
     public void handleOpen(GuiEventsOpen e) {
         if (DEBUG) {
@@ -226,7 +216,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         CONTROLLER.openCurve(e.getCurveID());
         updateG();
     }
-    
+
     @Override
     public void handleVisibility(GuiEventsVisibility e) {
         if (DEBUG) {
@@ -234,7 +224,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         }
         CANVAS.setVisiblity(e.getVisiablity());
     }
-    
+
     @Override
     public void handleCurrent(GuiEventsCurrent e) {
         if (DEBUG) {
@@ -248,7 +238,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         }
         update();
     }
-    
+
     @Override
     public void handleRefresh(GuiEventsRefresh e) {
         if (DEBUG) {
@@ -256,7 +246,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         }
         update();
     }
-    
+
     @Override
     public void actionPerformed(GuiEvents e) {
         if (GuiEventsAdd.class.equals(e.getClass())) {
@@ -287,17 +277,23 @@ public class MainFrame extends JFrame implements GuiEventListner {
             System.out.println("Not handled");
         }
     }
-    
+
     @Override
     public void handleAreaChange(GuiEventsAreaChange e) {
+        if (DEBUG) {
+            System.out.println(e.getAlgorithm());
+        }
         CONTROLLER.setArea(e.getAlgorithm());
         update();
     }
-    
+
     @Override
     public void handleLengthChange(GuiEventsLengthChange e) {
+        if (DEBUG) {
+            System.out.println(e.getAlgorithm());
+        }
         CONTROLLER.setLength(e.getAlgorithm());
         update();
     }
-    
+
 }

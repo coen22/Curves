@@ -255,7 +255,9 @@ public class Controller {
     public double curveLength(int curveID) {
         return CURVES.get(curveID).length(length);
     }
-
+    /**
+     * Which Algorithm to use for find the area
+     */
     private int area = 1;
 
     /**
@@ -267,10 +269,13 @@ public class Controller {
         this.area = area;
     }
 
-    private int length = 1;
+    /**
+     * Which Algorithm to use for find the length
+     */
+    private int length = 3;
 
     /**
-     * Set the value of length
+     * Set the value of length Algorithm
      *
      * @param length new value of length
      */

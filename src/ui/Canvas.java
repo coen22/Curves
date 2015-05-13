@@ -34,8 +34,8 @@ import ui.events.GuiEventsOpen;
 import ui.events.GuiEventsRefresh;
 
 /**
- * The canvas in which to draw various elements of the UI, mostly focusing on
- * the graphical side of things as well intuitive controls
+ * The canvas in which to draw various elements of the UI, mostly focusing on the graphical side of
+ * things as well intuitive controls
  *
  * @author Kareem Horstink
  * @version 0.8b
@@ -132,8 +132,7 @@ public class Canvas extends JPanel implements ActionListener {
     private final boolean DEBUG = false;
 
     /**
-     * Creates a new canvas and sets the default zoom level as well the units to
-     * be used by the grid
+     * Creates a new canvas and sets the default zoom level as well the units to be used by the grid
      *
      * @param zoom The current zoom level
      * @param units The units to be shown on the grid
@@ -273,7 +272,9 @@ public class Canvas extends JPanel implements ActionListener {
          */
         addMouseWheelListener((MouseWheelEvent e) -> {
             if (Math.signum(e.getPreciseWheelRotation()) == 1) {
-                setZoom(Math.abs(getZoom() / (e.getPreciseWheelRotation() * 1.05)));
+                if (getZoom() > 0.4356029233981616) {
+                    setZoom(Math.abs(getZoom() / (e.getPreciseWheelRotation() * 1.05)));
+                }
             } else {
                 setZoom(Math.abs(e.getPreciseWheelRotation() * 1.05 * getZoom()));
             }
@@ -512,11 +513,16 @@ public class Canvas extends JPanel implements ActionListener {
                                     try {
                                         numbers = numbers.replace(" ", "");
                                         String split[] = numbers.split(",");
-                                        double x = Double.valueOf(split[0]);
-                                        double y = Double.valueOf(split[1]);
-                                        double z = Double.valueOf(split[2]);
-                                        double w = Double.valueOf(split[3]);
-                                        fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.ELLIPSE, x, y, z, w}, name));
+                                        if (split.length == 4) {
+                                            double x = Double.valueOf(split[0]);
+                                            double y = Double.valueOf(split[1]);
+                                            double z = Double.valueOf(split[2]);
+                                            double w = Double.valueOf(split[3]);
+                                            fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.ELLIPSE, x, y, z, w}, name));
+                                        } else {
+                                            JOptionPane.showMessageDialog(this, "Please input 4 numbers");
+                                            curveID--;
+                                        }
                                     } catch (Exception error) {
                                         System.out.println("Please enter a proper location " + error);
                                     }
@@ -529,6 +535,7 @@ public class Canvas extends JPanel implements ActionListener {
                                         fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BOWL, len}, name));
                                     } catch (Exception error) {
                                         System.out.println("Please enter a proper location " + error);
+                                        curveID--;
                                     }
                                     break;
                                 default:
