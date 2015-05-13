@@ -51,7 +51,7 @@ public class Ellipse extends Curve{
 	}
 	
 	private double calchR(){
-		//Calculate horizontalradius
+		//Calculate horizontalRadius
 		//To get hR fill in t = 0 or t = PI. 
 		double t = 0;
 		double hR;
@@ -68,17 +68,23 @@ public class Ellipse extends Curve{
 		vR = calcY(t);
 		return vR;
 	}
-	
-	protected double length(){
+	@Override
+	protected double length(int METHOD){
 		//Length of an ellipse calculated exactly using an "infinite sum" formula
 		double length = 0;
 		double vR = calcvR();
 		double hR = calchR();
-		double x = (Math.pow((vR - hR), 2))/(Math.pow((vR + hR), 2));
-		length = Math.PI*(hR + vR)*(1 + (1/4)*x + (1/64)*Math.pow(x, 2) + (1/256)*Math.pow(x, 3));
-		return length;
+		double x = (Math.pow((hR - vR), 2))/(Math.pow((vR + hR), 2));
+		length = Math.PI*(hR + vR)*(1 + (1/4)*x + (1/64)*Math.pow(x, 2) + (1/256)*Math.pow(x, 3) + (25/16384)*Math.pow(x, 4));
+		System.out.println("Length calculated by infinity sum: " + length);
+		double approxLength = 0;
+		approxLength = Math.PI*(vR + hR)*(1 + ((3*x)/(10 + Math.sqrt(4 - 3*x))));
+		
+		System.out.println("Length calculated by Approx: " + approxLength);
+		return approxLength;
 	}
-	protected double area(){
+	@Override
+	protected double area(int METHOD){
 		double area = 0;
 		//Area is calculated by 2*PI*horizontalRadius*verticalRadius
 		area = Math.PI*calchR()*calcvR();
