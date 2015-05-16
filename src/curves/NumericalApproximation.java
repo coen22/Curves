@@ -10,32 +10,37 @@ public class NumericalApproximation {
 	public static final int SIMPSON_ARCLENGTH = 2;
 	public static final int PYTHAGOREAN_ARCLENGTH = 3;
 	
-	private static final int ROMBERG_MAX = 7;
+	private static final int ROMBERG_MAX = 8;
 	private static final int SIMPSON_N = 30;
 	
 	private static Evaluateable localCurve;
 
 	public static double calcArea(Curve curve){
 		if (curve.areaAlgorithm == EXACT_AREA_CUBIC){
+//			System.out.println("exact area");
 			return Math.abs(exactCubicArea(curve));
 		}
 		else if (curve.areaAlgorithm == SHOELACE_AREA){
+//			System.out.println("shoelace");
 			return Math.abs(shoeLaceArea(curve));
 		}
-		return 0.0;
+		return Double.NaN;
 	}
 	
 	public static double calcArcLength(Curve curve){
 		if (curve.arcLengthAlgorithm == ROMBERG_ARCLENGTH){
+//			System.out.println("romberg");
 			return Math.abs(rombergArcLength(curve));
 		}
 		else if (curve.arcLengthAlgorithm == SIMPSON_ARCLENGTH){
+//			System.out.println("simpson");
 			return simpsonArcLength(curve);
 		}
 		else if (curve.arcLengthAlgorithm == PYTHAGOREAN_ARCLENGTH){
-			return pythagoreanLength(curve);
+//			System.out.println("pythoagoras");
+			return pythagoreanLength(curve, 10);
 		}
-		return 0.0;
+		return Double.NaN;
 	}
 	
 	private static double rombergArcLength(Curve curve) {
@@ -43,17 +48,19 @@ public class NumericalApproximation {
 		double tmpLength = 0;
 		
 		for (int i = 0; i < curve.points.size()-1; i++){
-			tmpLength += rombergEvaluation(curve, i, 0, 1, ROMBERG_MAX);
+			tmpLength += rombergEvaluation(i, 0, 1, ROMBERG_MAX);
 		}
 		if (curve.isClosed()){
-			tmpLength += rombergEvaluation(curve, curve.points.size()-1, 0, 1, ROMBERG_MAX);
+			tmpLength += rombergEvaluation(curve.points.size()-1, 0, 1, ROMBERG_MAX);
 		}
 		return tmpLength;
 	}
 	
-	private static double rombergEvaluation(Curve curve, int piece, double lower, double higher, int n){
+	
+	private static double rombergEvaluation(int piece, double lower, double higher, int n){
 		
 		double[][] rombergMatrix = new double[n][n];
+		
 		for (int i = 0; i < n; i++){
 			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, (int)Math.pow(2, i));
 		}
@@ -65,6 +72,22 @@ public class NumericalApproximation {
 			}
 		}
 		return rombergMatrix[n-1][n-1];
+	}
+	
+	public static double richardsonExtrapolation(Curve curve, int n) {
+		double[][] richardsonMatrix = new double[n][n];
+		
+		for (int i = 0; i < n; i++){
+			richardsonMatrix[i][0] = pythagoreanLength(curve, (int)Math.pow(2, i));
+		}
+		
+		for (int i = 1; i < n; i++){
+			for (int k = i; k < n; k++){
+				richardsonMatrix[k][i] = richardsonMatrix[k][i-1] + ((richardsonMatrix[k][i-1]-richardsonMatrix[k-1][i-1])/(Math.pow(2, i)-1));
+			}
+		}
+		
+		return richardsonMatrix[n-1][n-1];
 	}
 	
 	private static double trapezoidEvaluation(int piece, double lower, double higher, int n){
@@ -147,12 +170,15 @@ public class NumericalApproximation {
 		return Math.abs(area / 2);
 	}
 	
-	private static double pythagoreanLength(Curve curve) {
+	private static double pythagoreanLength(Curve curve, int subDivisions) {
 		double length = 0;
-		final int resolution = 15;
 		
-		ArrayList<Point2D> listOfPoints = curve.getPlot(resolution);
-
+		if (subDivisions < 1){
+			subDivisions = 1;
+		}
+		
+		ArrayList<Point2D> listOfPoints = curve.getPlot(subDivisions);
+		
 		if (listOfPoints.isEmpty() || listOfPoints.size() == 1) {
 			return 0;
 		}
@@ -162,7 +188,6 @@ public class NumericalApproximation {
 					- listOfPoints.get(i - 1).getX(), 2)
 					+ Math.pow(listOfPoints.get(i).getY()- listOfPoints.get(i - 1).getY(), 2));
 		}
-			
 		return length;
 	}
 }
