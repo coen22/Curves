@@ -9,6 +9,7 @@ public class NumericalApproximation {
 	public static final int ROMBERG_ARCLENGTH = 1;
 	public static final int SIMPSON_ARCLENGTH = 2;
 	public static final int PYTHAGOREAN_ARCLENGTH = 3;
+	public static final int RICHARDSON_EXTRAPOLATION_ARCLENGTH = 4;
 	
 	private static final int ROMBERG_MAX = 8;
 	private static final int SIMPSON_N = 30;
@@ -39,6 +40,10 @@ public class NumericalApproximation {
 		else if (curve.arcLengthAlgorithm == PYTHAGOREAN_ARCLENGTH){
 //			System.out.println("pythoagoras");
 			return pythagoreanLength(curve, 10);
+		}
+		else if (curve.arcLengthAlgorithm == RICHARDSON_EXTRAPOLATION_ARCLENGTH){
+//			System.out.println("richardson");
+			return richardsonExtrapolation(curve, 10);
 		}
 		return Double.NaN;
 	}
