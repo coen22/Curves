@@ -37,6 +37,9 @@ import ui.events.GuiEventsVisibility;
  */
 public class SideBar extends JTabbedPane implements TableModelListener {
 
+    /**
+     * Holds the name of the curve
+     */
     private String[] name;
 
     /**
@@ -128,7 +131,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     /**
      * Combo box to select the algorithm
      */
-    private JComboBox<String> comboLenth;
+    private JComboBox<String> comboLength;
 
     /**
      * Combo box to select the algorithm
@@ -210,10 +213,14 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      * Initialize the buttons and info boxes
      */
     private void initGeneral() {
-        controls = new JPanel(new GridLayout(10, 3));
-        controls.setName("Controls");
-        this.addTab(controls.getName(), controls);
-        visibleBox = new JCheckBox("Set Invisible");
+        JPanel container = new JPanel(new GridLayout(2, 0));
+        controls = new JPanel(new GridLayout(0, 2));
+        container.add(controls);
+        this.addTab("Controls", container);
+        JLabel tmp = new JLabel("Set other lines to invisible");
+        tmp.setHorizontalAlignment(SwingConstants.CENTER);
+        controls.add(tmp);
+        visibleBox = new JCheckBox("");
         visibleBox.setHorizontalAlignment(SwingConstants.CENTER);
         visibleBox.addActionListener(new ActionListener() {
             @Override
@@ -224,6 +231,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         });
         visibleBox.setToolTipText("Sets all other line to not be visible");
         controls.add(visibleBox);
+
         initCombo();
 
         curveInfo = new String[5];
@@ -237,8 +245,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 fireEvent(new GuiEventsRefresh(this));
             }
         });
-        
-        
+
         controls.add(button);
         button = new JButton("Help");
         button.setToolTipText("Shows a help diaglog");
@@ -260,7 +267,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
             infoText1.setHorizontalAlignment(SwingConstants.CENTER);
             info.add(infoText1);
         }
-        controls.add(info);
+        container.add(info);
         initTable();
 
     }
@@ -270,6 +277,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      */
     private void initCombo() {
         currentLineComboBox = new JComboBox<>(new String[]{""});
+        currentLineComboBox.setEnabled(false);
         currentLineComboBox.addActionListener(new ActionListener() {
 
             @Override
@@ -283,33 +291,14 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 }
             }
         });
+        JLabel tmp = new JLabel("Select current Line");
+        tmp.setHorizontalAlignment(SwingConstants.CENTER);
+        controls.add(tmp);
         controls.add(currentLineComboBox);
         //------------------------------------------------------------------------------------------
 
-        comboLenth = new JComboBox<>(new String[]{"Shoe Lace", "Exact Area Cubic"});
-        comboLenth.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (DEBUG) {
-                    System.out.println(e.getActionCommand());
-                }
-                if (e.getSource() == comboLenth) {
-                    if ("Shoe Lace".equals((String) comboLenth.getSelectedItem())) {
-                        fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.SHOELACE_AREA));
-                    } else {
-                        fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
-                    }
-                }
-            }
-        });
-        controls.add(comboLenth);
-
-        //------------------------------------------------------------------------------------------
-        comboArea = new JComboBox<>(new String[]{
-            "Pythagorean Arc Length",
-            "Simpon Arc Length",
-            "Romberg Arc length"});
+        comboArea = new JComboBox<>(new String[]{""});
+        comboArea.setEnabled(false);
         comboArea.addActionListener(new ActionListener() {
 
             @Override
@@ -318,23 +307,56 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                     System.out.println(e.getActionCommand());
                 }
                 if (e.getSource() == comboArea) {
-                    if (null != (String) comboArea.getSelectedItem()) {
-                        switch ((String) comboArea.getSelectedItem()) {
-                            case "Romberg Arc length":
-                                fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.ROMBERG_ARCLENGTH));
+                    if ("Shoe Lace Area".equals((String) comboArea.getSelectedItem())) {
+                        fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SHOELACE_AREA));
+                    } else if ("Exact Area Cubic".equals((String) comboArea.getSelectedItem())) {
+                        fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
+                    }
+                }
+            }
+        });
+        JLabel tmp1 = new JLabel("Select Area calculation mode");
+        tmp1.setHorizontalAlignment(SwingConstants.CENTER);
+        controls.add(tmp1);
+        controls.add(comboArea);
+
+        //------------------------------------------------------------------------------------------
+        comboLength = new JComboBox<>(new String[]{""});
+        comboLength.setEnabled(false);
+        comboLength.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (DEBUG) {
+                    System.out.println(e.getActionCommand());
+                }
+                if (e.getSource() == comboLength) {
+                    if (null != (String) comboLength.getSelectedItem()) {
+                        switch ((String) comboLength.getSelectedItem()) {
+                            case "Romberg Arclength":
+                                fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.ROMBERG_ARCLENGTH));
                                 break;
-                            case "Simpon Arc Length":
-                                fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SIMPSON_ARCLENGTH));
+                            case "Simpons Arclength":
+                                fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.SIMPSON_ARCLENGTH));
+                                break;
+                            case "Pythagorean Arclength":
+                                fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.PYTHAGOREAN_ARCLENGTH));
+                                break;
+                            case "Richson Extrapolation Arclength":
+                                fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH));
                                 break;
                             default:
-                                fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.PYTHAGOREAN_ARCLENGTH));
+                                System.out.println("Error in selection");
                                 break;
                         }
                     }
                 }
             }
         });
-        controls.add(comboArea);
+        JLabel tmp2 = new JLabel("Select Area calculation mode");
+        tmp2.setHorizontalAlignment(SwingConstants.CENTER);
+        controls.add(tmp2);
+        controls.add(comboLength);
     }
 
     /**
@@ -351,11 +373,65 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     /**
+     *
+     * @param area
+     * @param length
+     */
+    private void updateComboBox(ArrayList area, ArrayList length) {
+        System.out.println("updating combo");
+        if (curveID != -1) {
+            currentLineComboBox.setEnabled(true);
+            comboArea.setEnabled(true);
+            comboLength.setEnabled(true);
+
+            comboArea.removeAllItems();
+            for (Iterator iterator = area.iterator(); iterator.hasNext();) {
+                int next = (int) iterator.next();
+                switch (next) {
+                    case NumericalApproximation.EXACT_AREA_CUBIC:
+                        comboArea.addItem("Exact Area Cubic");
+                        break;
+                    case NumericalApproximation.SHOELACE_AREA:
+                        comboArea.addItem("Shoe Lace Area");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            System.out.println(length);
+            comboLength.removeAllItems();
+            for (Iterator iterator = length.iterator(); iterator.hasNext();) {
+                int next = (int) iterator.next();
+                System.out.println("ello");
+                switch (next) {
+                    case NumericalApproximation.PYTHAGOREAN_ARCLENGTH:
+                        comboLength.addItem("Pythagorean Arclength");
+                        break;
+                    case NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH:
+                        comboLength.addItem("Richson Extrapolation Arclength");
+                        break;
+                    case NumericalApproximation.ROMBERG_ARCLENGTH:
+                        comboLength.addItem("Romberg Arclength");
+                        break;
+                    case NumericalApproximation.SIMPSON_ARCLENGTH:
+                        comboLength.addItem("Simpons Arclength");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    /**
      * Update the info for the curve
      *
      * @param info The info from the curve
+     * @param area
+     * @param length
      */
-    protected void updateInfo(String[] info) {
+    protected void updateInfo(String[] info, ArrayList area, ArrayList length) {
+
         updating2 = true;
         if (info.length == 5) {
             curveInfo = info;
@@ -370,6 +446,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         }
         currentLineComboBox.setSelectedIndex(curveID);
         updating2 = false;
+        updateComboBox(area, length);
     }
 
     /**
