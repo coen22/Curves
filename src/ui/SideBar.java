@@ -306,16 +306,18 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 if (DEBUG) {
                     System.out.println(e.getActionCommand());
                 }
-                if (e.getSource() == comboArea) {
-                    if ("Shoe Lace Area".equals((String) comboArea.getSelectedItem())) {
-                        fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SHOELACE_AREA));
-                    } else if ("Exact Area Cubic".equals((String) comboArea.getSelectedItem())) {
-                        fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
+                if (updating2) {
+                    if (e.getSource() == comboArea) {
+                        if ("Shoe Lace Area".equals((String) comboArea.getSelectedItem())) {
+                            fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SHOELACE_AREA));
+                        } else if ("Exact Area Cubic".equals((String) comboArea.getSelectedItem())) {
+                            fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
+                        }
                     }
                 }
             }
         });
-        JLabel tmp1 = new JLabel("Select Area calculation mode");
+        JLabel tmp1 = new JLabel("Select Area Calculation Mode");
         tmp1.setHorizontalAlignment(SwingConstants.CENTER);
         controls.add(tmp1);
         controls.add(comboArea);
@@ -330,30 +332,32 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 if (DEBUG) {
                     System.out.println(e.getActionCommand());
                 }
-                if (e.getSource() == comboLength) {
-                    if (null != (String) comboLength.getSelectedItem()) {
-                        switch ((String) comboLength.getSelectedItem()) {
-                            case "Romberg Arclength":
-                                fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.ROMBERG_ARCLENGTH));
-                                break;
-                            case "Simpons Arclength":
-                                fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.SIMPSON_ARCLENGTH));
-                                break;
-                            case "Pythagorean Arclength":
-                                fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.PYTHAGOREAN_ARCLENGTH));
-                                break;
-                            case "Richson Extrapolation Arclength":
-                                fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH));
-                                break;
-                            default:
-                                System.out.println("Error in selection");
-                                break;
+                if (updating2) {
+                    if (e.getSource() == comboLength) {
+                        if (null != (String) comboLength.getSelectedItem()) {
+                            switch ((String) comboLength.getSelectedItem()) {
+                                case "Romberg Arclength":
+                                    fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.ROMBERG_ARCLENGTH));
+                                    break;
+                                case "Simpons Arclength":
+                                    fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.SIMPSON_ARCLENGTH));
+                                    break;
+                                case "Pythagorean Arclength":
+                                    fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.PYTHAGOREAN_ARCLENGTH));
+                                    break;
+                                case "Richson Extrapolation Arclength":
+                                    fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH));
+                                    break;
+                                default:
+                                    System.out.println("Error in selection");
+                                    break;
+                            }
                         }
                     }
                 }
             }
         });
-        JLabel tmp2 = new JLabel("Select Area calculation mode");
+        JLabel tmp2 = new JLabel("Select Length Calculation Mode");
         tmp2.setHorizontalAlignment(SwingConstants.CENTER);
         controls.add(tmp2);
         controls.add(comboLength);
@@ -378,46 +382,48 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      * @param length
      */
     private void updateComboBox(ArrayList area, ArrayList length) {
-        System.out.println("updating combo");
         if (curveID != -1) {
             currentLineComboBox.setEnabled(true);
-            comboArea.setEnabled(true);
-            comboLength.setEnabled(true);
 
             comboArea.removeAllItems();
-            for (Iterator iterator = area.iterator(); iterator.hasNext();) {
-                int next = (int) iterator.next();
-                switch (next) {
-                    case NumericalApproximation.EXACT_AREA_CUBIC:
-                        comboArea.addItem("Exact Area Cubic");
-                        break;
-                    case NumericalApproximation.SHOELACE_AREA:
-                        comboArea.addItem("Shoe Lace Area");
-                        break;
-                    default:
-                        break;
+            if (area != null && !area.isEmpty()) {
+                comboArea.setEnabled(true);
+                for (Iterator iterator = area.iterator(); iterator.hasNext();) {
+                    int next = (int) iterator.next();
+                    switch (next) {
+                        case NumericalApproximation.EXACT_AREA_CUBIC:
+                            comboArea.addItem("Exact Area Cubic");
+                            break;
+                        case NumericalApproximation.SHOELACE_AREA:
+                            comboArea.addItem("Shoe Lace Area");
+                            break;
+                        default:
+                            System.out.println("Error");
+                            break;
+                    }
                 }
             }
-            System.out.println(length);
             comboLength.removeAllItems();
-            for (Iterator iterator = length.iterator(); iterator.hasNext();) {
-                int next = (int) iterator.next();
-                System.out.println("ello");
-                switch (next) {
-                    case NumericalApproximation.PYTHAGOREAN_ARCLENGTH:
-                        comboLength.addItem("Pythagorean Arclength");
-                        break;
-                    case NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH:
-                        comboLength.addItem("Richson Extrapolation Arclength");
-                        break;
-                    case NumericalApproximation.ROMBERG_ARCLENGTH:
-                        comboLength.addItem("Romberg Arclength");
-                        break;
-                    case NumericalApproximation.SIMPSON_ARCLENGTH:
-                        comboLength.addItem("Simpons Arclength");
-                        break;
-                    default:
-                        break;
+            if (length != null && !length.isEmpty()) {
+                comboLength.setEnabled(true);
+                for (Iterator iterator = length.iterator(); iterator.hasNext();) {
+                    int next = (int) iterator.next();
+                    switch (next) {
+                        case NumericalApproximation.PYTHAGOREAN_ARCLENGTH:
+                            comboLength.addItem("Pythagorean Arclength");
+                            break;
+                        case NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH:
+                            comboLength.addItem("Richson Extrapolation Arclength");
+                            break;
+                        case NumericalApproximation.ROMBERG_ARCLENGTH:
+                            comboLength.addItem("Romberg Arclength");
+                            break;
+                        case NumericalApproximation.SIMPSON_ARCLENGTH:
+                            comboLength.addItem("Simpons Arclength");
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -445,8 +451,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
             System.out.println(curveID);
         }
         currentLineComboBox.setSelectedIndex(curveID);
-        updating2 = false;
         updateComboBox(area, length);
+        updating2 = false;
     }
 
     /**

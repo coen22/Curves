@@ -252,6 +252,7 @@ public class Controller {
     public double curveLength(int curveID) {
         return CURVES.get(curveID).length(length);
     }
+    
     /**
      * Which Algorithm to use for find the area
      */

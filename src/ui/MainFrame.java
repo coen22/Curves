@@ -65,7 +65,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
      */
     private int curveID = -1;
 
-    private final boolean DEBUG = false;
+    private final boolean DEBUG = true;
 
     /**
      * Default constructor
@@ -292,7 +292,6 @@ public class MainFrame extends JFrame implements GuiEventListner {
     public void handleAreaChange(GuiEventsAreaChange e) {
         if (DEBUG) {
             System.out.println("Changing Area");
-            System.out.println(e.getAlgorithm());
         }
         CONTROLLER.setArea(e.getAlgorithm());
         update();
@@ -302,7 +301,6 @@ public class MainFrame extends JFrame implements GuiEventListner {
     public void handleLengthChange(GuiEventsLengthChange e) {
         if (DEBUG) {
             System.out.println("Changing Length");
-            System.out.println(e.getAlgorithm());
         }
         CONTROLLER.setLength(e.getAlgorithm());
         update();
