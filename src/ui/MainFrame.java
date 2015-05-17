@@ -65,7 +65,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
      */
     private int curveID = -1;
 
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     /**
      * Default constructor

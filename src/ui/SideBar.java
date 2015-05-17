@@ -306,7 +306,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 if (DEBUG) {
                     System.out.println(e.getActionCommand());
                 }
-                if (updating2) {
+                if (!updating2) {
                     if (e.getSource() == comboArea) {
                         if ("Shoe Lace Area".equals((String) comboArea.getSelectedItem())) {
                             fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SHOELACE_AREA));
@@ -332,7 +332,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 if (DEBUG) {
                     System.out.println(e.getActionCommand());
                 }
-                if (updating2) {
+                if (!updating2) {
                     if (e.getSource() == comboLength) {
                         if (null != (String) comboLength.getSelectedItem()) {
                             switch ((String) comboLength.getSelectedItem()) {
