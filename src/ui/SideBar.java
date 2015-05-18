@@ -64,7 +64,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     /**
      * Current selected line
      */
-    private int curveID;
+    private int curveID = -1;
 
     /**
      * Check box to set the line to be visible or not
@@ -149,6 +149,26 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     /**
+     * Sets the curve ID
+     *
+     * @param curveID The index of the current curve
+     * @param area The allowed algorithms to find the area of the arc
+     * @param length The allowed algorithms to find the length of the arc
+     */
+    public void setCurveID(int curveID, ArrayList area, ArrayList length) {
+        if (this.curveID != curveID) {
+            this.curveID = curveID;
+            updating1 = true;
+            updating2 = true;
+            updateTableFull();
+            updateComboBox(area, length);
+            updating1 = false;
+            updating2 = false;
+
+        }
+    }
+
+    /**
      * Sets the number of lines in the system
      *
      * @param numberOfCurve The number of curves
@@ -173,18 +193,6 @@ public class SideBar extends JTabbedPane implements TableModelListener {
             updateTableFull();
             updating1 = false;
         }
-    }
-
-    /**
-     * Sets the current curve
-     *
-     * @param curveID The index of the current curve
-     */
-    protected void setCurveID(int curveID) {
-        this.curveID = curveID;
-        updating1 = true;
-        updateTableFull();
-        updating1 = false;
     }
 
     /**
@@ -388,9 +396,11 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      * @param length
      */
     private void updateComboBox(ArrayList area, ArrayList length) {
-        if (curveID != -1) {
-            currentLineComboBox.setEnabled(true);
+        System.out.println("ksks");
 
+        if (curveID != -1) {
+            System.out.println("asdsadas");
+            currentLineComboBox.setEnabled(true);
             comboArea.removeAllItems();
             if (area != null && !area.isEmpty()) {
                 comboArea.setEnabled(true);
@@ -433,18 +443,67 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 }
             }
         }
+
+        if (null != (String) comboArea.getSelectedItem()) {
+            switch ((String) comboArea.getSelectedItem()) {
+                case "Shoe Lace Area":
+                    fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SHOELACE_AREA));
+                    comboArea.setSelectedItem("Shoe Lace Area");
+                    break;
+                case "Exact Area Cubic":
+                    fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
+                    comboArea.setSelectedItem("Exact Area Cubic");
+                    break;
+            }
+        }
+        if (null != (String) comboLength.getSelectedItem()) {
+
+            switch ((String) comboLength.getSelectedItem()) {
+                case "Romberg Arclength":
+                    fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.ROMBERG_ARCLENGTH));
+                    comboLength.setSelectedItem("Romberg Arclength");
+                    break;
+                case "Simpons Arclength":
+                    fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.SIMPSON_ARCLENGTH));
+                    comboLength.setSelectedItem("Simpons Arclength");
+                    break;
+                case "Pythagorean Arclength":
+                    fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.PYTHAGOREAN_ARCLENGTH));
+                    comboLength.setSelectedItem("Pythagorean Arclength");
+                    break;
+                case "Richson Extrapolation Arclength":
+                    fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH));
+                    comboLength.setSelectedItem("Richson Extrapolation Arclength");
+                    break;
+                default:
+                    System.out.println("Error in selection");
+                    break;
+            }
+        }
     }
 
     /**
      * Update the info for the curve
      *
-     * @param info The info from the curve
-     * @param area
-     * @param length
+     * @param curveID The index of the current curve
+     * @param info The info from the curve: Name, Area, Length, Number Of
+     * Control points, Zoom level
+     * @param area The allowed algorithms to find the area of the arc
+     * @param length The allowed algorithms to find the length of the arc
      */
-    protected void updateInfo(String[] info, ArrayList area, ArrayList length) {
-
+    protected void updateInfo(int curveID, String[] info, ArrayList area, ArrayList length) {
         updating2 = true;
+        System.out.println("Old: " + this.curveID + " New: " + curveID);
+
+        if (this.curveID != curveID) {
+            this.curveID = curveID;
+            updateComboBox(area, length);
+        }
+
+        updating1 = true;
+        updateTableFull();
+        updating1 = false;
+
         if (info.length == 5) {
             curveInfo = info;
         }
@@ -457,7 +516,6 @@ public class SideBar extends JTabbedPane implements TableModelListener {
             System.out.println(curveID);
         }
         currentLineComboBox.setSelectedIndex(curveID);
-        updateComboBox(area, length);
         updating2 = false;
     }
 
@@ -468,7 +526,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         infoText[0].setText("Name " + curveInfo[0]);
         if (!curveInfo[1].equals("Infinity")) {
             infoText[1].setText("Area " + curveInfo[1]);
-        }else{
+        } else {
             infoText[1].setText("Area 0");
         }
         infoText[2].setText("Length " + curveInfo[2]);
