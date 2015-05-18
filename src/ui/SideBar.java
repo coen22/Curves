@@ -466,7 +466,11 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      */
     private void updateInfoPanel() {
         infoText[0].setText("Name " + curveInfo[0]);
-        infoText[1].setText("Area " + curveInfo[1]);
+        if (!curveInfo[1].equals("Infinity")) {
+            infoText[1].setText("Area " + curveInfo[1]);
+        }else{
+            infoText[1].setText("Area 0");
+        }
         infoText[2].setText("Length " + curveInfo[2]);
         infoText[3].setText("Number Of control points " + curveInfo[3]);
         infoText[4].setText("Zoom Level " + curveInfo[4]);
