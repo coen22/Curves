@@ -4,6 +4,9 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class NumericalApproximation {
+	
+	private static final boolean DEBUG = false;
+	
 	public static final int SHOELACE_AREA = 1;
 	public static final int EXACT_AREA_CUBIC = 2;
 	public static final int ROMBERG_ARCLENGTH = 1;
@@ -18,11 +21,11 @@ public class NumericalApproximation {
 
 	public static double calcArea(Curve curve){
 		if (curve.areaAlgorithm == EXACT_AREA_CUBIC){
-//			System.out.println("exact area");
+			if (DEBUG) System.out.println("exact area");
 			return Math.abs(exactCubicArea(curve));
 		}
 		else if (curve.areaAlgorithm == SHOELACE_AREA){
-//			System.out.println("shoelace");
+			if (DEBUG)System.out.println("shoelace");
 			return Math.abs(shoeLaceArea(curve));
 		}
 		return Double.NaN;
@@ -30,19 +33,19 @@ public class NumericalApproximation {
 	
 	public static double calcArcLength(Curve curve){
 		if (curve.arcLengthAlgorithm == ROMBERG_ARCLENGTH){
-//			System.out.println("romberg");
+			if (DEBUG)System.out.println("romberg");
 			return Math.abs(rombergArcLength(curve));
 		}
 		else if (curve.arcLengthAlgorithm == SIMPSON_ARCLENGTH){
-//			System.out.println("simpson");
+			if (DEBUG)System.out.println("simpson");
 			return simpsonArcLength(curve);
 		}
 		else if (curve.arcLengthAlgorithm == PYTHAGOREAN_ARCLENGTH){
-//			System.out.println("pythoagoras");
+			if (DEBUG)System.out.println("pythoagoras");
 			return pythagoreanLength(curve, 10);
 		}
 		else if (curve.arcLengthAlgorithm == RICHARDSON_EXTRAPOLATION_ARCLENGTH){
-//			System.out.println("richardson");
+			if (DEBUG)System.out.println("richardson");
 			return richardsonExtrapolation(curve, 10);
 		}
 		return Double.NaN;
@@ -159,7 +162,7 @@ public class NumericalApproximation {
 		double area = 0;
 
 		if (!curve.isClosed()){
-			return Double.POSITIVE_INFINITY;
+			return Double.NEGATIVE_INFINITY;
 		}
 			
 		ArrayList<Point2D> listOfPoints = curve.getPlot(curve.numberOfPoints());

@@ -27,19 +27,30 @@ public class Ellipse extends Curve{
 		else{
 		currentSubPoints = 1000;
 		}
-		calcPlot();
+		calcPlot(currentSubPoints);
 	}
 
-	private void calcPlot(){
-		double interval = (2*Math.PI)/((double)currentSubPoints);
-		System.out.println("Interval: " + interval);
-		plot = new ArrayList <Point2D>();
+	private void calcPlot(int subPoints){
 		
+//		double interval = (2*Math.PI)/((double)currentSubPoints);
+//		System.out.println("Interval: " + interval);
+//		plot = new ArrayList <Point2D>();
+//		
+//		for(double t = 0; t <= 2*Math.PI; t += interval){
+//			plot.add(new Point2D.Double(calcX(t), calcY(t)));
+//			System.out.println("CalcX: " + calcX(t));
+//			}
+//		System.out.println("plot size: " + plot.size());
+		
+		double interval = (2*Math.PI)/((double)(4*subPoints));
+		System.out.println("Interval: " + interval);
+		
+		plot = new ArrayList <Point2D>();
 		for(double t = 0; t <= 2*Math.PI; t += interval){
 			plot.add(new Point2D.Double(calcX(t), calcY(t)));
-			System.out.println("CalcX: " + calcX(t));
-			}
+		}
 		System.out.println("plot size: " + plot.size());
+		
 	}
 	
 	private double calcX(double t){
@@ -83,8 +94,8 @@ public class Ellipse extends Curve{
 	}
 	@Override
 	protected ArrayList<Point2D> getPlot(int subPoints) {
-			calcPlot();
-			return plot;
+		calcPlot(subPoints);
+		return plot;
 		
 	}
 	
