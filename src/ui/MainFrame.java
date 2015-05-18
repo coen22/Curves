@@ -63,7 +63,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
     /**
      * The current selected line
      */
-    private int selected = -1;
+    private int curveID = -1;
 
     private final boolean DEBUG = false;
 
@@ -96,14 +96,24 @@ public class MainFrame extends JFrame implements GuiEventListner {
         if (amount > 0) {
             updateG();
             SIDE_BAR.setNumberOfCurve(amount);
-            SIDE_BAR.setCurveID(selected);
+            SIDE_BAR.setCurveID(curveID);
 
             ArrayList tmpList = new ArrayList();
             for (int i = 0; i < amount; i++) {
                 tmpList.add(CONTROLLER.getCurveName(i));
             }
             SIDE_BAR.setName((String[]) tmpList.toArray(new String[amount]));
-            SIDE_BAR.updateInfo(new String[]{CONTROLLER.getCurveName(selected), Double.toString(CONTROLLER.curveArea(selected)), Double.toString(CONTROLLER.curveLength(selected)), Integer.toString(CONTROLLER.getControlsPoints(selected).size()), Double.toString(CANVAS.getZoom())});
+            SIDE_BAR.updateInfo(
+                    new String[]{
+                CONTROLLER.getCurveName(curveID),
+                Double.toString(CONTROLLER.curveArea(curveID)),
+                Double.toString(CONTROLLER.curveLength(curveID)), 
+                Integer.toString(CONTROLLER.getControlsPoints(curveID).size()), 
+                Double.toString(CANVAS.getZoom())},
+                    CONTROLLER.getAllowedAlgorithmsArea(curveID),
+                    CONTROLLER.getAllowedAlgorithmsLength(curveID)
+            
+            );
 
             if (DEBUG) {
                 System.out.println("Updating Data");
@@ -144,7 +154,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         if (DEBUG) {
             System.out.println("Creating");
         }
-        selected++;
+        curveID++;
         if (e.getInfo().length == 3) {
             CONTROLLER.createCurve((int) e.getInfo()[2], e.getInfo()[0], e.getInfo()[1], e.getName());
             update();
@@ -230,7 +240,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         if (DEBUG) {
             System.out.println("Changing Current Line");
         }
-        selected = e.getCurveID();
+        curveID = e.getCurveID();
         if (!e.getSource().getClass().equals(CANVAS.getClass())) {
             CANVAS.setCurrentLine(e.getCurveID());
         } else {
@@ -281,7 +291,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
     @Override
     public void handleAreaChange(GuiEventsAreaChange e) {
         if (DEBUG) {
-            System.out.println(e.getAlgorithm());
+            System.out.println("Changing Area");
         }
         CONTROLLER.setArea(e.getAlgorithm());
         update();
@@ -290,7 +300,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
     @Override
     public void handleLengthChange(GuiEventsLengthChange e) {
         if (DEBUG) {
-            System.out.println(e.getAlgorithm());
+            System.out.println("Changing Length");
         }
         CONTROLLER.setLength(e.getAlgorithm());
         update();

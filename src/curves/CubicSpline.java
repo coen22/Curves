@@ -18,7 +18,7 @@ public class CubicSpline extends Curve implements Evaluateable {
 	
 	private int type;
 	private ArrayList<Point2D> plot;
-	private int divisions;
+	private int subDivisions;
 	private double area;
 	private double length;
 
@@ -26,21 +26,20 @@ public class CubicSpline extends Curve implements Evaluateable {
 		super(name);
 		add(point.getX(), point.getY());
 		this.type = type;
-		divisions = 1;
+		subDivisions = 1;
 		algorithmDefinition();
 		update();
 	}
 	
 	private void algorithmDefinition(){
-		areaAlgorithms = new ArrayList<Integer>();
 		areaAlgorithms.add(NumericalApproximation.EXACT_AREA_CUBIC);
 		areaAlgorithms.add(NumericalApproximation.SHOELACE_AREA);
 		areaAlgorithm = NumericalApproximation.EXACT_AREA_CUBIC;
 		
-		arcLengthAlgorithms = new ArrayList<Integer>();
 		arcLengthAlgorithms.add(NumericalApproximation.ROMBERG_ARCLENGTH);
 		arcLengthAlgorithms.add(NumericalApproximation.SIMPSON_ARCLENGTH);
 		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
+		arcLengthAlgorithms.add(NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH);
 		arcLengthAlgorithm = NumericalApproximation.ROMBERG_ARCLENGTH;
 	}
 	
@@ -53,7 +52,7 @@ public class CubicSpline extends Curve implements Evaluateable {
 	
 	protected void update() {
 		calcCoefficients();
-		calcPlot(divisions);
+		calcPlot();
 		calcDerivatives();
 		recalcAaA();
 	}
@@ -99,10 +98,10 @@ public class CubicSpline extends Curve implements Evaluateable {
 		update();
 	}
 	
-	private void calcPlot(int subPoints) {
+	private void calcPlot() {
 		ArrayList<Point2D> plottingPoints = new ArrayList<Point2D>();
 		
-		double tInterval = (1 / (double)subPoints);
+		double tInterval = (1 / (double)subDivisions);
 		
 		int cutoff = Xcoefficients.length-1;
 		if (type == CLOSED_SPLINE){
@@ -127,12 +126,12 @@ public class CubicSpline extends Curve implements Evaluateable {
 	}
 
 	public ArrayList<Point2D> getPlot(int subPoints) {
-		if (subPoints == divisions){
+		if (subPoints == subDivisions){
 			return plot;
 		}
 		else {
-			divisions = subPoints;
-			update();
+			subDivisions = subPoints;
+			calcPlot();
 			return plot;
 		}
 	}

@@ -4,39 +4,23 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * resource: http://pomax.github.io/bezierinfo/ 
- * 
- * B-Spline info:
- * 
- * intro: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/bspline-basis.html
- * coefficients: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/bspline-curve-coef.html
- * knot insertion: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/single-insertion.html
- * multiple knot insertion: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/multiple-time.html
- * DeBoors: http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/B-spline/de-Boor.html
- * 
- */
-
-
 public class BezierCurve extends Curve {
 		
-	private ArrayList<Double> Xcoefficients; 
-	private ArrayList<Double> Ycoefficients; 
-//	private ArrayList<Double> binomialCoefficients;
-	
 	public BezierCurve(Point2D point, String name){
 		super(name);
-//		binomialCoefficients = new ArrayList<Double>();
-//		binomialCoefficients.add((double) 1);
 		add(point.getX(), point.getY());
+		
+		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
+		arcLengthAlgorithms.add(NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH);
+		arcLengthAlgorithm = NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH;
 	}
 
-	public double length() {
-		// TODO Auto-generated method stub
-		return 0;
+	public double length(int METHOD) {
+		arcLengthAlgorithm = METHOD;
+		return NumericalApproximation.calcArcLength(this);
 	}
 
-	public double area() {
+	public double area(int METHOD) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -44,7 +28,7 @@ public class BezierCurve extends Curve {
 	public ArrayList<Point2D> getPlot(int subPoints) {
 		ArrayList<Point2D> plottingPoints = new ArrayList<Point2D>();
 		
-		double tInterval = 1 / ((double) (super.points.size() * subPoints));
+		double tInterval = 1 / ((double) ((super.points.size()-1) * subPoints));
 		
 		for (double d = 0; d < 1; d+=tInterval){
 			plottingPoints.add(deCasteljauSAlgorithm(super.points, d));

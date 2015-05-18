@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * The controller which stores the curves and constructs the curves
  *
  * @author Kareem Horstink
- * @version 0.823
+ * @version 0.932
  */
 public class Controller {
 
@@ -81,13 +81,11 @@ public class Controller {
     }
 
     /**
-     * Method to retrieve the plotting coordinates of each curve. NOTE THE
-     * DEFINITION OF SUB-POINTS!
+     * Method to retrieve the plotting coordinates of each curve. NOTE THE DEFINITION OF SUB-POINTS!
      *
      * @param curveIndex index of which curve to retrieve
-     * @param subPoints this number signifies the number of plotting points
-     * in-between each pair of control-points. The larger the number, the more
-     * fine-grained the curve plot will be.
+     * @param subPoints this number signifies the number of plotting points in-between each pair of
+     * control-points. The larger the number, the more fine-grained the curve plot will be.
      * @return
      */
     public ArrayList<Point2D> getCurvePlot(int curveIndex, int subPoints) {
@@ -249,12 +247,12 @@ public class Controller {
      * Returns the length of a curve/spline
      *
      * @param curveID The index of the curve/spline
-     * @return Returns the length of the curve/spline based on the selected
-     * method
+     * @return Returns the length of the curve/spline based on the selected method
      */
     public double curveLength(int curveID) {
         return CURVES.get(curveID).length(length);
     }
+    
     /**
      * Which Algorithm to use for find the area
      */
@@ -281,6 +279,26 @@ public class Controller {
      */
     public void setLength(int length) {
         this.length = length;
+    }
+
+    /**
+     * Gets the algorithm allowed for the getting the area of the curve
+     *
+     * @param index The index of the curve
+     * @return An arraylist of the index of allowed algorithm
+     */
+    public ArrayList getAllowedAlgorithmsArea(int index) {
+        return CURVES.get(index).areaAlgorithms;
+    }
+
+    /**
+     * Gets the algorithm allowed for the getting the length of the curve
+     *
+     * @param index The index of the curve
+     * @return An arraylist of the index of allowed algorithm
+     */
+    public ArrayList getAllowedAlgorithmsLength(int index) {
+        return CURVES.get(index).arcLengthAlgorithms;
     }
 
 }

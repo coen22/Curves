@@ -17,11 +17,9 @@ public class PolyLine extends Curve {
     }
     
     private void algorithmDefinition(){
-		areaAlgorithms = new ArrayList<Integer>();
 		areaAlgorithms.add(NumericalApproximation.SHOELACE_AREA);
 		areaAlgorithm = NumericalApproximation.SHOELACE_AREA;
 		
-		arcLengthAlgorithms = new ArrayList<Integer>();
 		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
 		arcLengthAlgorithm = NumericalApproximation.PYTHAGOREAN_ARCLENGTH;
 	}
