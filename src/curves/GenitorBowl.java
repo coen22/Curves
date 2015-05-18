@@ -7,8 +7,8 @@ import java.util.List;
 public class GenitorBowl extends Curve{
 	private static final double SELECTIVE_PRESSURE_POWER = 2;
 	
-	private static final int POP_SIZE = 1000; //2000
-	private static final int CHILDREN = 100000; //200000
+	private static final int POP_SIZE = 1000; //1000
+	private static final int CHILDREN = 100000; //100000
 	private static final int NUMBER_OF_POINTS = 5;
 	
 	ArrayList<GenitorIndividual> population;
@@ -25,7 +25,6 @@ public class GenitorBowl extends Curve{
 			binaryInsert(population.get(((int) ((Math.pow(Math.random(), SELECTIVE_PRESSURE_POWER))* POP_SIZE))).reproduce(population.get(((int) ((Math.pow(Math.random(), SELECTIVE_PRESSURE_POWER))* POP_SIZE)))));
 			population.remove(POP_SIZE);
 		}
-		System.out.println("best: " + population.get(0).getALRatio() + population.get(0).toString());
 	}
 	
 	private void generatePopulation(double targetLength, int numberOfPoints) {
@@ -74,12 +73,13 @@ public class GenitorBowl extends Curve{
 	@Override
 	protected double area(int method){
 		population.get(0).getElement().update();
-		return population.get(0).getElement().area(method);
+		return population.get(0).getElement().area(NumericalApproximation.EXACT_AREA_CUBIC);
 	}
 	
 	@Override
 	protected double length(int method){
-		return population.get(0).getElement().length(method);
+		population.get(0).getElement().update();
+		return population.get(0).getElement().length(NumericalApproximation.ROMBERG_ARCLENGTH);
 	}
 	
 	@Override
@@ -88,11 +88,16 @@ public class GenitorBowl extends Curve{
 	}
 	
 	public String toString(){
-		String string = "";
-		for (int i = 0; i < population.size(); i++){
-			string = string + population.get(i).toString() + "\n";
-		}
-		return string;
+		return "fittest: " + population.get(0).getALRatio();
+	}
+	
+	@Override
+	protected List<Point2D> getControlPoints() {
+		return population.get(0).getElement().points;
+	}
+	
+    @Override
+	protected void setPoint(int index, double x, double y) {
 	}
 
 	@Override

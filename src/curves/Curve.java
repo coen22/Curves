@@ -28,6 +28,8 @@ public abstract class Curve {
 		this.name = name;
 		closed = false;
 		points = new ArrayList<Point2D>();
+		areaAlgorithms = new ArrayList<Integer>();
+		arcLengthAlgorithms = new ArrayList<Integer>();
 	}
 	
 
