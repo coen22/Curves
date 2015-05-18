@@ -22,7 +22,7 @@ public class Ellipse extends Curve{
 		this.c = c;
 		this.d = d;
 		if( a >= 10 || b >= 10){
-			currentSubPoints = 20000;
+			currentSubPoints = 10000;
 		}
 		else{
 		currentSubPoints = 1000;
@@ -51,21 +51,12 @@ public class Ellipse extends Curve{
 	}
 	
 	private double calchR(){
-		//Calculate horizontalRadius
-		//To get hR fill in t = 0 or t = PI. 
-		double t = 0;
-		double hR;
-		hR = calcX(t);
+		double hR = c;
 		return hR;
 	}
 	
 	private double calcvR(){
-		//Calculate verticalRadius
-		//To get vR fill in t = 0.5*PI or t = 1.5*PI. 
-		double t = (0.5*Math.PI);
-		double vR;
-		
-		vR = calcY(t);
+		double vR = a;
 		return vR;
 	}
 	@Override
@@ -77,9 +68,9 @@ public class Ellipse extends Curve{
 		double x = (Math.pow((hR - vR), 2))/(Math.pow((vR + hR), 2));
 		length = Math.PI*(hR + vR)*(1 + (1/4)*x + (1/64)*Math.pow(x, 2) + (1/256)*Math.pow(x, 3) + (25/16384)*Math.pow(x, 4));
 		System.out.println("Length calculated by infinity sum: " + length);
+		//Length of an ellipse approximated (Better then the "infinite sum" formula for some reason)
 		double approxLength = 0;
 		approxLength = Math.PI*(vR + hR)*(1 + ((3*x)/(10 + Math.sqrt(4 - 3*x))));
-		
 		System.out.println("Length calculated by Approx: " + approxLength);
 		return approxLength;
 	}
@@ -92,16 +83,8 @@ public class Ellipse extends Curve{
 	}
 	@Override
 	protected ArrayList<Point2D> getPlot(int subPoints) {
-//		System.out.println("Passed subpoints " + subPoints);
-//		subPoints *= 10;
-//		if(subPoints == currentSubPoints){
-//			return plot;
-//		}
-//		else{
-//			currentSubPoints = subPoints;
 			calcPlot();
 			return plot;
-//		}
 		
 	}
 	
