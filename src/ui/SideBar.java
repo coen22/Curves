@@ -107,8 +107,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     private JPanel controls;
 
     /**
-     * An array of string to hold the curve info: Name; Area; Length; Number Of control points; Zoom
-     * Level
+     * An array of string to hold the curve info: Name; Area; Length; Number Of
+     * control points; Zoom Level
      *
      */
     private String[] curveInfo;
@@ -310,8 +310,10 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                     if (e.getSource() == comboArea) {
                         if ("Shoe Lace Area".equals((String) comboArea.getSelectedItem())) {
                             fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SHOELACE_AREA));
+                            comboArea.setSelectedItem("Shoe Lace Area");
                         } else if ("Exact Area Cubic".equals((String) comboArea.getSelectedItem())) {
                             fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
+                            comboArea.setSelectedItem("Exact Area Cubic");
                         }
                     }
                 }
@@ -338,15 +340,19 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                             switch ((String) comboLength.getSelectedItem()) {
                                 case "Romberg Arclength":
                                     fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.ROMBERG_ARCLENGTH));
+                                    comboLength.setSelectedItem("Romberg Arclength");
                                     break;
                                 case "Simpons Arclength":
                                     fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.SIMPSON_ARCLENGTH));
+                                    comboLength.setSelectedItem("Simpons Arclength");
                                     break;
                                 case "Pythagorean Arclength":
                                     fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.PYTHAGOREAN_ARCLENGTH));
+                                    comboLength.setSelectedItem("Pythagorean Arclength");
                                     break;
                                 case "Richson Extrapolation Arclength":
                                     fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH));
+                                    comboLength.setSelectedItem("Richson Extrapolation Arclength");
                                     break;
                                 default:
                                     System.out.println("Error in selection");
