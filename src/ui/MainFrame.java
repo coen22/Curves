@@ -215,7 +215,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
             System.out.println("Closing Curve");
         }
         CONTROLLER.closeCurve(e.getCurveID());
-        updateG();
+        update();
     }
 
     @Override

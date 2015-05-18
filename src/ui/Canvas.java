@@ -34,8 +34,8 @@ import ui.events.GuiEventsOpen;
 import ui.events.GuiEventsRefresh;
 
 /**
- * The canvas in which to draw various elements of the UI, mostly focusing on the graphical side of
- * things as well intuitive controls
+ * The canvas in which to draw various elements of the UI, mostly focusing on
+ * the graphical side of things as well intuitive controls
  *
  * @author Kareem Horstink
  * @version 0.8b
@@ -132,7 +132,8 @@ public class Canvas extends JPanel implements ActionListener {
     private final boolean DEBUG = false;
 
     /**
-     * Creates a new canvas and sets the default zoom level as well the units to be used by the grid
+     * Creates a new canvas and sets the default zoom level as well the units to
+     * be used by the grid
      *
      * @param zoom The current zoom level
      * @param units The units to be shown on the grid
@@ -278,6 +279,7 @@ public class Canvas extends JPanel implements ActionListener {
             } else {
                 setZoom(Math.abs(e.getPreciseWheelRotation() * 1.05 * getZoom()));
             }
+            fireEvent(new GuiEventsRefresh(this));
         });
 
     }
@@ -396,7 +398,7 @@ public class Canvas extends JPanel implements ActionListener {
     private void colorPicker() {
         Random r = new Random();
         while (COLORS.size() != curves.size()) {
-            COLORS.add(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
+            COLORS.add(new Color(100 + r.nextInt(155), 100 + r.nextInt(155), 100 + r.nextInt(155)));
         }
     }
 
@@ -544,7 +546,9 @@ public class Canvas extends JPanel implements ActionListener {
                         }
                     }
                 } else if (e.getActionCommand().equals("Close Curve")) {
-                    fireEvent(new GuiEventsClose(this, curveID));
+                    if (curveID != -1) {
+                        fireEvent(new GuiEventsClose(this, curveID));
+                    }
                 } else if (e.getActionCommand().equals("Open Curve")) {
                     fireEvent(new GuiEventsOpen(this, curveID));
                 }
