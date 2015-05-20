@@ -277,6 +277,8 @@ public class MainFrame extends JFrame implements GuiEventListner {
             handleMove((GuiEventsMove) e);
         } else if (GuiEventsCreate.class.equals(e.getClass())) {
             handleCreate((GuiEventsCreate) e);
+        } else if (GuiEventsConvert.class.equals(e.getClass())) {
+            handleConvert((GuiEventsConvert) e);
         } else if (GuiEventsCurrent.class.equals(e.getClass())) {
             handleCurrent((GuiEventsCurrent) e);
         } else if (GuiEventsDeleteC.class.equals(e.getClass())) {
