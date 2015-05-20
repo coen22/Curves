@@ -143,10 +143,26 @@ public class Controller {
                 System.out.println("Converted to Polyline");
             }
         } else if (TYPE == CUBIC_N) {
+    		ArrayList<Point2D> pts = new ArrayList<Point2D>();
+    		pts.addAll(c.points);
+        	Curve newC = new CubicSpline(pts.get(0), c.name, CubicSpline.NATURAL_SPLINE);
+    		for (Point2D p : pts) {
+    			if (p != pts.get(0))
+    				newC.add(p.getX(), p.getY());
+			}
+    		CURVES.set(index, newC);
             if (DEBUG) {
                 System.out.println("Converted to CubicLine");
             }
         } else if (TYPE == BEZIERCURVE) {
+        	ArrayList<Point2D> pts = new ArrayList<Point2D>();
+    		pts.addAll(c.points);
+        	Curve newC = new BezierCurve(pts.get(0), c.name);
+    		for (Point2D p : pts) {
+    			if (p != pts.get(0))
+    				newC.add(p.getX(), p.getY());
+			}
+    		CURVES.set(index, newC);
             if (DEBUG) {
                 System.out.println("Converted to Bezier Curve");
             }
