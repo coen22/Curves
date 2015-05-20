@@ -9,13 +9,17 @@ public class NumericalApproximation {
 	
 	public static final int SHOELACE_AREA = 1;
 	public static final int EXACT_AREA_CUBIC = 2;
+	public static final int EXACT_ELLIPSE_AREA = 3;
+	
 	public static final int ROMBERG_ARCLENGTH = 1;
 	public static final int SIMPSON_ARCLENGTH = 2;
 	public static final int PYTHAGOREAN_ARCLENGTH = 3;
 	public static final int RICHARDSON_EXTRAPOLATION_ARCLENGTH = 4;
+	public static final int ELLIPSE_ARCLENGTH_EXACT = 5;
 	
 	private static final int ROMBERG_MAX = 8;
 	private static final int SIMPSON_N = 30;
+	private static final int RICHARDSON_N = 10;
 	
 	private static Evaluateable localCurve;
 
@@ -27,6 +31,10 @@ public class NumericalApproximation {
 		else if (curve.areaAlgorithm == SHOELACE_AREA){
 			if (DEBUG)System.out.println("shoelace");
 			return Math.abs(shoeLaceArea(curve));
+		}
+		else if (curve.areaAlgorithm == EXACT_ELLIPSE_AREA){
+			if (DEBUG)System.out.println("ellipse area");
+			return Math.abs(exactEllipseArea(curve));
 		}
 		return Double.NaN;
 	}
@@ -46,7 +54,11 @@ public class NumericalApproximation {
 		}
 		else if (curve.arcLengthAlgorithm == RICHARDSON_EXTRAPOLATION_ARCLENGTH){
 			if (DEBUG)System.out.println("richardson");
-			return richardsonExtrapolation(curve, 10);
+			return richardsonExtrapolation(curve, RICHARDSON_N);
+		}
+		else if (curve.arcLengthAlgorithm == ELLIPSE_ARCLENGTH_EXACT){
+			if (DEBUG)System.out.println("ellipse length");
+			return exactEllipseLength(curve);
 		}
 		return Double.NaN;
 	}
@@ -197,5 +209,20 @@ public class NumericalApproximation {
 					+ Math.pow(listOfPoints.get(i).getY()- listOfPoints.get(i - 1).getY(), 2));
 		}
 		return length;
+	}
+	
+	private static double exactEllipseLength(Curve curve){
+		Ellipse local = (Ellipse)curve;
+		
+		//Length of an ellipse calculated exactly using an "infinite sum" formula
+		double vR = local.calc_vR();
+		double hR = local.calc_hR();
+		double x = (Math.pow((hR - vR), 2))/(Math.pow((vR + hR), 2));
+		return Math.PI*(hR + vR)*(1 + (1/4)*x + (1/64)*Math.pow(x, 2) + (1/256)*Math.pow(x, 3) + (25/16384)*Math.pow(x, 4));
+	}
+	
+	private static double exactEllipseArea(Curve curve){
+		Ellipse local = (Ellipse)curve;
+		return Math.PI*local.calc_hR()*local.calc_vR();
 	}
 }
