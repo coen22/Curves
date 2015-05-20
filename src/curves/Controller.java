@@ -130,6 +130,36 @@ public class Controller {
             }
         }
     }
+    
+    public void convertCurveToType(int index, int TYPE) {
+    	Curve c = CURVES.get(index);
+    	if (TYPE == POLYLINE) {
+    		Curve newC = new PolyLine(null, c.name);
+    		ArrayList<Point2D> pts = new ArrayList<Point2D>();
+    		pts.addAll(c.points);
+    		newC.points = pts;
+    		CURVES.set(index, newC);
+            if (DEBUG) {
+                System.out.println("Converted to Polyline");
+            }
+        } else if (TYPE == CUBIC_N) {
+            if (DEBUG) {
+                System.out.println("Converted to CubicLine");
+            }
+        } else if (TYPE == BEZIERCURVE) {
+            if (DEBUG) {
+                System.out.println("Converted to Bezier Curve");
+            }
+        } else if (TYPE == BEZIERSPLINE) {
+            if (DEBUG) {
+                System.out.println("Converted to Bezier Spline");
+            }
+        } else if (TYPE == BEZIERSPLINECOLINEAR) {
+            if (DEBUG) {
+                System.out.println("Converted to Bezier Spline Colinear");
+            }
+        }
+    }
 
     public void createEllipse(double x, double y, double z, double w, String name) {
         CURVES.add(new Ellipse(x, y, z, w, name, 0));

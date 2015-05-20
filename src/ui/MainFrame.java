@@ -1,15 +1,19 @@
 package ui;
 
 import curves.Controller;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
+
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+
 import ui.events.GuiEventsAreaChange;
+import ui.events.GuiEventsConvert;
 import ui.events.GuiEventsLengthChange;
 import ui.events.GuiEventListner;
 import ui.events.GuiEvents;
@@ -165,6 +169,14 @@ public class MainFrame extends JFrame implements GuiEventListner {
         } else {
             System.out.println("Error");
         }
+    }
+    
+    public void handleConvert(GuiEventsConvert e) {
+        if (DEBUG) {
+            System.out.println("Converting");
+        }
+        CONTROLLER.convertCurveToType(e.getCurveID(), e.getType());
+        updateG();
     }
     
     @Override

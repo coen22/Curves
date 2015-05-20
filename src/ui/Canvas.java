@@ -1,6 +1,7 @@
 package ui;
 
 import curves.Controller;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -18,15 +19,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+
 import ui.events.GuiEventListner;
 import ui.events.GuiEvents;
 import ui.events.GuiEventsAdd;
 import ui.events.GuiEventsClose;
+import ui.events.GuiEventsConvert;
 import ui.events.GuiEventsCreate;
 import ui.events.GuiEventsDeleteP;
 import ui.events.GuiEventsMove;
@@ -163,6 +167,9 @@ public class Canvas extends JPanel implements ActionListener {
         menuItem.addActionListener(this);
         popup1.add(menuItem);
         menuItem = new JMenuItem("Open Curve");
+        menuItem.addActionListener(this);
+        popup1.add(menuItem);
+        menuItem = new JMenuItem("Change Curve");
         menuItem.addActionListener(this);
         popup1.add(menuItem);
 
@@ -551,6 +558,33 @@ public class Canvas extends JPanel implements ActionListener {
                     }
                 } else if (e.getActionCommand().equals("Open Curve")) {
                     fireEvent(new GuiEventsOpen(this, curveID));
+                } else if (e.getActionCommand().equals("Change Curve")){
+                	String optionSelected = (String) JOptionPane.showInputDialog(this, "Change Curve Type to:", "Change Curve", JOptionPane.QUESTION_MESSAGE, null, new String[]{
+                            "PolyLine",
+                            "Cubic Line Natural",
+                            "Bezier Curve",
+                            "Bezier Spline",
+                            "Bezier Spline Colinear"
+                        }, null);
+                	if (optionSelected != null) {
+                		switch (optionSelected) {
+                        case "PolyLine":
+                            fireEvent(new GuiEventsConvert(this, curveID, Controller.POLYLINE));
+                            break;
+                        case "Cubic Line Natural":
+                            fireEvent(new GuiEventsConvert(this, curveID, Controller.CUBIC_N));
+                            break;
+                        case "Bezier Curve":
+                            fireEvent(new GuiEventsConvert(this, curveID, Controller.BEZIERCURVE));
+                            break;
+                        case "Bezier Spline":
+                            fireEvent(new GuiEventsConvert(this, curveID, Controller.BEZIERSPLINE));
+                            break;
+                        case "Bezier Spline Colinear":
+                            fireEvent(new GuiEventsConvert(this, curveID, Controller.BEZIERSPLINECOLINEAR));
+                            break;
+                		}
+                	}
                 }
             } else {
                 if (e.getActionCommand().equals("Move point")) {
