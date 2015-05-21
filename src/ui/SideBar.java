@@ -200,6 +200,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      */
     protected void updateTableFull() {
         if (curveID < controlPoints.size()) {
+                    System.out.println("ello");
+
             List<Point2D> curve = controlPoints.get(curveID);
             int counter = 0;
             int rows = mod.getRowCount();
