@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import org.omg.CORBA.COMM_FAILURE;
 
 import ui.events.GuiEventsAreaChange;
 import ui.events.GuiEventsConvert;
@@ -99,6 +100,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
 
         if (amount > 0) {
             updateG();
+            CONTROLLER.setDefault(curveID);
             ArrayList tmpList = new ArrayList();
             for (int i = 0; i < amount; i++) {
                 tmpList.add(CONTROLLER.getCurveName(i));
@@ -106,7 +108,6 @@ public class MainFrame extends JFrame implements GuiEventListner {
             SIDE_BAR.setName((String[]) tmpList.toArray(new String[amount]));
             SIDE_BAR.setNumberOfCurve(amount);
 
-            
             SIDE_BAR.updateInfo(curveID,
                     new String[]{
                         CONTROLLER.getCurveName(curveID),

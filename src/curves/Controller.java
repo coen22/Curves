@@ -81,11 +81,13 @@ public class Controller {
     }
 
     /**
-     * Method to retrieve the plotting coordinates of each curve. NOTE THE DEFINITION OF SUB-POINTS!
+     * Method to retrieve the plotting coordinates of each curve. NOTE THE
+     * DEFINITION OF SUB-POINTS!
      *
      * @param curveIndex index of which curve to retrieve
-     * @param subPoints this number signifies the number of plotting points in-between each pair of
-     * control-points. The larger the number, the more fine-grained the curve plot will be.
+     * @param subPoints this number signifies the number of plotting points
+     * in-between each pair of control-points. The larger the number, the more
+     * fine-grained the curve plot will be.
      * @return
      */
     public ArrayList<Point2D> getCurvePlot(int curveIndex, int subPoints) {
@@ -130,39 +132,41 @@ public class Controller {
             }
         }
     }
-    
+
     public void convertCurveToType(int index, int TYPE) {
-    	Curve c = CURVES.get(index);
-    	if (TYPE == POLYLINE) {
-    		Curve newC = new PolyLine(null, c.name);
-    		ArrayList<Point2D> pts = new ArrayList<Point2D>();
-    		pts.addAll(c.points);
-    		newC.points = pts;
-    		CURVES.set(index, newC);
+        Curve c = CURVES.get(index);
+        if (TYPE == POLYLINE) {
+            Curve newC = new PolyLine(null, c.name);
+            ArrayList<Point2D> pts = new ArrayList<Point2D>();
+            pts.addAll(c.points);
+            newC.points = pts;
+            CURVES.set(index, newC);
             if (DEBUG) {
                 System.out.println("Converted to Polyline");
             }
         } else if (TYPE == CUBIC_N) {
-    		ArrayList<Point2D> pts = new ArrayList<Point2D>();
-    		pts.addAll(c.points);
-        	Curve newC = new CubicSpline(pts.get(0), c.name, CubicSpline.NATURAL_SPLINE);
-    		for (Point2D p : pts) {
-    			if (p != pts.get(0))
-    				newC.add(p.getX(), p.getY());
-			}
-    		CURVES.set(index, newC);
+            ArrayList<Point2D> pts = new ArrayList<Point2D>();
+            pts.addAll(c.points);
+            Curve newC = new CubicSpline(pts.get(0), c.name, CubicSpline.NATURAL_SPLINE);
+            for (Point2D p : pts) {
+                if (p != pts.get(0)) {
+                    newC.add(p.getX(), p.getY());
+                }
+            }
+            CURVES.set(index, newC);
             if (DEBUG) {
                 System.out.println("Converted to CubicLine");
             }
         } else if (TYPE == BEZIERCURVE) {
-        	ArrayList<Point2D> pts = new ArrayList<Point2D>();
-    		pts.addAll(c.points);
-        	Curve newC = new BezierCurve(pts.get(0), c.name);
-    		for (Point2D p : pts) {
-    			if (p != pts.get(0))
-    				newC.add(p.getX(), p.getY());
-			}
-    		CURVES.set(index, newC);
+            ArrayList<Point2D> pts = new ArrayList<Point2D>();
+            pts.addAll(c.points);
+            Curve newC = new BezierCurve(pts.get(0), c.name);
+            for (Point2D p : pts) {
+                if (p != pts.get(0)) {
+                    newC.add(p.getX(), p.getY());
+                }
+            }
+            CURVES.set(index, newC);
             if (DEBUG) {
                 System.out.println("Converted to Bezier Curve");
             }
@@ -293,12 +297,13 @@ public class Controller {
      * Returns the length of a curve/spline
      *
      * @param curveID The index of the curve/spline
-     * @return Returns the length of the curve/spline based on the selected method
+     * @return Returns the length of the curve/spline based on the selected
+     * method
      */
     public double curveLength(int curveID) {
         return CURVES.get(curveID).length(length);
     }
-    
+
     /**
      * Which Algorithm to use for find the area
      */
@@ -345,6 +350,16 @@ public class Controller {
      */
     public ArrayList getAllowedAlgorithmsLength(int index) {
         return CURVES.get(index).arcLengthAlgorithms;
+    }
+
+    /**
+     * Sets the current algorithms to the default one based on the line
+     *
+     * @param index The index of the line wanted
+     */
+    public void setDefault(int index) {
+        setArea(CURVES.get(index).areaAlgorithms.get(0));
+        setLength(CURVES.get(index).arcLengthAlgorithms.get(0));
     }
 
 }
