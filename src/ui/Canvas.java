@@ -143,7 +143,7 @@ public class Canvas extends JPanel implements ActionListener {
      * @param units The units to be shown on the grid
      */
     protected Canvas(double zoom, double units) {
-        setBackground(Color.gray);
+        setBackground(Color.DARK_GRAY);
         init();
         this.zoom = zoom;
         this.units = units;
