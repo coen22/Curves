@@ -107,8 +107,8 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     private JPanel controls;
 
     /**
-     * An array of string to hold the curve info: Name; Area; Length; Number Of
-     * control points; Zoom Level
+     * An array of string to hold the curve info: Name; Area; Length; Number Of control points; Zoom
+     * Level
      *
      */
     private String[] curveInfo;
@@ -316,12 +316,21 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 }
                 if (!updating2) {
                     if (e.getSource() == comboArea) {
-                        if ("Shoe Lace Area".equals((String) comboArea.getSelectedItem())) {
-                            fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SHOELACE_AREA));
-                            comboArea.setSelectedItem("Shoe Lace Area");
-                        } else if ("Exact Area Cubic".equals((String) comboArea.getSelectedItem())) {
-                            fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
-                            comboArea.setSelectedItem("Exact Area Cubic");
+                        if (null != (String) comboArea.getSelectedItem()) {
+                            switch ((String) comboArea.getSelectedItem()) {
+                                case "Shoe Lace Area":
+                                    fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.SHOELACE_AREA));
+                                    comboArea.setSelectedItem("Shoe Lace Area");
+                                    break;
+                                case "Exact Area Cubic":
+                                    fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
+                                    comboArea.setSelectedItem("Exact Area Cubic");
+                                    break;
+                                case "Exact Ellipse Area":
+                                    fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_ELLIPSE_AREA));
+                                    comboArea.setSelectedItem("Exact Ellipse Area");
+                                    break;
+                            }
                         }
                     }
                 }
@@ -362,6 +371,10 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                                     fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH));
                                     comboLength.setSelectedItem("Richson Extrapolation Arclength");
                                     break;
+                                case "Ellipse Arclength Exact":
+                                    fireEvent(new GuiEventsLengthChange(this, NumericalApproximation.ELLIPSE_ARCLENGTH_EXACT));
+                                    comboLength.setSelectedItem("Ellipse Arclength Exact");
+                                    break;
                                 default:
                                     System.out.println("Error in selection");
                                     break;
@@ -396,10 +409,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      * @param length
      */
     private void updateComboBox(ArrayList area, ArrayList length) {
-        System.out.println("ksks");
-
         if (curveID != -1) {
-            System.out.println("asdsadas");
             currentLineComboBox.setEnabled(true);
             comboArea.removeAllItems();
             if (area != null && !area.isEmpty()) {
@@ -412,6 +422,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                             break;
                         case NumericalApproximation.SHOELACE_AREA:
                             comboArea.addItem("Shoe Lace Area");
+                            break;
+                        case NumericalApproximation.EXACT_ELLIPSE_AREA:
+                            comboArea.addItem("Exact Ellipse Area");
                             break;
                         default:
                             System.out.println("Error");
@@ -436,6 +449,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                             break;
                         case NumericalApproximation.SIMPSON_ARCLENGTH:
                             comboLength.addItem("Simpons Arclength");
+                            break;
+                        case NumericalApproximation.ELLIPSE_ARCLENGTH_EXACT:
+                            comboLength.addItem("Ellipse Arclength Exact");
                             break;
                         default:
                             break;
@@ -486,14 +502,12 @@ public class SideBar extends JTabbedPane implements TableModelListener {
      * Update the info for the curve
      *
      * @param curveID The index of the current curve
-     * @param info The info from the curve: Name, Area, Length, Number Of
-     * Control points, Zoom level
+     * @param info The info from the curve: Name, Area, Length, Number Of Control points, Zoom level
      * @param area The allowed algorithms to find the area of the arc
      * @param length The allowed algorithms to find the length of the arc
      */
     protected void updateInfo(int curveID, String[] info, ArrayList area, ArrayList length) {
         updating2 = true;
-        System.out.println("Old: " + this.curveID + " New: " + curveID);
 
         if (this.curveID != curveID) {
             this.curveID = curveID;
