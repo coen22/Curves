@@ -369,8 +369,13 @@ public class Controller {
      * @param index The index of the line wanted
      */
     public void setDefault(int index) {
-        setArea(CURVES.get(index).areaAlgorithms.get(0));
-        setLength(CURVES.get(index).arcLengthAlgorithms.get(0));
+    	if (CURVES.get(index).areaAlgorithms.size() > 0){
+    		 setArea(CURVES.get(index).areaAlgorithms.get(0));
+    	}
+       
+    	if (CURVES.get(index).arcLengthAlgorithms.size() > 0){
+    		setLength(CURVES.get(index).arcLengthAlgorithms.get(0));
+    	}
     }
 
 }
