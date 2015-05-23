@@ -30,11 +30,7 @@ public class Ellipse extends Curve{
 		}
 		calcPlot(currentSubPoints);
 		
-		areaAlgorithms.add(NumericalApproximation.SHOELACE_AREA);
 		areaAlgorithms.add(NumericalApproximation.EXACT_ELLIPSE_AREA);
-		
-		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
-		arcLengthAlgorithms.add(NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH);
 		arcLengthAlgorithms.add(NumericalApproximation.ELLIPSE_ARCLENGTH_EXACT);
 	}
 

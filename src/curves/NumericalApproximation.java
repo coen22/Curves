@@ -10,6 +10,7 @@ public class NumericalApproximation {
 	public static final int SHOELACE_AREA = 1;
 	public static final int EXACT_AREA_CUBIC = 2;
 	public static final int EXACT_ELLIPSE_AREA = 3;
+	public static final int RICHARDSON_EXTRAPOLATION_AREA = 4;
 	
 	public static final int ROMBERG_ARCLENGTH = 1;
 	public static final int SIMPSON_ARCLENGTH = 2;
@@ -20,6 +21,7 @@ public class NumericalApproximation {
 	private static final int ROMBERG_MAX = 8;
 	private static final int SIMPSON_N = 30;
 	private static final int RICHARDSON_N = 10;
+	private static final int POLYLINE_APPROXIMATION_SUBDIVISIONS = 10;
 	
 	private static Evaluateable localCurve;
 
@@ -36,25 +38,29 @@ public class NumericalApproximation {
 			if (DEBUG)System.out.println("ellipse area");
 			return Math.abs(exactEllipseArea(curve));
 		}
+		else if (curve.areaAlgorithm == RICHARDSON_EXTRAPOLATION_AREA){
+			if (DEBUG)System.out.println("richardson area");
+			return Math.abs(richardsonArea(curve));
+		}
 		return Double.NaN;
 	}
 	
 	public static double calcArcLength(Curve curve){
 		if (curve.arcLengthAlgorithm == ROMBERG_ARCLENGTH){
-			if (DEBUG)System.out.println("romberg");
+			if (DEBUG)System.out.println("romberg length using exact formula");
 			return Math.abs(rombergArcLength(curve));
 		}
 		else if (curve.arcLengthAlgorithm == SIMPSON_ARCLENGTH){
-			if (DEBUG)System.out.println("simpson");
+			if (DEBUG)System.out.println("simpson length using exact formula");
 			return simpsonArcLength(curve);
 		}
 		else if (curve.arcLengthAlgorithm == PYTHAGOREAN_ARCLENGTH){
 			if (DEBUG)System.out.println("pythoagoras");
-			return pythagoreanLength(curve, 10);
+			return pythagoreanLength(curve, POLYLINE_APPROXIMATION_SUBDIVISIONS);
 		}
 		else if (curve.arcLengthAlgorithm == RICHARDSON_EXTRAPOLATION_ARCLENGTH){
-			if (DEBUG)System.out.println("richardson");
-			return richardsonExtrapolation(curve, RICHARDSON_N);
+			if (DEBUG)System.out.println("richardson length");
+			return richardsonLength(curve);
 		}
 		else if (curve.arcLengthAlgorithm == ELLIPSE_ARCLENGTH_EXACT){
 			if (DEBUG)System.out.println("ellipse length");
@@ -76,13 +82,12 @@ public class NumericalApproximation {
 		return tmpLength;
 	}
 	
-	
 	private static double rombergEvaluation(int piece, double lower, double higher, int n){
 		
 		double[][] rombergMatrix = new double[n][n];
 		
 		for (int i = 0; i < n; i++){
-			rombergMatrix[i][0] = trapezoidEvaluation(piece, lower, higher, (int)Math.pow(2, i));
+			rombergMatrix[i][0] = trapezoidArcLength(piece, lower, higher, (int)Math.pow(2, i));
 		}
 		double pow;
 		for (int i = 1; i < n; i++){
@@ -94,23 +99,7 @@ public class NumericalApproximation {
 		return rombergMatrix[n-1][n-1];
 	}
 	
-	public static double richardsonExtrapolation(Curve curve, int n) {
-		double[][] richardsonMatrix = new double[n][n];
-		
-		for (int i = 0; i < n; i++){
-			richardsonMatrix[i][0] = pythagoreanLength(curve, (int)Math.pow(2, i));
-		}
-		
-		for (int i = 1; i < n; i++){
-			for (int k = i; k < n; k++){
-				richardsonMatrix[k][i] = richardsonMatrix[k][i-1] + ((richardsonMatrix[k][i-1]-richardsonMatrix[k-1][i-1])/(Math.pow(2, i)-1));
-			}
-		}
-		
-		return richardsonMatrix[n-1][n-1];
-	}
-	
-	private static double trapezoidEvaluation(int piece, double lower, double higher, int n){
+	private static double trapezoidArcLength(int piece, double lower, double higher, int n){
 		double h = (higher-lower) / n;
 		double sum = 0;
 		
@@ -120,6 +109,123 @@ public class NumericalApproximation {
 			sum += localCurve.evaluateArcLengthFunction(piece, lower + (h*i));
 		}
 		return sum*h;
+	}
+	
+	private static double richardsonArea(Curve curve) {
+		double[][] richardsonMatrix = new double[RICHARDSON_N][RICHARDSON_N];
+		
+		for (int i = 0; i < RICHARDSON_N; i++){
+			richardsonMatrix[i][0] = polyLineArea(curve, (int)Math.pow(2, i));
+		}
+		
+		for (int i = 1; i < RICHARDSON_N; i++){
+			for (int k = i; k < RICHARDSON_N; k++){
+				richardsonMatrix[k][i] = richardsonMatrix[k][i-1] + ((richardsonMatrix[k][i-1]-richardsonMatrix[k-1][i-1])/(Math.pow(2, i)-1));
+			}
+		}
+		
+		return richardsonMatrix[RICHARDSON_N-1][RICHARDSON_N-1];
+	}
+	
+	private static double polyLineArea(Curve curve, int n) {
+		ArrayList<Point2D> plot = curve.getPlot(n);
+		double area = 0;
+		for (int i = 0; i < plot.size()-1; i++){
+			area += pointWiseArea(plot.get(i), plot.get(i+1));
+		}
+		return Math.abs(area);
+	}
+
+	private static double pointWiseArea(Point2D point1, Point2D point2) {
+		double subArea = 0;
+		
+		double x1 = point1.getX();
+		double x2 = point2.getX();
+		double y1 = point1.getY();
+		double y2 = point2.getY();
+		
+		double xdiff = x2-x1;
+		double midPointY = (y1+y2)/2;
+		
+//		System.out.println("xdiff, " + xdiff);
+//		System.out.println("midPointY, " + midPointY);
+		
+		if (x1 == x2){ //the x-values are the same, hence the area = 0
+//			System.out.println("zero");
+			return subArea;
+		}
+		else if (Math.signum(y1) == Math.signum(y2)){ //both points are either above or below the x-axis
+//			System.out.println("same");
+			if (Math.signum(y1) == 1){
+				subArea = xdiff*midPointY;
+//				System.out.println("above: " + subArea);
+			}
+			else if (Math.signum(y1) == -1){
+				subArea = xdiff*midPointY;
+//				System.out.println("below: " + subArea);
+			}
+		}
+		else if (y1 == 0 || y2 == 0){ //one of the points is on the x-axis
+//			System.out.println("one on x-axis");
+			if (Math.signum(y1) == 1){
+				subArea = xdiff*midPointY;
+//				System.out.println("y1 above, y2 zero: " + subArea);
+			}
+			else if (Math.signum(y1) == -1){
+				subArea = xdiff*midPointY;
+//				System.out.println("y1 below, y2 zero: " + subArea);
+			}
+			else if (Math.signum(y2) == 1){
+				subArea = xdiff*midPointY;
+//				System.out.println("y2 above, y1 zero: " + subArea);
+			}
+			else if (Math.signum(y2) == -1){
+				subArea = xdiff*midPointY;
+//				System.out.println("y2 below, y1 zero: " + subArea);
+			}
+		}
+		else { // one point is above, and one point is below the x-axis
+			double m = (y2-y1)/xdiff;
+			double c = y1 - x1*m;
+			double x3 = -c/m;
+//			System.out.println("intersect: " + x3);
+			
+			double xdiff1 = x3-x1;
+			double midPointY1 = (y1)/2;
+			
+			double xdiff2 = x2-x3;
+			double midPointY2 = (y2)/2;
+			
+			if (Math.signum(y1) == 1) {
+				subArea += xdiff1*midPointY1;
+				subArea += -xdiff2*midPointY2;
+//				System.out.println("first above, area: " + subArea);
+			}
+			else {
+				subArea += -xdiff1*midPointY1;
+				subArea += xdiff2*midPointY2;
+//				System.out.println("first below, area: " + subArea);
+			}
+		}
+		
+//		System.out.println("sub-area: " + subArea + "------------------\n");
+		return subArea;
+	}
+
+	private static double richardsonLength(Curve curve) {
+		double[][] richardsonMatrix = new double[RICHARDSON_N][RICHARDSON_N];
+		
+		for (int i = 0; i < RICHARDSON_N; i++){
+			richardsonMatrix[i][0] = pythagoreanLength(curve, (int)Math.pow(2, i));
+		}
+		
+		for (int i = 1; i < RICHARDSON_N; i++){
+			for (int k = i; k < RICHARDSON_N; k++){
+				richardsonMatrix[k][i] = richardsonMatrix[k][i-1] + ((richardsonMatrix[k][i-1]-richardsonMatrix[k-1][i-1])/(Math.pow(2, i)-1));
+			}
+		}
+		
+		return richardsonMatrix[RICHARDSON_N-1][RICHARDSON_N-1];
 	}
 	
 	private static double simpsonArcLength(Curve curve) {

@@ -8,10 +8,6 @@ public class BezierSpline extends Curve {
 
 	public BezierSpline(String name) {
 		super(name);
-		
-		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
-		arcLengthAlgorithms.add(NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH);
-		arcLengthAlgorithm = NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH;
 	}
 
 	@Override

@@ -33,12 +33,9 @@ public class CubicSpline extends Curve implements Evaluateable {
 	
 	private void algorithmDefinition(){
 		areaAlgorithms.add(NumericalApproximation.EXACT_AREA_CUBIC);
-		areaAlgorithms.add(NumericalApproximation.SHOELACE_AREA);
 		
 		arcLengthAlgorithms.add(NumericalApproximation.ROMBERG_ARCLENGTH);
 		arcLengthAlgorithms.add(NumericalApproximation.SIMPSON_ARCLENGTH);
-		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
-		arcLengthAlgorithms.add(NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH);
 	}
 	
 	@Override

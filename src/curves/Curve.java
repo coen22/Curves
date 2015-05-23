@@ -30,6 +30,12 @@ public abstract class Curve {
 		points = new ArrayList<Point2D>();
 		areaAlgorithms = new ArrayList<Integer>();
 		arcLengthAlgorithms = new ArrayList<Integer>();
+		
+		areaAlgorithms.add(NumericalApproximation.RICHARDSON_EXTRAPOLATION_AREA);
+		areaAlgorithms.add(NumericalApproximation.SHOELACE_AREA);
+		
+		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
+		arcLengthAlgorithms.add(NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH);
 	}
 	
 

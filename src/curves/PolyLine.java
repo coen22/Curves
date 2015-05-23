@@ -12,17 +12,8 @@ public class PolyLine extends Curve {
 	protected PolyLine(Point2D point, String name) {
         super(name);
         super.points.add(point);
-        algorithmDefinition();
         recalcAaA();
     }
-    
-    private void algorithmDefinition(){
-		areaAlgorithms.add(NumericalApproximation.SHOELACE_AREA);
-		areaAlgorithm = NumericalApproximation.SHOELACE_AREA;
-		
-		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
-		arcLengthAlgorithm = NumericalApproximation.PYTHAGOREAN_ARCLENGTH;
-	}
 
     @Override
     protected ArrayList<Point2D> getPlot(int interval) {

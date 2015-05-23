@@ -9,10 +9,6 @@ public class BezierCurve extends Curve {
 	public BezierCurve(Point2D point, String name){
 		super(name);
 		add(point.getX(), point.getY());
-		
-		arcLengthAlgorithms.add(NumericalApproximation.PYTHAGOREAN_ARCLENGTH);
-		arcLengthAlgorithms.add(NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH);
-		arcLengthAlgorithm = NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH;
 	}
 
 	public double length(int METHOD) {
@@ -21,8 +17,8 @@ public class BezierCurve extends Curve {
 	}
 
 	public double area(int METHOD) {
-		// TODO Auto-generated method stub
-		return 0;
+		areaAlgorithm = METHOD;
+		return NumericalApproximation.calcArea(this);
 	}
 
 	public ArrayList<Point2D> getPlot(int subPoints) {
