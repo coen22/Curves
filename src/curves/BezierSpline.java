@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BezierSpline extends Curve {
-
+	
 	public BezierSpline(String name) {
 		super(name);
 	}
@@ -18,7 +18,7 @@ public class BezierSpline extends Curve {
 
 		for (int i = 0; i < points.size() - ((closed) ? 2 : 3); i += 3) {
 			for (int j = 1; j <= interval; j++) {
-				plot.add(calculatePoint(i, j / (float) interval));
+				plot.add(calculatePoint(i, (double) (j / interval)));
 			}
 		}
 
@@ -32,7 +32,7 @@ public class BezierSpline extends Curve {
 	 * @param interval
 	 * @return a point on the curve
 	 */
-	protected Point2D calculatePoint(int i, float t) {
+	protected Point2D calculatePoint(int i, double t) {
 		double px = 0;
 		double py = 0;
 
@@ -46,6 +46,9 @@ public class BezierSpline extends Curve {
 
 	/**
 	 * the basic functions of the Bezier Spline
+	 * @param i the 
+	 * @param t
+	 * @return
 	 */
 	protected double basic(int i, double t) {
 		if (i == 0)
