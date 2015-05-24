@@ -7,11 +7,17 @@ public class SemiCircle extends CubicSpline {
 	private double radius;
 	private double intervals;
 	
+	/**
+	 * Makes a semi circle
+	 * @param (optional) is because of the inheritance
+	 * @param name of the curve 
+	 * @param type of cubic spline
+	 */
 	public SemiCircle(Point2D point, String name, int type) {
 		super(point, name, type);
 		points.clear();
 		
-		radius = 10;
+		radius = 1;
 		intervals = 10;
 		double delta = radius * 2 / intervals;
 		
@@ -32,9 +38,5 @@ public class SemiCircle extends CubicSpline {
 	 */
 	private double circleFunction(double x) {
 		return -Math.sqrt(radius*radius - x*x);
-	}
-	
-	public static void main(String[] args) {
-		SemiCircle s = new SemiCircle(new Point2D.Double(0,0), "tst", 0);
 	}
 }
