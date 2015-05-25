@@ -19,13 +19,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-
 import ui.events.GuiEventListner;
 import ui.events.GuiEvents;
 import ui.events.GuiEventsAdd;
@@ -488,11 +486,13 @@ public class Canvas extends JPanel implements ActionListener {
                     String optionSelected = (String) JOptionPane.showInputDialog(this, "Please Select a Line Type", "Line Type", JOptionPane.QUESTION_MESSAGE, null, new String[]{
                         "PolyLine",
                         "Cubic Line Natural",
+                        "B-Spline",
                         "Bezier Curve",
                         "Bezier Spline",
                         "Bezier Spline Colinear",
                         "Ellipse",
-                        "Bowl"
+                        "Bowl - GA",
+                        "Bowl - SemiCircle"
                     }, null);
                     /*
                      *Fires the currect event based on what was selected
@@ -517,6 +517,12 @@ public class Canvas extends JPanel implements ActionListener {
                                 case "Bezier Spline Colinear":
                                     fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BEZIERSPLINECOLINEAR}, name));
                                     break;
+                                case "B-Spline":
+                                    fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BSPLINE}, name));
+                                    break;
+                                case "Bowl - SemiCircle":
+                                    fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BOWLSC}, name));
+                                    break;
                                 case "Ellipse":
                                     String numbers = JOptionPane.showInputDialog(this, "Enter Coordiante", "0.0, 0.0, 0.0, 0.0");
                                     try {
@@ -536,12 +542,12 @@ public class Canvas extends JPanel implements ActionListener {
                                         System.out.println("Please enter a proper location " + error);
                                     }
                                     break;
-                                case "Bowl":
+                                case "Bowl - GA":
                                     String length = JOptionPane.showInputDialog(this, "Enter the target length", "0.0");
                                     try {
                                         length = length.replace(" ", "");
                                         double len = Double.valueOf(length);
-                                        fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BOWL, len}, name));
+                                        fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BOWLGA, len}, name));
                                     } catch (Exception error) {
                                         System.out.println("Please enter a proper location " + error);
                                         curveID--;

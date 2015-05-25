@@ -38,14 +38,25 @@ public class Controller {
     public static final int BEZIERSPLINECOLINEAR = 33;
 
     /**
-     * The variable to set the constructed line to be a bowl
+     * The variable to set the constructed line to be a Bspline
      */
-    public static final int BOWL = 41;
+    public static final int BSPLINE = 34;
+
+    /**
+     * The variable to set the constructed line to be a bowl based on a GA
+     */
+    public static final int BOWLGA = 41;
+
+    /**
+     * The variable to set the constructed line to be a bowl based on a semi
+     * circle
+     */
+    public static final int BOWLSC = 42;
 
     /**
      * The variable to set the constructed line to be a ellipse
      */
-    public static final int ELLIPSE = 41;
+    public static final int ELLIPSE = 51;
 
     /**
      * List of the all the curves
@@ -130,7 +141,19 @@ public class Controller {
             if (DEBUG) {
                 System.out.println("Bezier Spline Colinear Created");
             }
+        } else if (TYPE == BSPLINE) {
+            CURVES.add(new BSpline(name));
+            CURVES.get(CURVES.size() - 1).add(x, y);
+            if (DEBUG) {
+                System.out.println("Polyline Created");
+            }
+        } else if (TYPE == BOWLSC) {
+            createBowlSC(x, y, name);
+            if (DEBUG) {
+                System.out.println("Bowl-SC Created");
+            }
         }
+
     }
 
     public void convertCurveToType(int index, int TYPE) {
@@ -199,8 +222,15 @@ public class Controller {
         }
     }
 
-    public void createBowl(double length, String name) {
+    public void createBowlGA(double length, String name) {
         CURVES.add(new GenitorBowl(name, length));
+        if (DEBUG) {
+            System.out.println("Bowl Created");
+        }
+    }
+
+    public void createBowlSC(double x, double y, String name) {
+        CURVES.add(new SemiCircle(new Point2D.Double(x, y), name, CubicSpline.NATURAL_SPLINE));
         if (DEBUG) {
             System.out.println("Bowl Created");
         }

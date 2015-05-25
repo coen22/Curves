@@ -74,7 +74,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
      * Default constructor
      */
     public MainFrame() {
-        setTitle("Dem Curves");
+        setTitle("Curves");
         CONTROLLER = new Controller();
         CANVAS = new Canvas(1, 1);
         CANVAS.setGridspacing(100);
@@ -98,7 +98,6 @@ public class MainFrame extends JFrame implements GuiEventListner {
 
         if (amount > 0) {
             updateG();
-//            CONTROLLER.setDefault(curveID);
             ArrayList tmpList = new ArrayList();
             for (int i = 0; i < amount; i++) {
                 tmpList.add(CONTROLLER.getCurveName(i));
@@ -136,7 +135,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         int amount = CONTROLLER.amountOfCurves();
         ArrayList tmpList = new ArrayList();
         for (int i = 0; i < amount; i++) {
-            tmpList.add(CONTROLLER.getCurvePlot(i, (int) (10 * CANVAS.getZoom())));
+            tmpList.add(CONTROLLER.getCurvePlot(i, (int) (30 * CANVAS.getZoom())));
         }
 
         if (amount > 0) {
@@ -167,7 +166,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
 
             update();
         } else if (e.getInfo().length == 4) {
-            CONTROLLER.createBowl(e.getInfo()[3], e.getName());
+            CONTROLLER.createBowlGA(e.getInfo()[3], e.getName());
             CONTROLLER.setDefault(curveID);
             update();
         } else if (e.getInfo().length == 7) {

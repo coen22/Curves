@@ -405,6 +405,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
     }
 
     /**
+     * Updates the content of the combo boxes
      *
      * @param area
      * @param length

@@ -89,7 +89,7 @@ public class BezierSplineColinear extends BezierSpline {
 	 * @return the index of the new point
 	 */
 	protected int add(double x, double y) {
-		System.out.println("Adding more points and stuff");
+//		System.out.println("Adding more points and stuff");
 		
 		if (points.isEmpty()) {
 			points.add(new Point2D.Double(x, y));
