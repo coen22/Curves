@@ -320,7 +320,7 @@ public class NumericalApproximation {
 	private static double exactEllipseLength(Curve curve){
 		Ellipse local = (Ellipse)curve;
 		
-		//Length of an ellipse calculated exactly using an "infinite sum" formula
+		//Length of an ellipse is approximated using a formula by Ramanujan
 		double vR = local.calc_vR();
 		double hR = local.calc_hR();
 		double x = (Math.pow((hR - vR), 2))/(Math.pow((vR + hR), 2));
