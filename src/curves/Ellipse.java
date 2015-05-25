@@ -14,6 +14,15 @@ public class Ellipse extends Curve{
 	private double d;
 	private int currentSubPoints;
 	
+	/**
+	 * The constructor which creates the ellipse
+	 * @param a		The a variable in the formula x(t) = a cos(b*t)
+	 * @param b		The b variable in the formula x(t) = a cos(b*t) 
+	 * @param c		The c variable in the formula y(t) = c sin(d*t)
+	 * @param d		The d variable in the formula y(t) = c sin(d*t)
+	 * @param name	The name of the curve
+	 * @param type	int that indicates the type of the curve
+	 */
 	public Ellipse(double a, double b, double c, double d, String name, int type) {
 		super(name);
 		this.type = type;
@@ -34,6 +43,12 @@ public class Ellipse extends Curve{
 		arcLengthAlgorithms.add(NumericalApproximation.ELLIPSE_ARCLENGTH_EXACT);
 	}
 
+	/**
+	 * Calculates the points for the plot Arraylist
+	 * @param subPoints		The amount of subpoints creates the interval on which
+	 * the points should be created
+	 * It calls calcX and calcY to create a new Point2D in the arraylist plot
+	 */
 	private void calcPlot(int subPoints){
 		double interval = (2*Math.PI)/((double)(4*subPoints));
 		
@@ -44,19 +59,35 @@ public class Ellipse extends Curve{
 		
 	}
 	
+	/**
+	 * This calculates the x(t) with the formula a*cos(b*t)
+	 * @param t		The t that needs to be calculated
+	 * @return		returns the x(t) on that point
+	 */
 	private double calcX(double t){
 		return (a * Math.cos(b * t));
 	}
 	
+	/**
+	 * This calculates the y(t) with the formula x*sin(d*t)
+	 * @param t		The t that needs to be calculated
+	 * @return		returns the y(t) on that point
+	 */
 	private double calcY(double t){
 		return (c * Math.sin(d * t));
 	}
 	
+	/**
+	 * @return	Returns the horizontal radius
+	 */
 	double calc_hR(){
 		double hR = c;
 		return hR;
 	}
 	
+	/**
+	 * @return	Returns the vertical radius
+	 */
 	double calc_vR(){
 		double vR = a;
 		return vR;
