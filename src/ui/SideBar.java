@@ -428,6 +428,9 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                         case NumericalApproximation.EXACT_ELLIPSE_AREA:
                             comboArea.addItem("Exact Ellipse Area");
                             break;
+                        case NumericalApproximation.RICHARDSON_EXTRAPOLATION_AREA:
+                            comboArea.addItem("Richardson Extrapolation Area");
+                            break;
                         default:
                             System.out.println("Error - Update Combo Box");
                             break;
@@ -471,6 +474,12 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                 case "Exact Area Cubic":
                     fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_AREA_CUBIC));
                     comboArea.setSelectedItem("Exact Area Cubic");
+                    break;
+                case "Exact Ellipse Area":
+                    fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_ELLIPSE_AREA));
+                    break;
+                case "Richardson Extrapolation Area":
+                    fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.RICHARDSON_EXTRAPOLATION_AREA));
                     break;
             }
         }
