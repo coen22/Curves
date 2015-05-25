@@ -156,6 +156,12 @@ public class Controller {
 
     }
 
+    /**
+     * Converts one type of curve to another
+     *
+     * @param index The index of the current curve
+     * @param TYPE The type of curve to transform it into
+     */
     public void convertCurveToType(int index, int TYPE) {
         Curve c = CURVES.get(index);
 
@@ -215,6 +221,15 @@ public class Controller {
         }
     }
 
+    /**
+     * Creates a Ellipse based on x(t) = a cos(b*t) and y(t) = c sin(d*t)
+     *
+     * @param x a
+     * @param y b
+     * @param z c
+     * @param w d
+     * @param name The name of the curve
+     */
     public void createEllipse(double x, double y, double z, double w, String name) {
         CURVES.add(new Ellipse(x, y, z, w, name, 0));
         if (DEBUG) {
@@ -222,6 +237,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Creates a bowl based on GA
+     *
+     * @param length The target length
+     * @param name The name of the curve
+     */
     public void createBowlGA(double length, String name) {
         CURVES.add(new GenitorBowl(name, length));
         if (DEBUG) {
@@ -229,6 +250,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Creates a bowl based on Semi - Circle
+     *
+     * @param x The x location
+     * @param y The y location
+     * @param name The name of the curve
+     */
     public void createBowlSC(double x, double y, String name) {
         CURVES.add(new SemiCircle(new Point2D.Double(x, y), name, CubicSpline.NATURAL_SPLINE));
         if (DEBUG) {
