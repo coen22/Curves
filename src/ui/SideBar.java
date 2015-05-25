@@ -428,7 +428,7 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                             comboArea.addItem("Exact Ellipse Area");
                             break;
                         default:
-                            System.out.println("Error");
+                            System.out.println("Error - Update Combo Box");
                             break;
                     }
                 }

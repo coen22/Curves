@@ -6,13 +6,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import org.omg.CORBA.COMM_FAILURE;
-
 import ui.events.GuiEventsAreaChange;
 import ui.events.GuiEventsConvert;
 import ui.events.GuiEventsLengthChange;
@@ -33,6 +30,7 @@ import ui.events.GuiEventsVisibility;
  * The main frame to put everything on
  *
  * @author Kareem Horstink
+ * @version 1.0
  */
 public class MainFrame extends JFrame implements GuiEventListner {
 
@@ -100,7 +98,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
 
         if (amount > 0) {
             updateG();
-            CONTROLLER.setDefault(curveID);
+//            CONTROLLER.setDefault(curveID);
             ArrayList tmpList = new ArrayList();
             for (int i = 0; i < amount; i++) {
                 tmpList.add(CONTROLLER.getCurveName(i));
@@ -165,15 +163,19 @@ public class MainFrame extends JFrame implements GuiEventListner {
         curveID++;
         if (e.getInfo().length == 3) {
             CONTROLLER.createCurve((int) e.getInfo()[2], e.getInfo()[0], e.getInfo()[1], e.getName());
+            CONTROLLER.setDefault(curveID);
+
             update();
         } else if (e.getInfo().length == 4) {
             CONTROLLER.createBowl(e.getInfo()[3], e.getName());
+            CONTROLLER.setDefault(curveID);
             update();
         } else if (e.getInfo().length == 7) {
             CONTROLLER.createEllipse(e.getInfo()[3], e.getInfo()[4], e.getInfo()[5], e.getInfo()[6], e.getName());
+            CONTROLLER.setDefault(curveID);
             update();
         } else {
-            System.out.println("Error");
+            System.out.println("Create line - Error");
         }
     }
 
@@ -262,6 +264,7 @@ public class MainFrame extends JFrame implements GuiEventListner {
         } else {
             SIDE_BAR.setCurveID(e.getCurveID(), CONTROLLER.getAllowedAlgorithmsArea(e.getCurveID()), CONTROLLER.getAllowedAlgorithmsLength(e.getCurveID()));
         }
+        CONTROLLER.setDefault(e.getCurveID());
         update();
     }
 

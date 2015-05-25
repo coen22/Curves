@@ -135,21 +135,21 @@ public class Controller {
 
     public void convertCurveToType(int index, int TYPE) {
         Curve c = CURVES.get(index);
-        
+
         boolean isClosed = false;
-        if(c.isClosed()){
-        	isClosed = true;
+        if (c.isClosed()) {
+            isClosed = true;
         }
-        
+
         ArrayList<Point2D> pts = new ArrayList<Point2D>();
-        
+
         if (TYPE == POLYLINE) {
-            Curve newC = new PolyLine(null, c.name);  
+            Curve newC = new PolyLine(null, c.name);
             pts.addAll(c.points);
             newC.points = pts;
             CURVES.set(index, newC);
-            if (isClosed){
-            	CURVES.get(index).setClosed(true);
+            if (isClosed) {
+                CURVES.get(index).setClosed(true);
             }
             if (DEBUG) {
                 System.out.println("Converted to Polyline");
@@ -163,8 +163,8 @@ public class Controller {
                 }
             }
             CURVES.set(index, newC);
-            if (isClosed){
-            	CURVES.get(index).setClosed(true);
+            if (isClosed) {
+                CURVES.get(index).setClosed(true);
             }
             if (DEBUG) {
                 System.out.println("Converted to CubicLine");
@@ -326,6 +326,9 @@ public class Controller {
      * @param area new value of area
      */
     public void setArea(int area) {
+        if (DEBUG) {
+            System.out.println("Setting area to: " + area);
+        }
         this.area = area;
     }
 
@@ -340,6 +343,9 @@ public class Controller {
      * @param length new value of length
      */
     public void setLength(int length) {
+        if (DEBUG) {
+            System.out.println("Setting length to: " + length);
+        }
         this.length = length;
     }
 
@@ -369,13 +375,16 @@ public class Controller {
      * @param index The index of the line wanted
      */
     public void setDefault(int index) {
-    	if (CURVES.get(index).areaAlgorithms.size() > 0){
-    		 setArea(CURVES.get(index).areaAlgorithms.get(0));
-    	}
-       
-    	if (CURVES.get(index).arcLengthAlgorithms.size() > 0){
-    		setLength(CURVES.get(index).arcLengthAlgorithms.get(0));
-    	}
+        if (DEBUG) {
+            System.out.println("Set algorthms to default value");
+        }
+        if (CURVES.get(index).areaAlgorithms.size() > 0) {
+            setArea(CURVES.get(index).areaAlgorithms.get(0));
+        }
+
+        if (CURVES.get(index).arcLengthAlgorithms.size() > 0) {
+            setLength(CURVES.get(index).arcLengthAlgorithms.get(0));
+        }
     }
 
 }
