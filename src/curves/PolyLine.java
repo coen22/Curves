@@ -20,6 +20,12 @@ public class PolyLine extends Curve {
         return points;
     }
     
+    @Override
+    protected void setPoint(int index, double x, double y) {
+		super.setPoint(index, x, y);
+		recalcAaA();
+	} 
+    
     public void setClosed(boolean closed) {
 		if (closed == true && super.isClosed() == false){//close
 			super.points.add(super.points.get(0));
