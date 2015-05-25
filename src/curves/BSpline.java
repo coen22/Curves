@@ -14,7 +14,7 @@ public class BSpline extends Curve {
 	public ArrayList<Point2D> getPlot(int interval) {
 		ArrayList<Point2D> plot = new ArrayList<Point2D>();
 
-		for (int i = 2; i < points.size() + ((closed) ? 2 : 1); i++) {
+		for (int i = 0; i < points.size() + ((closed) ? 0 : -1); i++) {
 			for (int j = 1; j <= interval; j++) {
 				plot.add(calcPoint(i, j / (float) interval));
 			}
@@ -34,7 +34,7 @@ public class BSpline extends Curve {
 		double px = 0;
 		double py = 0;
 
-		for (int j = -2; j < 2; j++) {
+		for (int j = 0; j < 4; j++) {
 			px += basic(j, t) * points.get(getInBounds(i + j)).getX();
 			py += basic(j, t) * points.get(getInBounds(i + j)).getY();
 		}
@@ -46,11 +46,11 @@ public class BSpline extends Curve {
 	 * the basic functions of the Bezier Spline
 	 */
 	private double basic(int i, float t) {
-		if (i == -2)
+		if (i == 0)
 			return (((-t + 3) * t - 3) * t + 1) / 6;
-		else if (i == -1)
+		else if (i == 1)
 			return (((3 * t - 6) * t) * t + 4) / 6;
-		else if (i == 0)
+		else if (i == 2)
 			return (((-3 * t + 3) * t + 3) * t + 1) / 6;
 		else
 			return (t * t * t) / 6;

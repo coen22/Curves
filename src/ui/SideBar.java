@@ -331,6 +331,10 @@ public class SideBar extends JTabbedPane implements TableModelListener {
                                     fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.EXACT_ELLIPSE_AREA));
                                     comboArea.setSelectedItem("Exact Ellipse Area");
                                     break;
+                                case "Richardson Extrapolation Area":
+                                    fireEvent(new GuiEventsAreaChange(this, NumericalApproximation.RICHARDSON_EXTRAPOLATION_AREA));
+                                    comboArea.setSelectedItem("Richardson Extrapolation Area");
+                                    break;
                             }
                         }
                     }
