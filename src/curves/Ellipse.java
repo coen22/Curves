@@ -106,7 +106,12 @@ public class Ellipse extends Curve{
 	}
 	@Override
 	protected ArrayList<Point2D> getPlot(int subPoints) {
+		subPoints *= 10;
+		if(subPoints < 1000){
+			subPoints = 1000;
+		}
 		calcPlot(subPoints);
+		System.out.println("Subpoints: " + subPoints);
 		return plot;
 	}
 	
