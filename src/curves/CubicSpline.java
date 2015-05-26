@@ -210,10 +210,10 @@ public class CubicSpline extends Curve implements Evaluateable {
 		
 		
 		//Gaussian elimination to find c coefficients
-//		if (XvectorK.length > 2){
-//			XvectorC = gaussianElimination(CMatrixX, XvectorK);
-//			YvectorC = gaussianElimination(CMatrixY, YvectorK);
-//		}
+		if (XvectorK.length > 2){
+			XvectorC = gaussianElimination(CMatrixX, XvectorK);
+			YvectorC = gaussianElimination(CMatrixY, YvectorK);
+		}
 		if (XvectorK.length > 2){
 			XvectorC = lsolve(CMatrixX, XvectorK);
 			YvectorC = lsolve(CMatrixY, YvectorK);
@@ -401,7 +401,7 @@ public class CubicSpline extends Curve implements Evaluateable {
 			}
 			double[] result = new double[b.length];
 			for (int i = 0; i < b.length; i++) {
-				result[i] = Math.round(matrix[i][matrix[0].length - 1] * 100.0) / 100.0;
+				result[i] = matrix[i][matrix[0].length - 1];
 			}
 			return result;
 		} else {
