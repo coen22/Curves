@@ -18,7 +18,7 @@ public class BezierSpline extends Curve {
 
 		for (int i = 0; i < points.size() - ((closed) ? 2 : 3); i += 3) {
 			for (int j = 1; j <= interval; j++) {
-				plot.add(calculatePoint(i, (double) (j / interval)));
+				plot.add(calculatePoint(i, (double) (j / (float)interval)));
 			}
 		}
 
