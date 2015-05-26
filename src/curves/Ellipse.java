@@ -50,12 +50,14 @@ public class Ellipse extends Curve{
 	 * It calls calcX and calcY to create a new Point2D in the arraylist plot
 	 */
 	private void calcPlot(int subPoints){
-		double interval = (2*Math.PI)/((double)(4*subPoints));
-		
+		double interval = (2*Math.PI)/((double)((double)4*(double)subPoints));
+//		System.out.println("subpoint: " + subPoints + ", t interval: " + interval);
+		plot = null;
 		plot = new ArrayList <Point2D>();
-		for(double t = 0; t <= 2*Math.PI; t += interval){
+		for(double t = 0; t < 2*Math.PI; t += interval){
 			plot.add(new Point2D.Double(calcX(t), calcY(t)));
 		}
+		plot.add(new Point2D.Double(calcX(0), calcY(0)));
 		
 	}
 	
