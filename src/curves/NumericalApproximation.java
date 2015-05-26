@@ -363,7 +363,7 @@ public class NumericalApproximation {
 	 * @param subDivisions
 	 * @return arc-length
 	 */
-	public static double pythagoreanLength(Curve curve, int subDivisions) {
+	private static double pythagoreanLength(Curve curve, int subDivisions) {
 		double length = 0;
 		
 		ArrayList<Point2D> listOfPoints = curve.getPlot(subDivisions);
