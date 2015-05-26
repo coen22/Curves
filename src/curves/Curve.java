@@ -51,50 +51,105 @@ public abstract class Curve {
 	 */
 	protected abstract ArrayList<Point2D> getPlot(int subPoints);
 
+	/**
+	 * returns the length of the curve
+	 * @param the method used, selected from NumericalApproximation Class
+	 * @return length
+	 */
 	protected double length(int METHOD) {
 		return Double.NaN;
 	}
 
+	/**
+	 * returns the area of the curve
+	 * @param the method used, selected from NumericalApproximation Class
+	 * @return area
+	 */
 	protected double area(int METHOD) {
 		return Double.NaN;
 	}
 
+	/**
+	 * validation if the curve is closed
+	 * @return
+	 */
 	protected boolean isClosed() {
 		return closed;
 	}
 
+	/**
+	 * changing the closed-state of the curve to close
+	 * @param closed
+	 */
 	protected void setClosed(boolean closed) {
 		this.closed = closed;
 	}
 
+	/**
+	 * setting the name
+	 * @param name
+	 */
 	protected void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * retrieving the name
+	 * @return name
+	 */
 	protected String getName() {
 		return name;
 	}
 
+	/**
+	 * adding a new point to the end of the curve
+	 * @param x-coordinate
+	 * @param y-coordinate
+	 * @return
+	 */
 	protected int add(double x, double y) {
 		this.points.add(new Point2D.Double(x, y));
 		return points.size() - 1;
 	}
 
+	/**
+	 * retrieves the number of control points the curve contains
+	 * @return
+	 */
 	protected int numberOfPoints() {
 		return points.size();
 	}
-
+	
+	/**
+	 * fetches the control points
+	 * @return
+	 */
 	protected List<Point2D> getControlPoints() {
 		return (List<Point2D>) points;
 	}
 
+	/**
+	 * removes a point from the control-point set
+	 * @param index of the to-be removed point
+	 * @return the point which was just removed
+	 */
 	protected Point2D removePoint(int index) {
 		return points.remove(index);
 	}
 
+	/**
+	 * setting the coordinates of a point
+	 * @param index of the point
+	 * @param x coordinate
+	 * @param y coordinate
+	 */
 	protected void setPoint(int index, double x, double y) {
 		points.get(index).setLocation(x, y);
 	}
 	
+	/**
+	 * method to return the conversion points, which are not identical to the control-points in all cases
+	 * @return
+	 */
 	protected abstract List<Point2D> getConversionPoints();
 }

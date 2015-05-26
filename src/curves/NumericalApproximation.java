@@ -25,7 +25,13 @@ public class NumericalApproximation {
 	
 	private static Evaluateable localCurve;
 
+	/**
+	 * calculates the area of the curve based solely on the curve as input
+	 * @param curve
+	 * @return area
+	 */
 	public static double calcArea(Curve curve){
+		if (DEBUG) System.out.println("algorithm: " + curve.areaAlgorithm);
 		if (curve.areaAlgorithm == EXACT_AREA_CUBIC){
 			if (DEBUG) System.out.println("exact area");
 			return Math.abs(exactCubicArea(curve));
@@ -45,6 +51,11 @@ public class NumericalApproximation {
 		return Double.NaN;
 	}
 	
+	/**
+	 * calculates the arc-length of the curve, based solely on the curve as input
+	 * @param curve
+	 * @return arc-length
+	 */
 	public static double calcArcLength(Curve curve){
 		if (curve.arcLengthAlgorithm == ROMBERG_ARCLENGTH){
 			if (DEBUG)System.out.println("romberg length using exact formula");
@@ -69,6 +80,11 @@ public class NumericalApproximation {
 		return Double.NaN;
 	}
 	
+	/**
+	 * specific method for the "evaluateable" functions, hence the arc-length equation can be evaluated. Uses romberg integration  
+	 * @param curve
+	 * @return the area
+	 */
 	private static double rombergArcLength(Curve curve) {
 		localCurve = (Evaluateable)curve;
 		double tmpLength = 0;
@@ -82,6 +98,14 @@ public class NumericalApproximation {
 		return tmpLength;
 	}
 	
+	/**
+	 * this method performs the romberg integration for arc-length on each actual piece of the spline
+	 * @param piece is the index of the piece to be used
+	 * @param lower bound
+	 * @param higher higher bound
+	 * @param n romberg limit, such as Rn,n
+	 * @return arc-length of piece
+	 */
 	private static double rombergEvaluation(int piece, double lower, double higher, int n){
 		
 		double[][] rombergMatrix = new double[n][n];
@@ -99,6 +123,14 @@ public class NumericalApproximation {
 		return rombergMatrix[n-1][n-1];
 	}
 	
+	/**
+	 * this method actually evaluates the arc-length function and uses the trapezoidal method with n sub-divisions
+	 * @param piece index
+	 * @param lower bound
+	 * @param higher bound
+	 * @param n number of sub-divisions
+	 * @return individual arc-length with n sub-divisions
+	 */
 	private static double trapezoidArcLength(int piece, double lower, double higher, int n){
 		double h = (higher-lower) / n;
 		double sum = 0;
@@ -111,6 +143,11 @@ public class NumericalApproximation {
 		return sum*h;
 	}
 	
+	/**
+	 * 
+	 * @param curve
+	 * @return
+	 */
 	private static double richardsonArea(Curve curve) {
 		double[][] richardsonMatrix = new double[RICHARDSON_N][RICHARDSON_N];
 		
@@ -147,48 +184,36 @@ public class NumericalApproximation {
 		double xdiff = x2-x1;
 		double midPointY = (y1+y2)/2;
 		
-//		System.out.println("xdiff, " + xdiff);
-//		System.out.println("midPointY, " + midPointY);
 		
 		if (x1 == x2){ //the x-values are the same, hence the area = 0
-//			System.out.println("zero");
 			return subArea;
 		}
 		else if (Math.signum(y1) == Math.signum(y2)){ //both points are either above or below the x-axis
-//			System.out.println("same");
 			if (Math.signum(y1) == 1){
 				subArea = xdiff*midPointY;
-//				System.out.println("above: " + subArea);
 			}
 			else if (Math.signum(y1) == -1){
 				subArea = xdiff*midPointY;
-//				System.out.println("below: " + subArea);
 			}
 		}
 		else if (y1 == 0 || y2 == 0){ //one of the points is on the x-axis
-//			System.out.println("one on x-axis");
 			if (Math.signum(y1) == 1){
 				subArea = xdiff*midPointY;
-//				System.out.println("y1 above, y2 zero: " + subArea);
 			}
 			else if (Math.signum(y1) == -1){
 				subArea = xdiff*midPointY;
-//				System.out.println("y1 below, y2 zero: " + subArea);
 			}
 			else if (Math.signum(y2) == 1){
 				subArea = xdiff*midPointY;
-//				System.out.println("y2 above, y1 zero: " + subArea);
 			}
 			else if (Math.signum(y2) == -1){
 				subArea = xdiff*midPointY;
-//				System.out.println("y2 below, y1 zero: " + subArea);
 			}
 		}
 		else { // one point is above, and one point is below the x-axis
 			double m = (y2-y1)/xdiff;
 			double c = y1 - x1*m;
 			double x3 = -c/m;
-//			System.out.println("intersect: " + x3);
 			
 			double xdiff1 = x3-x1;
 			double midPointY1 = (y1)/2;
@@ -199,16 +224,13 @@ public class NumericalApproximation {
 			if (Math.signum(y1) == 1) {
 				subArea += xdiff1*midPointY1;
 				subArea += -xdiff2*midPointY2;
-//				System.out.println("first above, area: " + subArea);
 			}
 			else {
 				subArea += -xdiff1*midPointY1;
 				subArea += xdiff2*midPointY2;
-//				System.out.println("first below, area: " + subArea);
 			}
 		}
 		
-//		System.out.println("sub-area: " + subArea + "------------------\n");
 		return subArea;
 	}
 

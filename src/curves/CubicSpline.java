@@ -6,9 +6,9 @@ import java.util.List;
 
 public class CubicSpline extends Curve implements Evaluateable {
 	public static final int NATURAL_SPLINE = 1;
-	public static final int CLAMPED_SPLINE = 2;
-	public static final int NOT_A_KNOT_SPLINE = 3;
 	public static final int CLOSED_SPLINE = 4;
+	
+	private static final double EPSILON = 1e-10;
 	
 	private double[][] Xcoefficients;
 	private double[][] Ycoefficients;
@@ -210,9 +210,13 @@ public class CubicSpline extends Curve implements Evaluateable {
 		
 		
 		//Gaussian elimination to find c coefficients
+//		if (XvectorK.length > 2){
+//			XvectorC = gaussianElimination(CMatrixX, XvectorK);
+//			YvectorC = gaussianElimination(CMatrixY, YvectorK);
+//		}
 		if (XvectorK.length > 2){
-			XvectorC = gaussianElimination(CMatrixX, XvectorK);
-			YvectorC = gaussianElimination(CMatrixY, YvectorK);
+			XvectorC = lsolve(CMatrixX, XvectorK);
+			YvectorC = lsolve(CMatrixY, YvectorK);
 		}
 		else {
 			XvectorC = XvectorK;
@@ -413,29 +417,56 @@ public class CubicSpline extends Curve implements Evaluateable {
 		}
 		return string;
 	}
-    
-    public static String printMatrix(double[][] matrix, String name){
-    	String string = name + ": \n";
-		for (int i = 0; i < matrix.length; i++){
-			for(int k = 0; k < matrix[0].length; k++){
-				string = string + matrix[i][k] + ", ";
-			}
-			string = string + "\n";
-		}
-		return string;
-    }
-    
-    public static String printVector(double[] vector, String name){
-    	String string = name + ":";
-		for (int i = 0; i < vector.length; i++){
-			string = string + "\n" + vector[i] ;
-		}
-		return string;
-    }
 
 	@Override
 	protected List<Point2D> getConversionPoints() {
 		return (List<Point2D>)this.points;
 	}
+	
+    // Gaussian elimination with partial pivoting
+    public static double[] lsolve(double[][] A, double[] b) {
+    	
+    	//http://introcs.cs.princeton.edu/java/95linear/GaussianElimination.java.html
+    	
+        int N  = b.length;
+
+        for (int p = 0; p < N; p++) {
+
+            // find pivot row and swap
+            int max = p;
+            for (int i = p + 1; i < N; i++) {
+                if (Math.abs(A[i][p]) > Math.abs(A[max][p])) {
+                    max = i;
+                }
+            }
+            double[] temp = A[p]; A[p] = A[max]; A[max] = temp;
+            double   t    = b[p]; b[p] = b[max]; b[max] = t;
+
+            // singular or nearly singular
+            if (Math.abs(A[p][p]) <= EPSILON) {
+                throw new RuntimeException("Matrix is singular or nearly singular");
+            }
+
+            // pivot within A and b
+            for (int i = p + 1; i < N; i++) {
+                double alpha = A[i][p] / A[p][p];
+                b[i] -= alpha * b[p];
+                for (int j = p; j < N; j++) {
+                    A[i][j] -= alpha * A[p][j];
+                }
+            }
+        }
+
+        // back substitution
+        double[] x = new double[N];
+        for (int i = N - 1; i >= 0; i--) {
+            double sum = 0.0;
+            for (int j = i + 1; j < N; j++) {
+                sum += A[i][j] * x[j];
+            }
+            x[i] = (b[i] - sum) / A[i][i];
+        }
+        return x;
+    }
 	
 }
