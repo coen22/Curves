@@ -342,11 +342,11 @@ public class NumericalApproximation {
 	private static double exactEllipseLength(Curve curve){
 		Ellipse local = (Ellipse)curve;
 		
-		//Length of an ellipse calculated exactly using an "infinite sum" formula
+		//Length of an ellipse is approximated using a formula by Ramanujan
 		double vR = local.calc_vR();
 		double hR = local.calc_hR();
 		double x = (Math.pow((hR - vR), 2))/(Math.pow((vR + hR), 2));
-		return Math.PI*(hR + vR)*(1 + (1/4)*x + (1/64)*Math.pow(x, 2) + (1/256)*Math.pow(x, 3) + (25/16384)*Math.pow(x, 4));
+		return Math.PI*(vR + hR)*(1 + (3*x)/(10 + Math.sqrt(4 - 3*x)));
 	}
 	
 	private static double exactEllipseArea(Curve curve){
