@@ -38,7 +38,7 @@ public class NumericalApproximation {
 		}
 		else if (curve.areaAlgorithm == SHOELACE_AREA){
 			if (DEBUG)System.out.println("shoelace");
-			return Math.abs(shoeLaceArea(curve));
+			return Math.abs(shoeLaceArea(curve, POLYLINE_APPROXIMATION_SUBDIVISIONS));
 		}
 		else if (curve.areaAlgorithm == EXACT_ELLIPSE_AREA){
 			if (DEBUG)System.out.println("ellipse area");
@@ -144,9 +144,9 @@ public class NumericalApproximation {
 	}
 	
 	/**
-	 * 
+	 * method utilizing richardson extrapolation to improve the poly-line approximation of the area
 	 * @param curve
-	 * @return
+	 * @return area
 	 */
 	private static double richardsonArea(Curve curve) {
 		double[][] richardsonMatrix = new double[RICHARDSON_N][RICHARDSON_N];
@@ -164,6 +164,12 @@ public class NumericalApproximation {
 		return richardsonMatrix[RICHARDSON_N-1][RICHARDSON_N-1];
 	}
 	
+	/**
+	 * calculates the polyline-approximation of the area
+	 * @param curve
+	 * @param n subdivisions
+	 * @return polyline area
+	 */
 	private static double polyLineArea(Curve curve, int n) {
 		ArrayList<Point2D> plot = curve.getPlot(n);
 		double area = 0;
@@ -173,6 +179,12 @@ public class NumericalApproximation {
 		return Math.abs(area);
 	}
 
+	/**
+	 *  calculates the area between two points, considering the four possibilities of dx/dt and dy/dt being positive and negative and then adding or subtracting area respectively
+	 * @param point1
+	 * @param point2
+	 * @return area-slice
+	 */
 	private static double pointWiseArea(Point2D point1, Point2D point2) {
 		double subArea = 0;
 		
@@ -234,6 +246,11 @@ public class NumericalApproximation {
 		return subArea;
 	}
 
+	/**
+	 * using richardson extrapolation to improve the poly-line approximation of the arc-length 
+	 * @param curve
+	 * @return length
+	 */
 	private static double richardsonLength(Curve curve) {
 		double[][] richardsonMatrix = new double[RICHARDSON_N][RICHARDSON_N];
 		
@@ -250,6 +267,11 @@ public class NumericalApproximation {
 		return richardsonMatrix[RICHARDSON_N-1][RICHARDSON_N-1];
 	}
 	
+	/**
+	 * similar to the romberg integration, simpson length uses the actual arc-length function of the curve
+	 * @param curve
+	 * @return arc-length
+	 */
 	private static double simpsonArcLength(Curve curve) {
 		localCurve = (Evaluateable)curve;
 		double tmpLength = 0;
@@ -263,6 +285,14 @@ public class NumericalApproximation {
 		return tmpLength;
 	}
 	
+	/**
+	 * evaluates a piece of the spline using simpson's integration
+	 * @param piece the index of the piece
+	 * @param lower lower bound
+	 * @param higher upper bound
+	 * @param n number of sub-divisions
+	 * @return the piece-wise arc-length
+	 */
 	private static double simpsonEvaluation(int piece, double lower, double higher, int n){
 		double h = (higher-lower) / n;
 		double sum = 0;
@@ -280,7 +310,11 @@ public class NumericalApproximation {
 		
 		return (sum * (h/3));
 	}
-	
+	/**
+	 * evaluates the exact area of the cubic spline using the derivatives which can be calculated using the polynomial
+	 * @param curve
+	 * @return area
+	 */
 	private static double exactCubicArea(Curve curve){
 		CubicSpline local = (CubicSpline)curve;
 		
@@ -298,14 +332,19 @@ public class NumericalApproximation {
 		return finalArea;
 	}
 	
-	private static  double shoeLaceArea(Curve curve) {
+	/**
+	 * shoe-lace algorithm for the area using a poly-line
+	 * @param curve
+	 * @return area
+	 */
+	private static  double shoeLaceArea(Curve curve, int subDivisions) {
 		double area = 0;
 
 		if (!curve.isClosed()){
 			return Double.NEGATIVE_INFINITY;
 		}
 			
-		ArrayList<Point2D> listOfPoints = curve.getPlot(curve.numberOfPoints());
+		ArrayList<Point2D> listOfPoints = curve.getPlot(subDivisions);
 		for (int i = 0; i < listOfPoints.size() - 1; i++) {
 			area += listOfPoints.get(i).getX() * listOfPoints.get(i + 1).getY()
 					- listOfPoints.get(i + 1).getX()
@@ -318,6 +357,12 @@ public class NumericalApproximation {
 		return Math.abs(area / 2);
 	}
 	
+	/**
+	 * using a poly-line approximation to measure the arc-length
+	 * @param curve
+	 * @param subDivisions
+	 * @return arc-length
+	 */
 	private static double pythagoreanLength(Curve curve, int subDivisions) {
 		double length = 0;
 		
@@ -339,6 +384,11 @@ public class NumericalApproximation {
 		return length;
 	}
 	
+	/**
+	 * specific method approximating the arc-length of an ellipse
+	 * @param curve
+	 * @return arc-length
+	 */
 	private static double exactEllipseLength(Curve curve){
 		Ellipse local = (Ellipse)curve;
 		
@@ -349,6 +399,11 @@ public class NumericalApproximation {
 		return Math.PI*(vR + hR)*(1 + (3*x)/(10 + Math.sqrt(4 - 3*x)));
 	}
 	
+	/**
+	 * specific method for the area of an ellipse
+	 * @param curve
+	 * @return area
+	 */
 	private static double exactEllipseArea(Curve curve){
 		Ellipse local = (Ellipse)curve;
 		return Math.PI*local.calc_hR()*local.calc_vR();
