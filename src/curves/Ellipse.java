@@ -9,9 +9,7 @@ public class Ellipse extends Curve{
 	private int type;
 	private ArrayList <Point2D> plot;
 	private double a;
-	private double b;
 	private double c;
-	private double d;
 	private int currentSubPoints;
 	
 	/**
@@ -23,15 +21,13 @@ public class Ellipse extends Curve{
 	 * @param name	The name of the curve
 	 * @param type	int that indicates the type of the curve
 	 */
-	public Ellipse(double a, double b, double c, double d, String name, int type) {
+	public Ellipse(double a, double c, String name, int type) {
 		super(name);
 		this.type = type;
 		this.a = a;
-		this.b = b;
 		this.c = c;
-		this.d = d;
 		
-		if( a >= 10 || b >= 10){
+		if( a >= 10 || c >= 10){
 			currentSubPoints = 10000;
 		}
 		else{
@@ -68,7 +64,7 @@ public class Ellipse extends Curve{
 	 * @return		returns the x(t) on that point
 	 */
 	private double calcX(double t){
-		return (a * Math.cos(b * t));
+		return (a * Math.cos(t));
 	}
 	
 	/**
@@ -77,7 +73,7 @@ public class Ellipse extends Curve{
 	 * @return		returns the y(t) on that point
 	 */
 	private double calcY(double t){
-		return (c * Math.sin(d * t));
+		return (c * Math.sin(t));
 	}
 	
 	/**

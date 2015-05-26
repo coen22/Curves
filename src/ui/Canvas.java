@@ -524,18 +524,16 @@ public class Canvas extends JPanel implements ActionListener {
                                     fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BOWLSC}, name));
                                     break;
                                 case "Ellipse":
-                                    String numbers = JOptionPane.showInputDialog(this, "Enter Numbers based on \n x(t) = a cos(b*t) and y(t) = c sin(d*t)", "3.0, 3.0, 3.0, 3.0");
+                                    String numbers = JOptionPane.showInputDialog(this, "Enter Numbers based on \n x(t) = a cos(t) and y(t) = c sin(t)", "3.0, 3.0");
                                     try {
                                         numbers = numbers.replace(" ", "");
                                         String split[] = numbers.split(",");
-                                        if (split.length == 4) {
+                                        if (split.length == 2) {
                                             double x = Double.valueOf(split[0]);
-                                            double y = Double.valueOf(split[1]);
-                                            double z = Double.valueOf(split[2]);
-                                            double w = Double.valueOf(split[3]);
-                                            fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.ELLIPSE, x, y, z, w}, name));
+                                            double z = Double.valueOf(split[1]);
+                                            fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.ELLIPSE, x, z}, name));
                                         } else {
-                                            JOptionPane.showMessageDialog(this, "Please input 4 numbers");
+                                            JOptionPane.showMessageDialog(this, "Please input 2 numbers");
                                             curveID--;
                                         }
                                     } catch (Exception error) {

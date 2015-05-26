@@ -230,8 +230,8 @@ public class Controller {
      * @param w d
      * @param name The name of the curve
      */
-    public void createEllipse(double x, double y, double z, double w, String name) {
-        CURVES.add(new Ellipse(x, y, z, w, name, 0));
+    public void createEllipse(double x, double z, String name) {
+        CURVES.add(new Ellipse(x, z, name, 0));
         if (DEBUG) {
             System.out.println("Ellipse Created");
         }

@@ -169,8 +169,8 @@ public class MainFrame extends JFrame implements GuiEventListner {
             CONTROLLER.createBowlGA(e.getInfo()[3], e.getName());
             CONTROLLER.setDefault(curveID);
             update();
-        } else if (e.getInfo().length == 7) {
-            CONTROLLER.createEllipse(e.getInfo()[3], e.getInfo()[4], e.getInfo()[5], e.getInfo()[6], e.getName());
+        } else if (e.getInfo().length == 5) {
+            CONTROLLER.createEllipse(e.getInfo()[3], e.getInfo()[4], e.getName());
             CONTROLLER.setDefault(curveID);
             update();
         } else {
