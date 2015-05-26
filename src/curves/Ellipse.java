@@ -41,6 +41,7 @@ public class Ellipse extends Curve{
 		
 		areaAlgorithms.add(NumericalApproximation.EXACT_ELLIPSE_AREA);
 		arcLengthAlgorithms.add(NumericalApproximation.ELLIPSE_ARCLENGTH_EXACT);
+		super.setClosed(true);
 	}
 
 	/**

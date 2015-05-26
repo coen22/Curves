@@ -18,6 +18,7 @@ public class GenitorBowl extends Curve{
 		population = new ArrayList<GenitorIndividual>();
 		generatePopulation(Math.abs(targetLength), NUMBER_OF_POINTS);
 		replicate();
+		System.out.println("best: " + population.get(0).getALRatio() + ", length: " + population.get(0).getElement().length(NumericalApproximation.ROMBERG_ARCLENGTH));
 	}
 	
 	private void replicate(){

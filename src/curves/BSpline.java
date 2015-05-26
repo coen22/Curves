@@ -19,6 +19,10 @@ public class BSpline extends Curve {
 				plot.add(calcPoint(i, j / (float) interval));
 			}
 		}
+		
+		if (super.isClosed()){
+			plot.add(plot.get(0));
+		}
 
 		return plot;
 	}
