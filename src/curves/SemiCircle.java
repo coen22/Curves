@@ -38,11 +38,12 @@ public class SemiCircle extends CubicSpline {
 		points.clear();
 		
 		radius = targetLength / Math.PI;
-		intervals = 10;
+		intervals = 50;
 		
 		recalculate();
 		
-		System.out.println(length(arcLengthAlgorithms.get(0)));
+		System.out.println("ratio: " + (Math.sqrt(area(NumericalApproximation.EXACT_AREA_CUBIC))/length(NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH)));
+		System.out.println("length: " + length(NumericalApproximation.RICHARDSON_EXTRAPOLATION_ARCLENGTH));
 	}
 	
 	public void recalculate() {
@@ -69,9 +70,5 @@ public class SemiCircle extends CubicSpline {
 	 */
 	private double circleFunction(double x) {
 		return -Math.sqrt(radius*radius - x*x);
-	}
-	
-	public static void main(String[] s) {
-		SemiCircle a = new SemiCircle("", 20);
 	}
 }
