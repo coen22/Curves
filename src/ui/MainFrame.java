@@ -30,7 +30,7 @@ import ui.events.GuiEventsVisibility;
  * The main frame to put everything on
  *
  * @author Kareem Horstink
- * @version 1.0
+ * @version 1.00
  */
 public class MainFrame extends JFrame implements GuiEventListner {
 
@@ -178,6 +178,10 @@ public class MainFrame extends JFrame implements GuiEventListner {
         }
     }
 
+    /**
+     * Handles the request to converts the line to another line
+     * @param e The event to be handled
+     */
     public void handleConvert(GuiEventsConvert e) {
         if (DEBUG) {
             System.out.println("Converting");
