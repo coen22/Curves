@@ -14,10 +14,8 @@ public class Ellipse extends Curve{
 	
 	/**
 	 * The constructor which creates the ellipse
-	 * @param a		The a variable in the formula x(t) = a cos(b*t)
-	 * @param b		The b variable in the formula x(t) = a cos(b*t) 
-	 * @param c		The c variable in the formula y(t) = c sin(d*t)
-	 * @param d		The d variable in the formula y(t) = c sin(d*t)
+	 * @param a		The a variable in the formula x(t) = a cos(t)
+	 * @param c		The c variable in the formula y(t) = c sin(t)
 	 * @param name	The name of the curve
 	 * @param type	int that indicates the type of the curve
 	 */
