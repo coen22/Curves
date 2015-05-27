@@ -111,13 +111,14 @@ public class Controller {
     private String checkName(String name) {
         boolean passed = true;
         while (passed) {
+            passed = false;
             if (CURVES.isEmpty()) {
                 return name;
             } else {
                 for (Curve CURVES1 : CURVES) {
                     if (CURVES1.getName().equals(name)) {
                         name = name + "i";
-                        passed = false;
+                        passed = true;
                     }
                     System.out.println("ello");
                 }
