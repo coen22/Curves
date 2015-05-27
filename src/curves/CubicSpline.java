@@ -22,16 +22,19 @@ public class CubicSpline extends Curve implements Evaluateable {
 	private double area;
 	private double length;
 
+	/**
+	 * constructor with a name, starting point and type
+	 * @param point
+	 * @param name
+	 * @param type
+	 */
 	public CubicSpline(Point2D point, String name, int type){
 		super(name);
 		add(point.getX(), point.getY());
 		this.type = type;
 		subDivisions = 1;
-		algorithmDefinition();
 		update();
-	}
-	
-	private void algorithmDefinition(){
+		
 		areaAlgorithms.add(NumericalApproximation.EXACT_AREA_CUBIC);
 		
 		arcLengthAlgorithms.add(NumericalApproximation.ROMBERG_ARCLENGTH);
@@ -45,6 +48,9 @@ public class CubicSpline extends Curve implements Evaluateable {
     	return returnPoint;
     }
 	
+	/**
+	 * updates all internal coefficients and calculations including area and arclength
+	 */
 	protected void update() {
 		calcCoefficients();
 		calcPlot();
@@ -52,6 +58,7 @@ public class CubicSpline extends Curve implements Evaluateable {
 		recalcAaA();
 	}
 	
+	@Override
 	protected double area(int method) {
 		if (method != areaAlgorithm){
 			areaAlgorithm = method;
@@ -69,18 +76,22 @@ public class CubicSpline extends Curve implements Evaluateable {
 		return this.length;
 	}
 	
+	/**
+	 * recalculates only the area and arclength
+	 */
 	private void recalcAaA(){
 		calcAreaCoefs();
 		this.area = NumericalApproximation.calcArea(this);
 		this.length = NumericalApproximation.calcArcLength(this);
 	}
 	
-       @Override
+    @Override
 	protected void setPoint(int index, double x, double y) {
 		super.setPoint(index, x, y);
 		update();
 	}
 	
+    @Override
 	public void setClosed(boolean closed) {
 		if (closed == true && super.isClosed() == false){
 			type = CLOSED_SPLINE;
@@ -93,6 +104,9 @@ public class CubicSpline extends Curve implements Evaluateable {
 		update();
 	}
 	
+    /**
+     * calculates the plot. This is based on a local variable subDivisions. The plot is calculated using the coefficients of the spline
+     */
 	private void calcPlot() {
 		ArrayList<Point2D> plottingPoints = new ArrayList<Point2D>();
 		
@@ -120,6 +134,7 @@ public class CubicSpline extends Curve implements Evaluateable {
 		this.plot = plottingPoints;
 	}
 
+	@Override
 	public ArrayList<Point2D> getPlot(int subPoints) {
 		if (subPoints == subDivisions){
 			return plot;
@@ -131,13 +146,16 @@ public class CubicSpline extends Curve implements Evaluateable {
 		}
 	}
 	
+	@Override
 	public int add(double x, double y){
 		int i = super.add(x, y);
 		update();
 		return i;
 	}
 	
-	//currently works for natural spline & closed
+	/**
+	 * this method calculates the actual coefficients of the spline and stores them in a 2D Double array. The c-coefficients are found using a matrix and gaussian elimination, the remainder numerically. 
+	 */
 	private void calcCoefficients(){
 		double[][] CMatrixX = new double[super.points.size()][super.points.size()];
 		double[][] CMatrixY = new double[super.points.size()][super.points.size()];
@@ -210,10 +228,10 @@ public class CubicSpline extends Curve implements Evaluateable {
 		
 		
 		//Gaussian elimination to find c coefficients
-		if (XvectorK.length > 2){
-			XvectorC = gaussianElimination(CMatrixX, XvectorK);
-			YvectorC = gaussianElimination(CMatrixY, YvectorK);
-		}
+//		if (XvectorK.length > 2){
+//			XvectorC = gaussianElimination(CMatrixX, XvectorK);
+//			YvectorC = gaussianElimination(CMatrixY, YvectorK);
+//		}
 		if (XvectorK.length > 2){
 			XvectorC = lsolve(CMatrixX, XvectorK);
 			YvectorC = lsolve(CMatrixY, YvectorK);
@@ -274,6 +292,9 @@ public class CubicSpline extends Curve implements Evaluateable {
 		return upper-lower;
 	}
 	
+	/**
+	 * this method calculates the coefficients of the polynomial representing the area which is the formula integral(y(t)*x'(t)dt). this is only possible because the x and y functions are polynomials and easily stored
+	 */
 	private void calcAreaCoefs(){
 		double[][] unintegratedCoefficients = new double[dYcoefficients.length][6];
 		
@@ -312,12 +333,7 @@ public class CubicSpline extends Curve implements Evaluateable {
 		
 	}
 	
-	public double evaluateSlope(int piece, double t){
-		double dx2 = dXcoefficients[piece][0] + t*(dXcoefficients[piece][1] + t*dXcoefficients[piece][2]);
-		double dy2 = dYcoefficients[piece][0] + t*(dYcoefficients[piece][1] + t*dYcoefficients[piece][2]);
-		return dy2/dx2;
-	}
-	
+	@Override
 	public double evaluateArcLengthFunction(int piece, double t){
 		double dx2 = dXcoefficients[piece][0] + t*(dXcoefficients[piece][1] + t*dXcoefficients[piece][2]);
 		double dy2 = dYcoefficients[piece][0] + t*(dYcoefficients[piece][1] + t*dYcoefficients[piece][2]);
@@ -326,6 +342,12 @@ public class CubicSpline extends Curve implements Evaluateable {
 		return Math.sqrt(dx2+dy2);
 	}
 	
+	/**
+	 * uses gaussian elimination to solve a matrix
+	 * @param A Matrix
+	 * @param b vector b
+	 * @return solution vector c
+	 */
 	public static double[] gaussianElimination(double[][] A, double[] b) {
 		if (A.length == b.length) {
 			double[][] matrix = new double[A.length][A[0].length + 1];
@@ -410,6 +432,7 @@ public class CubicSpline extends Curve implements Evaluateable {
 		return null;
 	}
 	
+	@Override
     public String toString(){
 		String string = "CubicSpline: ";
 		for (int i = 0; i < super.points.size(); i++){

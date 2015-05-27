@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * The controller which stores the curves and constructs the curves
  *
  * @author Kareem Horstink
- * @version 0.932
+ * @version 1.00
  */
 public class Controller {
 
@@ -48,8 +48,7 @@ public class Controller {
     public static final int BOWLGA = 41;
 
     /**
-     * The variable to set the constructed line to be a bowl based on a semi
-     * circle
+     * The variable to set the constructed line to be a bowl based on a semi circle
      */
     public static final int BOWLSC = 42;
 
@@ -92,17 +91,39 @@ public class Controller {
     }
 
     /**
-     * Method to retrieve the plotting coordinates of each curve. NOTE THE
-     * DEFINITION OF SUB-POINTS!
+     * Method to retrieve the plotting coordinates of each curve. NOTE THE DEFINITION OF SUB-POINTS!
      *
      * @param curveIndex index of which curve to retrieve
-     * @param subPoints this number signifies the number of plotting points
-     * in-between each pair of control-points. The larger the number, the more
-     * fine-grained the curve plot will be.
+     * @param subPoints this number signifies the number of plotting points in-between each pair of
+     * control-points. The larger the number, the more fine-grained the curve plot will be.
      * @return
      */
     public ArrayList<Point2D> getCurvePlot(int curveIndex, int subPoints) {
         return CURVES.get(curveIndex).getPlot(subPoints);
+    }
+
+    /**
+     * Check if names are already listed
+     *
+     * @param name The name to be checked
+     * @return The name return when its corrected
+     */
+    private String checkName(String name) {
+        boolean passed = true;
+        while (passed) {
+            if (CURVES.isEmpty()) {
+                return name;
+            } else {
+                for (Curve CURVES1 : CURVES) {
+                    if (CURVES1.getName().equals(name)) {
+                        name = name + "i";
+                        passed = false;
+                    }
+                    System.out.println("ello");
+                }
+            }
+        }
+        return name;
     }
 
     /**
@@ -114,6 +135,7 @@ public class Controller {
      * @param name The name of the curve/spline
      */
     public void createCurve(int TYPE, double x, double y, String name) {
+        name = checkName(name);
         if (TYPE == POLYLINE) {
             CURVES.add(new PolyLine(new Point2D.Double(x, y), name));
             if (DEBUG) {
@@ -222,12 +244,10 @@ public class Controller {
     }
 
     /**
-     * Creates a Ellipse based on x(t) = a cos(b*t) and y(t) = c sin(d*t)
+     * Creates a Ellipse based on x(t) = a cos(t) and y(t) = c sin(t)
      *
      * @param x a
-     * @param y b
      * @param z c
-     * @param w d
      * @param name The name of the curve
      */
     public void createEllipse(double x, double z, String name) {
@@ -366,8 +386,7 @@ public class Controller {
      * Returns the length of a curve/spline
      *
      * @param curveID The index of the curve/spline
-     * @return Returns the length of the curve/spline based on the selected
-     * method
+     * @return Returns the length of the curve/spline based on the selected method
      */
     public double curveLength(int curveID) {
         return CURVES.get(curveID).length(length);

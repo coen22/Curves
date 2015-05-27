@@ -7,6 +7,11 @@ package ui.events;
  */
 public class GuiEventsRefresh extends GuiEvents {
 
+    /**
+     * Constructor
+     *
+     * @param source The source of the event
+     */
     public GuiEventsRefresh(Object source) {
         super(source);
     }

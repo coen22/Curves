@@ -33,7 +33,7 @@ import ui.events.GuiEventsVisibility;
  * The sidebar which shows the data input grid and other controls
  *
  * @author Kareem Horstink
- * @version 0.5
+ * @version 1.00
  */
 public class SideBar extends JTabbedPane implements TableModelListener {
 
@@ -574,11 +574,6 @@ public class SideBar extends JTabbedPane implements TableModelListener {
         mod.addTableModelListener(this);
     }
 
-    /**
-     * A listener to check if the table has been changed
-     *
-     * @param e
-     */
     @Override
     public void tableChanged(TableModelEvent e) {
         if (!updating1) {

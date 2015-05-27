@@ -34,6 +34,10 @@ public class GenitorBowl extends Curve{
 		}
 	}
 
+	/**
+	 * inserts a new individual in a sorted fashion into the population using binary search
+	 * @param indiv individual to be inserted
+	 */
 	private void binaryInsert(GenitorIndividual indiv){
 		if (population.size() == 0){
 			population.add(indiv);
@@ -88,6 +92,7 @@ public class GenitorBowl extends Curve{
 		return false;
 	}
 	
+	@Override
 	public String toString(){
 		return "fittest: " + population.get(0).getALRatio();
 	}

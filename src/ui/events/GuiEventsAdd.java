@@ -13,7 +13,7 @@ public class GuiEventsAdd extends GuiEvents {
 
     /**
      * Creation of the event
-     * 
+     *
      * @param source The source of the event
      * @param info The information need for the creation of a new curve: x-coordinate; y-coordinate
      * @param curveID The curve for the point to be added
@@ -26,7 +26,7 @@ public class GuiEventsAdd extends GuiEvents {
 
     /**
      * Returns the needed info
-     * 
+     *
      * @return Returns the info of x-coordinate; y-coordinate
      */
     public double[] getInfo() {
@@ -35,7 +35,7 @@ public class GuiEventsAdd extends GuiEvents {
 
     /**
      * Gets the curve ID
-     * 
+     *
      * @return Returns an int that represent the curve ID
      */
     public int getCurveID() {
