@@ -520,7 +520,15 @@ public class Canvas extends JPanel implements ActionListener {
                                     fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BSPLINE}, name));
                                     break;
                                 case "Bowl - SemiCircle":
-                                    fireEvent(new GuiEventsCreate(this, new double[]{point.x, point.y, Controller.BOWLSC}, name));
+                                    String length1 = JOptionPane.showInputDialog(this, "Enter the target length", "0.0");
+                                    try {
+                                        length1 = length1.replace(" ", "");
+                                        double len = Double.valueOf(length1);
+                                        fireEvent(new GuiEventsCreate(this, new double[]{len, point.y, Controller.BOWLSC}, name));
+                                    } catch (Exception error) {
+                                        System.out.println("Please enter a proper location " + error);
+                                        curveID--;
+                                    }
                                     break;
                                 case "Ellipse":
                                     String numbers = JOptionPane.showInputDialog(this, "Enter Numbers based on \n x(t) = a cos(t) and y(t) = c sin(t)", "3.0, 3.0");

@@ -120,7 +120,7 @@ public class Controller {
                         name = name + "i";
                         passed = true;
                     }
-				}
+                }
             }
         }
         return name;
@@ -170,7 +170,7 @@ public class Controller {
                 System.out.println("Polyline Created");
             }
         } else if (TYPE == BOWLSC) {
-            createBowlSC(x, y, name);
+            createBowlSC(name, x);
             if (DEBUG) {
                 System.out.println("Bowl-SC Created");
             }
@@ -273,12 +273,12 @@ public class Controller {
     /**
      * Creates a bowl based on Semi - Circle
      *
-     * @param x The x location
-     * @param y The y location
+     
      * @param name The name of the curve
+     * @param length The target length
      */
-    public void createBowlSC(double x, double y, String name) {
-        CURVES.add(new SemiCircle(new Point2D.Double(x, y), name, CubicSpline.NATURAL_SPLINE));
+    public void createBowlSC(String name, double length) {
+        CURVES.add(new SemiCircle(name, length));
         if (DEBUG) {
             System.out.println("Bowl Created");
         }
