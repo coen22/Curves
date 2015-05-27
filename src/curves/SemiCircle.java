@@ -1,11 +1,13 @@
 package curves;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class SemiCircle extends CubicSpline {
 
 	private double radius;
 	private double intervals;
+	private final double CONSTANT = 2.2553244257995195;
 	
 	/**
 	 * Makes a semi circle
@@ -30,6 +32,35 @@ public class SemiCircle extends CubicSpline {
 		
 		update();
 	}
+
+	public SemiCircle(String name, double targetLength){
+		super(new Point2D.Double(), name, 0);
+		points.clear();
+		
+		radius = targetLength / Math.PI;
+		intervals = 10;
+		
+		recalculate();
+		
+		System.out.println(length(arcLengthAlgorithms.get(0)));
+	}
+	
+	public void recalculate() {
+		double delta = radius * 2 / intervals;
+		
+		for (int i = 0; i <= intervals; i++)
+			points.add(new Point2D.Double(-radius + delta * i, circleFunction(-radius + delta * i)));
+		
+		update();
+	}
+	
+	public void setPoints(int points) {
+		this.intervals = points - 1;
+	}
+	
+	public void setInvervals(int intervals) {
+		this.intervals = intervals;
+	}
 	
 	/**
 	 * Basic circle
@@ -38,5 +69,9 @@ public class SemiCircle extends CubicSpline {
 	 */
 	private double circleFunction(double x) {
 		return -Math.sqrt(radius*radius - x*x);
+	}
+	
+	public static void main(String[] s) {
+		SemiCircle a = new SemiCircle("", 20);
 	}
 }
