@@ -4,7 +4,7 @@ package ui.events;
  * Interface to handle the GUI Events
  *
  * @author Kareem Horstink
- * @version 1.0
+ * @version 1.00
  */
 public interface GuiEventListner {
 

@@ -8,6 +8,11 @@ package ui.events;
  */
 public abstract class GuiEvents extends java.util.EventObject {
 
+    /**
+     * The default constructor
+     * 
+     * @param source The source of the event
+     */
     public GuiEvents(Object source) {
         super(source);
     }   

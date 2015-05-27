@@ -23,10 +23,18 @@ public class GuiEventsCreate extends GuiEvents {
         this.name = name;
     }
 
+    /**
+     * Returns the info about the line
+     * @return The info about the line - x-coordinate; y-coordinate; line type; (if applicable) cubic type
+     */
     public double[] getInfo() {
         return info;
     }
 
+    /**
+     * Request name of the line
+     * @return The name of the name
+     */
     public String getName() {
         return name;
     }
