@@ -120,8 +120,7 @@ public class Controller {
                         name = name + "i";
                         passed = true;
                     }
-                    System.out.println("ello");
-                }
+				}
             }
         }
         return name;
